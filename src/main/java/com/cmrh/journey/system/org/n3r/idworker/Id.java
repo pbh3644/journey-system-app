@@ -10,7 +10,7 @@ public class Id {
     private static IdWorker idWorker;
 
     static {
-        configure(DefaultWorkerIdStrategy.instance);
+        configure(DefaultWorkerIdStrategy.WORKER_ID_STRATEGY);
     }
 
     public static synchronized void configure(WorkerIdStrategy custom) {

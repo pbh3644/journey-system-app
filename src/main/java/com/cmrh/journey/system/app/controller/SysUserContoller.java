@@ -84,6 +84,7 @@ public class SysUserContoller extends WebContoller {
      */
     @GetMapping("/queryUserById")
     public JourneySystemAppResult queryUserById(String userId) {
-        return JourneySystemAppResult.ok(sysUserService.queryUserById(userId));
+        SysUser sysUser = sysUserService.queryUserById(userId);
+        return JourneySystemAppResult.ok(sysUser);
     }
 }

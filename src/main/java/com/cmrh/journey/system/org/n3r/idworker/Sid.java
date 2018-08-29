@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 /**
  * @author pangbohuan
  */
@@ -15,7 +16,7 @@ public class Sid {
     private static IdWorker idWorker;
 
     static {
-        configure(DefaultWorkerIdStrategy.instance);
+        configure(DefaultWorkerIdStrategy.WORKER_ID_STRATEGY);
     }
 
 

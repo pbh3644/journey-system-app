@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
  * @author pangbohuan
  */
 public class DefaultWorkerIdStrategy implements WorkerIdStrategy {
+
     static long workerIdBits = 10L;
     static long maxWorkerId = -1L ^ (-1L << workerIdBits);
     static Random random = new SecureRandom();
