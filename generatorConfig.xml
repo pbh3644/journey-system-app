@@ -13,7 +13,7 @@
         </plugin>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/journey-system-app"
+                        connectionURL="jdbc:mysql://10.200.47.70:3306/journey_system_app"
                         userId="root"
                         password="root">
         </jdbcConnection>
@@ -25,12 +25,10 @@
         <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
 
         <!-- 配置mapper对应的java映射 -->
-        <javaClientGenerator targetPackage="com.imooc.mapper" targetProject="src/main/java"
+        <javaClientGenerator targetPackage="com.cmrh.journey.system.app.mapper" targetProject="src/main/java"
                              type="XMLMAPPER"/>
 
 
         <table tableName="sys_user"></table>
-        <table tableName="sys_slideshow"></table>
-
     </context>
 </generatorConfiguration>

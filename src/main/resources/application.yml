@@ -21,10 +21,10 @@ server:
 ##-----------mysql配置-------------------##
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/journey-system-app
+    url: jdbc:mysql://10.200.47.70:3306/journey_system_app
     username: root
     password: root
-    driver-class-name=: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
     druid:
       initial-size: 1
       min-idle: 1
