@@ -9,7 +9,7 @@
         <property name="endingDelimiter" value="`"/>
 
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="com.cmrh.journey.system.utils.dao.MyMapper"/>
+            <property name="mappers" value="com.cmrh.journey.system.generator.MyMapper"/>
         </plugin>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
@@ -29,6 +29,6 @@
                              type="XMLMAPPER"/>
 
 
-        <table tableName="sys_user"></table>
+        <table tableName="stu"></table>
     </context>
 </generatorConfiguration>
