@@ -3,7 +3,7 @@ package com.cmrh.journey.system.common.utils.util;
 /**
  * @className: StringUtil
  * @date: 2017-03-24 16:22
- * @author: kangduo
+ * @author: pangbohuan
  * @description: (字符串工具类)
  */
 public class StringUtil {
