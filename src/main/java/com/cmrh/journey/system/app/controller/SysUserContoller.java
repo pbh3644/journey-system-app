@@ -27,7 +27,6 @@ public class SysUserContoller extends WebContoller {
     @Resource
     SysUserService sysUserService;
 
-
     /**
      * 系统用户分页查询列表
      */

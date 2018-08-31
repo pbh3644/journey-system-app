@@ -21,15 +21,18 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class WebContoller {
 
-    public static Integer pageSize = 10;
+    /**
+     * 列表分页
+     * */
+    protected static Integer pageSize = 10;
 
 
     @Resource
-    public HttpServletRequest request;
+    protected HttpServletRequest request;
 
 
     @Resource
-    public HttpServletResponse response;
+    protected HttpServletResponse response;
 
 
     @Resource
