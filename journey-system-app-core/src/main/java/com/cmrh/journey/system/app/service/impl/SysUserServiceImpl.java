@@ -58,9 +58,9 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public List<SysUser> queryUserListPaged(SysUser user, Integer page, Integer pageSize) {
+    public List<SysUser> queryUserListPaged(SysUser user) {
         // 开始分页
-        PageHelper.startPage(page, pageSize);
+        PageHelper.startPage(user.getPage(), user.getPageSize());
 
         Example example = new Example(SysUser.class);
         Example.Criteria criteria = example.createCriteria();

@@ -1,5 +1,6 @@
 package com.cmrh.journey.system.app.pojo;
 
+import com.cmrh.journey.system.common.base.domain.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -13,12 +14,12 @@ import javax.persistence.Table;
  **/
 @Data
 @Table(name = "sys_user")
-public class SysUser {
+public class SysUser extends BaseEntity<SysUser> {
     /**
      * 系统用户ID
      */
     @Id
-    private String id;
+    private long id;
 
     /**
      * 系统用户名

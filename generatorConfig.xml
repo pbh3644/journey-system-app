@@ -13,7 +13,7 @@
         </plugin>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://10.200.47.70:3306/journey_system_app"
+                        connectionURL="jdbc:mysql:/localhost:3306/journey_system_app"
                         userId="root"
                         password="root">
         </jdbcConnection>
@@ -29,6 +29,12 @@
                              type="XMLMAPPER"/>
 
 
-        <table tableName="stu"></table>
+        <table tableName="persistent_logins"></table>
+        <table tableName="sys_menu"></table>
+        <table tableName="sys_role"></table>
+        <table tableName="sys_role_menu"></table>
+        <table tableName="sys_user"></table>
+        <table tableName="sys_user_details"></table>
+        <table tableName="sys_user_role"></table>
     </context>
 </generatorConfiguration>

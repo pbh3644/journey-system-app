@@ -1,36 +1,72 @@
-##-----------服务基本信息、数据源配置-------------------##
+##-----------服务基本信息、数据源配置、配置Admin Server的地址-------------------##
 spring:
   application:
-    name: journey-system-app #服务的名字
+    #服务的名字
+    name: journey-system-app
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://10.200.47.70:3306/journey_system_app?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+    url: jdbc:mysql://localhost:3306/journey_system_app?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+    platform: mysql
+    # 下面为连接池的补充设置，应用到上面所有数据源中
+    # 初始化大小，最小，最大
     druid:
       initial-size: 1
       min-idle: 1
       max-active: 20
       test-on-borrow: true
       stat-view-servlet.allow: true
+   # 配置获取连接等待超时的时间
+    maxWait: 60000
+   # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,slf4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 合并多个DruidDataSource的监控数据
+    #useGlobalDataSourceStat: true
+  boot:
+    admin:
+      client:
+        url: http://localhost:8000
 ##-----------redis配置-------------------##
 redis:
-  database: 0 # Redis数据库索引（默认为0）
-  host: 127.0.0.1  #Redis服务器地址
-  port: 6379 # Redis服务器连接端口
-  password: # Redis服务器连接密码（默认为空）
+  # Redis数据库索引（默认为0）
+  database: 0
+  #Redis服务器地址
+  host: localhost
+  # Redis服务器连接端口
+  port: 6379
+  # Redis服务器连接密码（默认为空）
+  password:
   pool:
-    max-active: 20 # 连接池最大连接数（使用负值表示没有限制）
-    max-idle: 10 # 连接池中的最大空闲连接
-    max-wait: 1000 # 连接池最大阻塞等待时间（使用负值表示没有限制）
-    min-idle: 5 # 连接池中的最小空闲连接
-    timeout: 2000 # 连接超时时间（毫秒）
+    # 连接池最大连接数（使用负值表示没有限制）
+    max-active: 20
+    # 连接池中的最大空闲连接
+    max-idle: 10
+    # 连接池最大阻塞等待时间（使用负值表示没有限制）
+    max-wait: 1000
+    # 连接池中的最小空闲连接
+    min-idle: 5
+    # 连接超时时间（毫秒）
+    timeout: 2000
 ##-----------tomcat配置-------------------##
 server:
   session-timeout: 60
   tomcat.uri-encoding: UTF-8
-  port: 8060
+  port: 8080
 ##-----------mybatis映射配置-------------------##
 mybatis:
   type-aliases-package: com.cmrh.journey.system.app.pojo
@@ -43,6 +79,17 @@ pagehelper:
   helperDialect: mysql
   reasonable: true
   supportMethodsArguments: true
+##-----------关闭安全验证-------------------##
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+##-----------机构ID和数据中心ID-------------------##
+worker:
+  id: 1
+sysUser:
+  id: 1
 
 
 

@@ -1,20 +1,15 @@
 package com.cmrh.journey.system.common.utils.exception;
 
+import lombok.Data;
+
 /**
  * @author pangbohuan
  * @description 定义全局异常
  * @date 2018-08-20 14:03
  **/
+@Data
 public class BaseException extends RuntimeException {
     private int status = 200;
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
 
     public BaseException() {
     }

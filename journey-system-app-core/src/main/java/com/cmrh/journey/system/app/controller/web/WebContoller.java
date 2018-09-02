@@ -1,10 +1,8 @@
 package com.cmrh.journey.system.app.controller.web;
 
-import com.cmrh.journey.system.app.cachetools.UserCache;
+import com.cmrh.journey.system.app.controller.web.base.WebEntity;
 import com.cmrh.journey.system.app.pojo.SysUser;
-import com.cmrh.journey.system.common.org.n3r.idworker.Sid;
-import com.cmrh.journey.system.common.result.JourneySystemAppResult;
-import org.springframework.web.bind.annotation.PostMapping;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -18,13 +16,9 @@ import javax.servlet.http.HttpSession;
  * @description:所有的Contoller的父类
  * @date 2018-07-25 17:30
  **/
+@Slf4j
 @RestController
-public class WebContoller {
-
-    /**
-     * 列表分页
-     */
-    protected static Integer pageSize = 10;
+public class WebContoller<T> extends WebEntity<T> {
 
 
     @Resource
@@ -33,18 +27,6 @@ public class WebContoller {
 
     @Resource
     protected HttpServletResponse response;
-
-
-    @Resource
-    UserCache userCache;
-
-    /**
-     * 获取唯一ID
-     */
-    protected String getId() {
-        String soleId = Sid.nextShort();
-        return soleId;
-    }
 
 
     /**
@@ -66,7 +48,7 @@ public class WebContoller {
     /**
      * 获取当前登录用户ID
      */
-    protected String getUserId() {
+    protected long getUserId() {
         return getUser().getId();
     }
 
@@ -80,7 +62,7 @@ public class WebContoller {
 
     /**
      * 登录判断
-     */
+     *//*
     @PostMapping("/login")
     public JourneySystemAppResult login(SysUser sysUser) {
         SysUser user = userCache.isUser(sysUser);
@@ -90,5 +72,5 @@ public class WebContoller {
             getSession().setAttribute("sysUser", user);
         }
         return JourneySystemAppResult.ok(index);
-    }
+    }*/
 }

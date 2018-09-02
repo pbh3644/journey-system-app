@@ -44,11 +44,9 @@ public interface SysUserService {
      * 查询用户列表分页
      *
      * @param user
-     * @param page
-     * @param pageSize
      * @return List<SysUser>
      */
-    List<SysUser> queryUserListPaged(SysUser user, Integer page, Integer pageSize);
+    List<SysUser> queryUserListPaged(SysUser user);
 
     /**
      * MD5加密

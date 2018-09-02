@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author pangbohuan
@@ -21,39 +19,31 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/sys_user/")
-public class SysUserContoller extends WebContoller {
+public class SysUserContoller extends WebContoller<SysUserContoller> {
 
     @Resource
     SysUserService sysUserService;
+
+    @GetMapping("")
+    public JourneySystemAppResult queryUserListPaged() {
+        return JourneySystemAppResult.ok(getId());
+    }
 
     /**
      * 系统用户分页查询列表
      */
     @PostMapping("queryUserListPaged")
-    public JourneySystemAppResult queryUserListPaged(SysUser sysUser, Integer page) {
-        if (page == null) {
-            page = 1;
-        }
-        List<SysUser> userList = sysUserService.queryUserListPaged(sysUser, page, pageSize);
-
+    public JourneySystemAppResult queryUserListPaged(SysUser sysUser) {
+        List<SysUser> userList = sysUserService.queryUserListPaged(sysUser);
         int count = sysUserService.selectCount(sysUser);
-        int totalPages = (double) count / 10 > count / 10 ? (count / 10) + 1 : count / 10;
-
-        Map result = new HashMap<>(4);
-        result.put("count", count);
-        result.put("totalPages", totalPages);
-        result.put("list", userList);
-        result.put("page", page);
-
-        return JourneySystemAppResult.ok(result);
+        return JourneySystemAppResult.queryList(userList, count);
     }
-
 
     /**
      * 增加系统用户
      */
     @PostMapping("/saveUser")
-    public JourneySystemAppResult saveUser(SysUser user) throws Exception {
+    public JourneySystemAppResult saveUser(SysUser user) {
         user.setId(getId());
         sysUserService.saveUser(user);
         return JourneySystemAppResult.ok("保存成功");
