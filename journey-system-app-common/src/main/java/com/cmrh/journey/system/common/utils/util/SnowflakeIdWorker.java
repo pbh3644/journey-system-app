@@ -1,6 +1,5 @@
 package com.cmrh.journey.system.common.utils.util;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  **/
 @Slf4j
-@Data
 public class SnowflakeIdWorker {
 
     // ==============================Fields===========================================
@@ -138,9 +136,9 @@ public class SnowflakeIdWorker {
         lastTimestamp = timestamp;
 
         //移位并通过或运算拼到一起组成64位的ID
-        return ((timestamp - twepoch) << timestampLeftShift) //
-                | (dataCenterId << dataCenterIdShift) //
-                | (workerId << workerIdShift) //
+        return ((timestamp - twepoch) << timestampLeftShift)
+                | (dataCenterId << dataCenterIdShift)
+                | (workerId << workerIdShift)
                 | sequence;
     }
 

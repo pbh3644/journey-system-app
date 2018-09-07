@@ -44,6 +44,7 @@
         <commons-io.version>1.3.2</commons-io.version>
         <fastjson.version>1.2.49</fastjson.version>
         <admin.version>2.0.2</admin.version>
+        <jjwt.version>0.9.1</jjwt.version>
     </properties>
 
     <dependencyManagement>
@@ -97,11 +98,11 @@
                 <version>${jwt.version}</version>
             </dependency>
 
-           <!-- <dependency>
+            <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
                 <version>${boot.version}</version>
-            </dependency>-->
+            </dependency>
 
             <!-- 热部署 -->
             <!-- devtools可以实现页面热部署（即页面修改后会立即生效，
@@ -195,6 +196,12 @@
                 <groupId>de.codecentric</groupId>
                 <artifactId>spring-boot-admin-starter-client</artifactId>
                 <version>${admin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

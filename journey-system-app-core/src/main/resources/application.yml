@@ -5,7 +5,7 @@ spring:
     name: journey-system-app
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/journey_system_app?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+    url: jdbc:mysql://10.200.47.70:3306/journey_system_app?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
@@ -40,7 +40,7 @@ spring:
   boot:
     admin:
       client:
-        url: http://localhost:8000
+        url: "http://localhost:8000/"
 ##-----------redis配置-------------------##
 redis:
   # Redis数据库索引（默认为0）
@@ -66,7 +66,9 @@ redis:
 server:
   session-timeout: 60
   tomcat.uri-encoding: UTF-8
-  port: 8080
+  port: 8090
+  servlet:
+    context-path: /
 ##-----------mybatis映射配置-------------------##
 mybatis:
   type-aliases-package: com.cmrh.journey.system.app.pojo

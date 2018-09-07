@@ -13,7 +13,7 @@
         </plugin>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql:/localhost:3306/journey_system_app"
+                        connectionURL="jdbc:mysql:/10.200.47.70:3306/journey_system_app"
                         userId="root"
                         password="root">
         </jdbcConnection>
