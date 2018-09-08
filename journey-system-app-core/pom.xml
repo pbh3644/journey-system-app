@@ -12,6 +12,12 @@
     <artifactId>journey-system-app-core</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>pbh</groupId>
+            <artifactId>journey-system-app-job</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>pbh</groupId>
             <artifactId>journey-system-app-common</artifactId>
@@ -40,22 +46,6 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-        </dependency>
-
-        <!--pagehelper-->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
 

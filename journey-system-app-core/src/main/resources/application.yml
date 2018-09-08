@@ -69,27 +69,14 @@ server:
   port: 8080
 ##-----------mybatis映射配置-------------------##
 mybatis:
-  type-aliases-package: com.cmrh.journey.system.app.pojo
+  type-aliases-package: com.cmrh.journey.system.pojo
   mapper-locations: classpath:mapper/*.xml
-mapper:
-  mappers: com.cmrh.journey.system.generator.MyMapper
-  not-empty: false
-  identity: MYSQL
-pagehelper:
-  helperDialect: mysql
-  reasonable: true
-  supportMethodsArguments: true
 ##-----------关闭安全验证-------------------##
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-##-----------机构ID和数据中心ID-------------------##
-worker:
-  id: 1
-sysUser:
-  id: 1
 
 
 

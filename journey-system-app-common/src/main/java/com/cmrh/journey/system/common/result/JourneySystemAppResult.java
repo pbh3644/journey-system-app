@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author pangbohuan
@@ -45,7 +45,7 @@ public class JourneySystemAppResult {
      * 查询列表分页使用
      */
     public static JourneySystemAppResult queryList(List list, int count) {
-        Map result = new HashMap<>(2);
+        Map result = new ConcurrentHashMap(2);
         result.put("count", count);
         result.put("list", list);
         return new JourneySystemAppResult(result);

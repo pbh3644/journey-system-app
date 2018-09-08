@@ -1,13 +1,12 @@
-package com.cmrh.journey.system.app.config;
+package com.cmrh.journey.system.app.config.aop;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,9 +16,8 @@ import org.springframework.stereotype.Component;
  **/
 @Aspect
 @Component
+@Slf4j
 public class LogServiceTakeTime {
-
-    final static Logger log = LoggerFactory.getLogger(LogServiceTakeTime.class);
 
     @Pointcut("execution(* com.cmrh.journey.system.app.service..*.*(..))")
     public void performance() {

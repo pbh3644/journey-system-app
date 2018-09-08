@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmrh.journey.system.app.mapper.OrganizationMapper">
+    <resultMap type="com.cmrh.journey.system.pojo.domain.Organization" id="organizationResultMap">
+            <result property="organizationId" column="ORGANIZATION_ID"/>
+            <result property="applicationId" column="APPLICATION_ID"/>
+            <result property="organizationDataId" column="ORGANIZATION_DATA_ID"/>
+            <result property="organizationDataName" column="ORGANIZATION_DATA_NAME"/>
+            <result property="sAddTime" column="S_ADD_TIME"/>
+            <result property="sUpdateTime" column="S_UPDATE_TIME"/>
+            <result property="sDeleteTime" column="S_DELETE_TIME"/>
+            <result property="sAddUserId" column="S_ADD_USER_ID"/>
+            <result property="sUpdateUserId" column="S_UPDATE_USER_ID"/>
+            <result property="sDeleteUserId" column="S_DELETE_USER_ID"/>
+            <result property="sDeleteFlag" column="S_DELETE_FLAG"/>
+            <result property="sRemark" column="S_REMARK"/>
+    </resultMap>
+
+    <sql id="table_columns">
+            ORGANIZATION_ID,
+            APPLICATION_ID,
+            ORGANIZATION_DATA_ID,
+            ORGANIZATION_DATA_NAME,
+            S_ADD_TIME,
+            S_UPDATE_TIME,
+            S_DELETE_TIME,
+            S_ADD_USER_ID,
+            S_UPDATE_USER_ID,
+            S_DELETE_USER_ID,
+            S_DELETE_FLAG,
+            S_REMARK
+    </sql>
+    <sql id="entity_properties">
+            #{organizationId},
+            #{applicationId},
+            #{organizationDataId},
+            #{organizationDataName},
+            #{sAddTime},
+            #{sUpdateTime},
+            #{sDeleteTime},
+            #{sAddUserId},
+            #{sUpdateUserId},
+            #{sDeleteUserId},
+            #{sDeleteFlag},
+            #{sRemark}
+    </sql>
+
+    <!-- 使用like用法：columnName like concat('%',#{columnName},'%') -->
+    <sql id="page_where">
+        <trim prefix="where" prefixOverrides="and | or ">
+			<if test="organizationId != null">and ORGANIZATION_ID = #{organizationId}</if>
+			<if test="applicationId != null">and APPLICATION_ID = #{applicationId}</if>
+			<if test="organizationDataId != null">and ORGANIZATION_DATA_ID = #{organizationDataId}</if>
+            <if test="organizationDataName != null and organizationDataName != ''">and ORGANIZATION_DATA_NAME = #{organizationDataName}</if>
+			<if test="sAddTime != null">and S_ADD_TIME = #{sAddTime}</if>
+			<if test="sUpdateTime != null">and S_UPDATE_TIME = #{sUpdateTime}</if>
+			<if test="sDeleteTime != null">and S_DELETE_TIME = #{sDeleteTime}</if>
+			<if test="sAddUserId != null">and S_ADD_USER_ID = #{sAddUserId}</if>
+			<if test="sUpdateUserId != null">and S_UPDATE_USER_ID = #{sUpdateUserId}</if>
+			<if test="sDeleteUserId != null">and S_DELETE_USER_ID = #{sDeleteUserId}</if>
+			<if test="sDeleteFlag != null">and S_DELETE_FLAG = #{sDeleteFlag}</if>
+            <if test="sRemark != null and sRemark != ''">and S_REMARK = #{sRemark}</if>
+        </trim>
+    </sql>
+
+    <insert id="insert" parameterType="com.cmrh.journey.system.pojo.domain.Organization">
+        insert into organization( <include refid="table_columns" /> )
+        values ( <include refid="entity_properties" /> )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into organization( <include refid="table_columns" /> )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.organizationId},
+                    #{item.applicationId},
+                    #{item.organizationDataId},
+                    #{item.organizationDataName},
+                    #{item.sAddTime},
+                    #{item.sUpdateTime},
+                    #{item.sDeleteTime},
+                    #{item.sAddUserId},
+                    #{item.sUpdateUserId},
+                    #{item.sDeleteUserId},
+                    #{item.sDeleteFlag},
+                    #{item.sRemark}
+        )
+        </foreach>
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from organization
+        where organization_id = #{organizationId}
+    </delete>
+
+    <update id="deleteBatch">
+        update organization set S_DELETE_FLAG = 1
+        where organization_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+        #{id}
+        </foreach>
+    </update>
+
+    <update id="deleteLogic" parameterType="java.lang.Long">
+        update organization set S_DELETE_FLAG = 1
+        where organization_id = #{organizationId}
+    </update>
+
+    <update id="update" parameterType="com.cmrh.journey.system.pojo.domain.Organization">
+        update organization
+        <trim prefix="set" suffixOverrides=",">
+			<if test="applicationId != null">APPLICATION_ID = #{applicationId},</if>
+			<if test="organizationDataId != null">ORGANIZATION_DATA_ID = #{organizationDataId},</if>
+            <if test="organizationDataName != null and organizationDataName != ''">ORGANIZATION_DATA_NAME = #{organizationDataName},</if>
+			<if test="sAddTime != null">S_ADD_TIME = #{sAddTime},</if>
+			<if test="sUpdateTime != null">S_UPDATE_TIME = #{sUpdateTime},</if>
+			<if test="sDeleteTime != null">S_DELETE_TIME = #{sDeleteTime},</if>
+			<if test="sAddUserId != null and sAddUserId != 0 ">S_ADD_USER_ID = #{sAddUserId},</if>
+			<if test="sUpdateUserId != null and sUpdateUserId != 0 ">S_UPDATE_USER_ID = #{sUpdateUserId},</if>
+			<if test="sDeleteUserId != null and sDeleteUserId != 0 ">S_DELETE_USER_ID = #{sDeleteUserId},</if>
+			<if test="sDeleteFlag != null">S_DELETE_FLAG = #{sDeleteFlag},</if>
+            <if test="sRemark != null and sRemark != ''">S_REMARK = #{sRemark},</if>
+        </trim>
+        <where>organization_id = #{organizationId}</where>
+    </update>
+
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=",">
+            update organization
+            <trim prefix="set" suffixOverrides=",">
+						<if test="item.applicationId != null">APPLICATION_ID = #{item.applicationId},</if>
+						<if test="item.organizationDataId != null">ORGANIZATION_DATA_ID = #{item.organizationDataId},</if>
+						<if test="item.organizationDataName != null and item.organizationDataName != ''">ORGANIZATION_DATA_NAME = #{item.organizationDataName},</if>
+						<if test="item.sAddTime != null">S_ADD_TIME = #{item.sAddTime},</if>
+						<if test="item.sUpdateTime != null">S_UPDATE_TIME = #{item.sUpdateTime},</if>
+						<if test="item.sDeleteTime != null">S_DELETE_TIME = #{item.sDeleteTime},</if>
+						<if test="item.sAddUserId != null and sAddUserId != 0">S_ADD_USER_ID = #{item.sAddUserId},</if>
+						<if test="item.sUpdateUserId != null and sUpdateUserId != 0">S_UPDATE_USER_ID = #{item.sUpdateUserId},</if>
+						<if test="item.sDeleteUserId != null and sDeleteUserId != 0">S_DELETE_USER_ID = #{item.sDeleteUserId},</if>
+						<if test="item.sDeleteFlag != null">S_DELETE_FLAG = #{item.sDeleteFlag},</if>
+						<if test="item.sRemark != null and item.sRemark != ''">S_REMARK = #{item.sRemark},</if>
+            </trim>
+            <where>organization_id = #{item.organizationId}</where>
+        </foreach>
+    </update>
+
+    <select id="findAll" resultMap="organizationResultMap">
+        select <include refid="table_columns" />
+        from organization
+    </select>
+
+    <select id="findList" resultMap="organizationResultMap">
+        select <include refid="table_columns" />
+        from organization
+        <include refid="page_where" />
+    </select>
+
+    <select id="getCount" resultType="int" >
+        select count(organization_id) from organization
+        <include refid="page_where" />
+    </select>
+
+
+    <select id="get" resultMap="organizationResultMap" parameterType="java.lang.Long" >
+        select <include refid="table_columns" />
+        from organization
+        where organization_id = #{id}
+    </select>
+
+    <!-- 其他自定义SQL -->
+</mapper>

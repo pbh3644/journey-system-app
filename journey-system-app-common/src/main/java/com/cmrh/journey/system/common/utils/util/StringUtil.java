@@ -7,9 +7,11 @@ package com.cmrh.journey.system.common.utils.util;
  * @description: (字符串工具类)
  */
 public class StringUtil {
+    private static final char SEPARATOR = '_';
 
     /**
      * 是否为null或空串
+     *
      * @param source 原文
      * @return true | false
      */
@@ -19,17 +21,20 @@ public class StringUtil {
 
     /**
      * 字符串不是null且不是空串
+     *
      * @param source 原文
      * @return 是否不空 true | false
      */
     public static boolean isNotEmpty(String source) {
         return source != null && source.length() > 0;
     }
+
     /**
      * 指定位置替换为*
+     *
      * @param source 原文
-     * @param from 开始位，计数从1开始
-     * @param to 结束位，计数从1开始
+     * @param from   开始位，计数从1开始
+     * @param to     结束位，计数从1开始
      * @return 如：abc12******0d
      */
     public static String replaceWithStar(String source, int from, int to) {
@@ -49,6 +54,7 @@ public class StringUtil {
 
     /**
      * 两边加%，用于sql中like
+     *
      * @param str 原文
      * @return trim后两边加%
      */
@@ -57,5 +63,43 @@ public class StringUtil {
             return "%%";
         }
         return "%" + str.trim() + "%";
+    }
+
+    /**
+     * 驼峰命名法工具
+     *
+     * @return toCamelCase(" hello_world ") == "helloWorld"
+     * toCapitalizeCamelCase("hello_world") == "HelloWorld"
+     * toUnderScoreCase("helloWorld") = "hello_world"
+     */
+    public static String toUnderScoreCase(String s) {
+        if (s == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        boolean upperCase = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            boolean nextUpperCase = true;
+
+            if (i < (s.length() - 1)) {
+                nextUpperCase = Character.isUpperCase(s.charAt(i + 1));
+            }
+
+            if (i > 0 && Character.isUpperCase(c)) {
+                if (!upperCase || !nextUpperCase) {
+                    sb.append(SEPARATOR);
+                }
+                upperCase = true;
+            } else {
+                upperCase = false;
+            }
+
+            sb.append(Character.toLowerCase(c));
+        }
+
+        return sb.toString();
     }
 }
