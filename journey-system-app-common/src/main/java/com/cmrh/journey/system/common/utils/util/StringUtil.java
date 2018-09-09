@@ -102,4 +102,43 @@ public class StringUtil {
 
         return sb.toString();
     }
+
+    /**
+     * “_”+小写 转成大写字母
+     *
+     * @param str
+     * @return
+     */
+    private static String toUpper(String str) {
+        char[] charArr = str.toCharArray();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < charArr.length; i++) {
+            if (charArr[i] == '_') {
+                sb.append(String.valueOf(charArr[i + 1]).toUpperCase());
+                i = i + 1;
+            } else {
+                sb.append(charArr[i]);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 类名
+     */
+    public static String className(String tableName) {
+        //return capFirst(javaStyleOfTableName(tableName));
+        return capitalize(toUpper(tableName));
+    }
+
+    public static String capitalize(String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return str;
+        } else {
+            return (new StringBuilder(strLen))
+                    .append(Character.toTitleCase(str.charAt(0)))
+                    .append(str.substring(1)).toString();
+        }
+    }
 }

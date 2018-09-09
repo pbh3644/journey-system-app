@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author pangbohuan
@@ -40,16 +38,6 @@ public class JourneySystemAppResult {
      * 响应中的数据
      */
     private Object data;
-
-    /**
-     * 查询列表分页使用
-     */
-    public static JourneySystemAppResult queryList(List list, int count) {
-        Map result = new ConcurrentHashMap(2);
-        result.put("count", count);
-        result.put("list", list);
-        return new JourneySystemAppResult(result);
-    }
 
     public static JourneySystemAppResult build(Integer status, String msg, Object data) {
         return new JourneySystemAppResult(status, msg, data);

@@ -11,11 +11,12 @@ import org.springframework.stereotype.Service;
  *
  * @author pbh
  * @version 1.0
- * @since 2018-9-8
+ * @since 2018-9-9
  */
 @Service("organizationService")
 public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper, Organization> implements OrganizationService {
-    //@Resource
-    //private OrganizationMapper organizationMapper;
+
+   /* @Resource
+    private OrganizationMapper organizationMapper;*/
 
 }

@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author pbh
  * @version 1.0
- * @since 2018-9-8
+ * @since 2018-9-9
  */
 @Mapper
 public interface ApplicationMapper extends BaseMapper<Application> {

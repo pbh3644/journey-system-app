@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cmrh.journey.system.app.mapper.ApplicationMapper">
     <resultMap type="com.cmrh.journey.system.pojo.domain.Application" id="applicationResultMap">
-        <result property="applicationId" column="APPLICATION_ID"/>
+        <result property="id" column="ID"/>
         <result property="applicationNameEnglish" column="APPLICATION_NAME_ENGLISH"/>
         <result property="applicationNameChinese" column="APPLICATION_NAME_CHINESE"/>
         <result property="applicationIp" column="APPLICATION_IP"/>
@@ -17,7 +17,7 @@
     </resultMap>
 
     <sql id="table_columns">
-            APPLICATION_ID,
+            ID,
             APPLICATION_NAME_ENGLISH,
             APPLICATION_NAME_CHINESE,
             APPLICATION_IP,
@@ -31,7 +31,7 @@
             S_REMARK
     </sql>
     <sql id="entity_properties">
-            #{applicationId},
+            #{id},
             #{applicationNameEnglish},
             #{applicationNameChinese},
             #{applicationIp},
@@ -48,7 +48,7 @@
     <!-- 使用like用法：columnName like concat('%',#{columnName},'%') -->
     <sql id="page_where">
         <trim prefix="where" prefixOverrides="and | or ">
-            <if test="applicationId != null">and APPLICATION_ID = #{applicationId}</if>
+            <if test="id != null and id != 0">and ID = #{id}</if>
             <if test="applicationNameEnglish != null and applicationNameEnglish != ''">and APPLICATION_NAME_ENGLISH =
                 #{applicationNameEnglish}
             </if>
@@ -59,9 +59,9 @@
             <if test="sAddTime != null">and S_ADD_TIME = #{sAddTime}</if>
             <if test="sUpdateTime != null">and S_UPDATE_TIME = #{sUpdateTime}</if>
             <if test="sDeleteTime != null">and S_DELETE_TIME = #{sDeleteTime}</if>
-            <if test="sAddUserId != null and sAddUserId != 0 ">and S_ADD_USER_ID = #{sAddUserId}</if>
-            <if test="sUpdateUserId != null and sUpdateUserId != 0 ">and S_UPDATE_USER_ID = #{sUpdateUserId}</if>
-            <if test="sDeleteUserId != null and sDeleteUserId != 0 ">and S_DELETE_USER_ID = #{sDeleteUserId}</if>
+            <if test="sAddUserId != null and sAddUserId != 0">and S_ADD_USER_ID = #{sAddUserId}</if>
+            <if test="sUpdateUserId != null and sUpdateUserId != 0">and S_UPDATE_USER_ID = #{sUpdateUserId}</if>
+            <if test="sDeleteUserId != null and sDeleteUserId != 0">and S_DELETE_USER_ID = #{sDeleteUserId}</if>
             <if test="sDeleteFlag != null">and S_DELETE_FLAG = #{sDeleteFlag}</if>
             <if test="sRemark != null and sRemark != ''">and S_REMARK = #{sRemark}</if>
         </trim>
@@ -83,7 +83,7 @@
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (
-            #{item.applicationId},
+            #{item.id},
             #{item.applicationNameEnglish},
             #{item.applicationNameChinese},
             #{item.applicationIp},
@@ -101,12 +101,12 @@
 
     <delete id="delete" parameterType="java.lang.Long">
         delete from application
-        where application_id = #{applicationId}
+        where id = #{id}
     </delete>
 
     <update id="deleteBatch">
         update application set S_DELETE_FLAG = 1
-        where application_id in
+        where id in
         <foreach collection="array" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
@@ -114,7 +114,7 @@
 
     <update id="deleteLogic" parameterType="java.lang.Long">
         update application set S_DELETE_FLAG = 1
-        where application_id = #{applicationId}
+        where id = #{id}
     </update>
 
     <update id="update" parameterType="com.cmrh.journey.system.pojo.domain.Application">
@@ -130,13 +130,13 @@
             <if test="sAddTime != null">S_ADD_TIME = #{sAddTime},</if>
             <if test="sUpdateTime != null">S_UPDATE_TIME = #{sUpdateTime},</if>
             <if test="sDeleteTime != null">S_DELETE_TIME = #{sDeleteTime},</if>
-            <if test="sAddUserId != null and sAddUserId != 0 ">S_ADD_USER_ID = #{sAddUserId},</if>
-            <if test="sUpdateUserId != null and sUpdateUserId != 0 ">S_UPDATE_USER_ID = #{sUpdateUserId},</if>
-            <if test="sDeleteUserId != null and sDeleteUserId != 0 ">S_DELETE_USER_ID = #{sDeleteUserId},</if>
+            <if test="sAddUserId != null and sAddUserId != 0">S_ADD_USER_ID = #{sAddUserId},</if>
+            <if test="sUpdateUserId != null and sUpdateUserId != 0">S_UPDATE_USER_ID = #{sUpdateUserId},</if>
+            <if test="sDeleteUserId != null and sDeleteUserId != 0">S_DELETE_USER_ID = #{sDeleteUserId},</if>
             <if test="sDeleteFlag != null">S_DELETE_FLAG = #{sDeleteFlag},</if>
             <if test="sRemark != null and sRemark != ''">S_REMARK = #{sRemark},</if>
         </trim>
-        <where>application_id = #{applicationId}</where>
+        <where>id = #{id}</where>
     </update>
 
     <update id="updateBatch" parameterType="java.util.List">
@@ -144,24 +144,34 @@
             update application
             <trim prefix="set" suffixOverrides=",">
                 <if test="item.applicationNameEnglish != null and item.applicationNameEnglish != ''">
-                    APPLICATION_NAME_ENGLISH = #{item.applicationNameEnglish},
+                    APPLICATION_NAME_ENGLISH = #
+                    {item.applicationNameEnglish},
                 </if>
                 <if test="item.applicationNameChinese != null and item.applicationNameChinese != ''">
-                    APPLICATION_NAME_CHINESE = #{item.applicationNameChinese},
+                    APPLICATION_NAME_CHINESE = #
+                    {item.applicationNameChinese},
                 </if>
-                <if test="item.applicationIp != null and item.applicationIp != ''">APPLICATION_IP =
-                    #{item.applicationIp},
+                <if test="item.applicationIp != null and item.applicationIp != ''">APPLICATION_IP = #
+                    {item.applicationIp},
                 </if>
                 <if test="item.sAddTime != null">S_ADD_TIME = #{item.sAddTime},</if>
                 <if test="item.sUpdateTime != null">S_UPDATE_TIME = #{item.sUpdateTime},</if>
                 <if test="item.sDeleteTime != null">S_DELETE_TIME = #{item.sDeleteTime},</if>
-                <if test="item.sAddUserId != null">S_ADD_USER_ID = #{item.sAddUserId},</if>
-                <if test="item.sUpdateUserId != null">S_UPDATE_USER_ID = #{item.sUpdateUserId},</if>
-                <if test="item.sDeleteUserId != null">S_DELETE_USER_ID = #{item.sDeleteUserId},</if>
+                <if test="item.sAddUserId != null and item.sAddUserId != 0">S_ADD_USER_ID = #
+                    {item.sAddUserId},
+                </if>
+                <if test="item.sUpdateUserId != null and item.sUpdateUserId != 0">S_UPDATE_USER_ID = #
+                    {item.sUpdateUserId},
+                </if>
+                <if test="item.sDeleteUserId != null and item.sDeleteUserId != 0">S_DELETE_USER_ID = #
+                    {item.sDeleteUserId},
+                </if>
                 <if test="item.sDeleteFlag != null">S_DELETE_FLAG = #{item.sDeleteFlag},</if>
-                <if test="item.sRemark != null and item.sRemark != ''">S_REMARK = #{item.sRemark},</if>
+                <if test="item.sRemark != null and item.sRemark != ''">S_REMARK = #
+                    {item.sRemark},
+                </if>
             </trim>
-            <where>application_id = #{item.applicationId}</where>
+            <where>id = #{item.id}</where>
         </foreach>
     </update>
 
@@ -169,6 +179,7 @@
         select
         <include refid="table_columns"/>
         from application
+        ORDER BY id
     </select>
 
     <select id="findList" resultMap="applicationResultMap">
@@ -179,7 +190,7 @@
     </select>
 
     <select id="getCount" resultType="int">
-        select count(application_id) from application
+        select count(id) from application
         <include refid="page_where"/>
     </select>
 
@@ -188,7 +199,7 @@
         select
         <include refid="table_columns"/>
         from application
-        where application_id = #{id}
+        where id = #{id}
     </select>
 
     <!-- 其他自定义SQL -->

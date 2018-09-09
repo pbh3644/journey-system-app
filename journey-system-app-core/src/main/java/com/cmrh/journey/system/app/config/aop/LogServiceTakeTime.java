@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LogServiceTakeTime {
 
-    @Pointcut("execution(* com.cmrh.journey.system.app.service..*.*(..))")
+    @Pointcut("execution(* com.cmrh.journey.system.app.controller..*.*(..))")
     public void performance() {
     }
 
@@ -36,8 +36,8 @@ public class LogServiceTakeTime {
             log.error("日志记录发生错误, errorMessage: {}", e.getMessage());
         } finally {
             /** 记录操作时间 */
-            long took = (System.currentTimeMillis() - begin) / 1000;
-            log.info("Service执行时间为: {}秒", took);
+            long endTime =System.currentTimeMillis() - begin;
+            log.info("Service执行时间为: {}毫秒", endTime);
         }
         return result;
     }
@@ -45,6 +45,6 @@ public class LogServiceTakeTime {
     @Before("performance()")
     public void doBefore(JoinPoint joinPoint) {
         // 接收到请求，记录请求内容
-        log.info("doBefore");
+        log.info("接受到请求，doBefore......");
     }
 }
