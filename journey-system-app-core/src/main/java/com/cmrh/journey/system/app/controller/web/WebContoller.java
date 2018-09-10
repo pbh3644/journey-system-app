@@ -1,7 +1,5 @@
 package com.cmrh.journey.system.app.controller.web;
 
-import com.cmrh.journey.system.app.controller.web.base.WebEntity;
-import com.cmrh.journey.system.app.pojo.SysUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +16,7 @@ import javax.servlet.http.HttpSession;
  **/
 @Slf4j
 @RestController
-public class WebContoller<T> extends WebEntity<T> {
+public class WebContoller {
 
 
     @Resource
@@ -38,26 +36,26 @@ public class WebContoller<T> extends WebEntity<T> {
 
     /**
      * 获取当前登录用户
-     */
+     *//*
     protected SysUser getUser() {
         SysUser user = (SysUser) getSession().getAttribute("sysUser");
         return user;
     }
 
 
-    /**
+    *//**
      * 获取当前登录用户ID
-     */
+     *//*
     protected long getUserId() {
         return getUser().getId();
     }
 
-    /**
+    *//**
      * 获取当前登录用户姓名
-     */
+     *//*
     protected String getUserName() {
         return getUser().getSysUserName();
-    }
+    }*/
 
 
     /**

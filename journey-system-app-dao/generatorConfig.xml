@@ -8,18 +8,20 @@
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
 
+        <!-- 公共MyMapper基类 -->
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
             <property name="mappers" value="com.cmrh.journey.system.generator.MyMapper"/>
         </plugin>
 
+        <!-- 数据源配置 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql:/10.200.47.70:3306/journey_system_app"
+                        connectionURL="jdbc:mysql://localhost:3306/journey_system_app"
                         userId="root"
                         password="root">
         </jdbcConnection>
 
         <!-- 对于生成的pojo所在包 -->
-        <javaModelGenerator targetPackage="com.cmrh.journey.system.app.pojo" targetProject="src/main/java"/>
+        <javaModelGenerator targetPackage="com.cmrh.journey.system.pojo" targetProject="src/main/java"/>
 
         <!-- 对于生成的mapper所在目录 -->
         <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
@@ -29,12 +31,10 @@
                              type="XMLMAPPER"/>
 
 
-        <table tableName="persistent_logins"></table>
-        <table tableName="sys_menu"></table>
-        <table tableName="sys_role"></table>
-        <table tableName="sys_role_menu"></table>
-        <table tableName="sys_user"></table>
-        <table tableName="sys_user_details"></table>
-        <table tableName="sys_user_role"></table>
+        <!-- 数据库要生成的表 -->
+        <table tableName="application"></table>
+        <table tableName="organization"></table>
+
+
     </context>
 </generatorConfiguration>
