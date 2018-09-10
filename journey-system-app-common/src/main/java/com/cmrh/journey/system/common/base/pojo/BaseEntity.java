@@ -141,7 +141,7 @@ public abstract class BaseEntity<T> implements Serializable {
      */
     public BaseEntity(final long id) {
         super();
-        this.id = id == 0 || StringUtils.isEmpty(id + "") ? genUuid() : id;
+        this.id = id == 0 || StringUtils.isEmpty(id + "") ? getSnowflakeId() : id;
     }
 
 
@@ -199,7 +199,7 @@ public abstract class BaseEntity<T> implements Serializable {
      * 保存数据库前预处理
      */
     public void preInsert() {
-        this.id = id == null || StringUtils.isBlank(id + "") ? genUuid() : this.id;
+        this.id = id == null || StringUtils.isBlank(id + "") ? getSnowflakeId() : this.id;
     }
 
     /**
@@ -311,7 +311,7 @@ public abstract class BaseEntity<T> implements Serializable {
     /**
      * 根据雪花算法获取ID数字生成
      **/
-    public Long genUuid() {
+    public Long getSnowflakeId() {
         //擦除泛型特性
         ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
         Class entity = (Class) pt.getActualTypeArguments()[0];

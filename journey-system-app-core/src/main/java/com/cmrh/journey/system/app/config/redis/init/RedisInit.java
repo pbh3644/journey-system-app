@@ -55,24 +55,30 @@ public class RedisInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        initApplication();
+        ValueOperations<String, Map<String, Object>> operations = redisTemplate.opsForValue();
+        initApplication(operations);
+
+        //并把redisTemplate注入到RedisUtils中目的为了微服务共享
+        RedisUtils.applicationName = applicationName;
+        RedisUtils.operations = operations;
+        RedisUtils.redisTemplate = redisTemplate;
+        log.info("初始化成功RedisUtils中的组件成功");
     }
 
     /**
      * 初始化微服务以及每个微服务包含表
      * 放入redis缓存中方便获取机构ID和微服务ID
      */
-    public void initApplication() {
-        ValueOperations<String, Map<String, Object>> operations = redisTemplate.opsForValue();
+    public void initApplication(ValueOperations<String, Map<String, Object>> operations) {
 
         List<Application> appList = applicationService.findAll();
         List<Organization> orgList = organizationService.findAll();
-        log.warn("查询所有微服务和所有数据库表工作准备就绪......");
+        log.info("查询所有微服务和所有数据库表工作准备就绪......");
         int index = 0;
         for (Application application : appList) {
             long id = application.getId();
             long maxTableId = 0;
-            Map<String, Object> applicationInfo = new HashMap<>();
+            Map<String, Object> applicationInfo = new HashMap<>(16);
             for (int i = index; i < orgList.size(); i++) {
                 Organization organization = orgList.get(i);
                 long applicationId = organization.getApplicationId();
@@ -108,12 +114,7 @@ public class RedisInit implements ApplicationRunner {
 
             //通过微服务的名字加入redis缓存中
             operations.set(applicationNameEnglish, applicationInfo);
-            log.warn(applicationNameEnglish + ":微服务相关信息加入redis成功:" + applicationInfo.toString());
+            log.info(applicationNameEnglish + ":微服务相关信息加入redis成功:" + applicationInfo.toString());
         }
-        //并把redisTemplate注入到RedisUtils中目的为了共享
-        RedisUtils.applicationName = applicationName;
-        RedisUtils.operations = operations;
-        RedisUtils.redisTemplate = redisTemplate;
-        log.warn("初始化成功RedisUtils中的组件成功");
     }
 }

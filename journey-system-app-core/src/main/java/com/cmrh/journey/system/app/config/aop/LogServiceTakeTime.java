@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LogServiceTakeTime {
 
+    private static final long LONGEST = 1000 * 1;
+
     @Pointcut("execution(* com.cmrh.journey.system.app.controller..*.*(..))")
     public void performance() {
     }
@@ -36,8 +38,12 @@ public class LogServiceTakeTime {
             log.error("日志记录发生错误, errorMessage: {}", e.getMessage());
         } finally {
             /** 记录操作时间 */
-            long endTime =System.currentTimeMillis() - begin;
-            log.info("Service执行时间为: {}毫秒", endTime);
+            long endTime = System.currentTimeMillis() - begin;
+            if (endTime > LONGEST) {
+                log.error("性能低下Service执行时间为: {}毫秒", endTime);
+            } else {
+                log.info("Service执行时间为: {}毫秒", endTime);
+            }
         }
         return result;
     }
