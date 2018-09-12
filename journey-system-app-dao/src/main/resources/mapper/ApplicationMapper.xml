@@ -6,14 +6,14 @@
         <result property="applicationNameEnglish" column="APPLICATION_NAME_ENGLISH"/>
         <result property="applicationNameChinese" column="APPLICATION_NAME_CHINESE"/>
         <result property="applicationIp" column="APPLICATION_IP"/>
-        <result property="sAddTime" column="S_ADD_TIME"/>
-        <result property="sUpdateTime" column="S_UPDATE_TIME"/>
-        <result property="sDeleteTime" column="S_DELETE_TIME"/>
-        <result property="sAddUserId" column="S_ADD_USER_ID"/>
-        <result property="sUpdateUserId" column="S_UPDATE_USER_ID"/>
-        <result property="sDeleteUserId" column="S_DELETE_USER_ID"/>
-        <result property="sDeleteFlag" column="S_DELETE_FLAG"/>
-        <result property="sRemark" column="S_REMARK"/>
+        <result property="addTime" column="ADD_TIME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+        <result property="deleteTime" column="DELETE_TIME"/>
+        <result property="addUserId" column="ADD_USER_ID"/>
+        <result property="updateUserId" column="UPDATE_USER_ID"/>
+        <result property="deleteUserId" column="DELETE_USER_ID"/>
+        <result property="deleteFlag" column="DELETE_FLAG"/>
+        <result property="remark" column="REMARK"/>
     </resultMap>
 
     <sql id="table_columns">
@@ -21,28 +21,28 @@
             APPLICATION_NAME_ENGLISH,
             APPLICATION_NAME_CHINESE,
             APPLICATION_IP,
-            S_ADD_TIME,
-            S_UPDATE_TIME,
-            S_DELETE_TIME,
-            S_ADD_USER_ID,
-            S_UPDATE_USER_ID,
-            S_DELETE_USER_ID,
-            S_DELETE_FLAG,
-            S_REMARK
+            ADD_TIME,
+            UPDATE_TIME,
+            DELETE_TIME,
+            ADD_USER_ID,
+            UPDATE_USER_ID,
+            DELETE_USER_ID,
+            DELETE_FLAG,
+            REMARK
     </sql>
     <sql id="entity_properties">
             #{id},
             #{applicationNameEnglish},
             #{applicationNameChinese},
             #{applicationIp},
-            #{sAddTime},
-            #{sUpdateTime},
-            #{sDeleteTime},
-            #{sAddUserId},
-            #{sUpdateUserId},
-            #{sDeleteUserId},
-            #{sDeleteFlag},
-            #{sRemark}
+            #{addTime},
+            #{updateTime},
+            #{deleteTime},
+            #{addUserId},
+            #{updateUserId},
+            #{deleteUserId},
+            #{deleteFlag},
+            #{remark}
     </sql>
 
     <!-- 使用like用法：columnName like concat('%',#{columnName},'%') -->
@@ -56,14 +56,14 @@
                 #{applicationNameChinese}
             </if>
             <if test="applicationIp != null and applicationIp != ''">and APPLICATION_IP = #{applicationIp}</if>
-            <if test="sAddTime != null">and S_ADD_TIME = #{sAddTime}</if>
-            <if test="sUpdateTime != null">and S_UPDATE_TIME = #{sUpdateTime}</if>
-            <if test="sDeleteTime != null">and S_DELETE_TIME = #{sDeleteTime}</if>
-            <if test="sAddUserId != null and sAddUserId != 0">and S_ADD_USER_ID = #{sAddUserId}</if>
-            <if test="sUpdateUserId != null and sUpdateUserId != 0">and S_UPDATE_USER_ID = #{sUpdateUserId}</if>
-            <if test="sDeleteUserId != null and sDeleteUserId != 0">and S_DELETE_USER_ID = #{sDeleteUserId}</if>
-            <if test="sDeleteFlag != null">and S_DELETE_FLAG = #{sDeleteFlag}</if>
-            <if test="sRemark != null and sRemark != ''">and S_REMARK = #{sRemark}</if>
+            <if test="addTime != null">and ADD_TIME = #{addTime}</if>
+            <if test="updateTime != null">and UPDATE_TIME = #{updateTime}</if>
+            <if test="deleteTime != null">and DELETE_TIME = #{deleteTime}</if>
+            <if test="addUserId != null and addUserId != 0">and ADD_USER_ID = #{addUserId}</if>
+            <if test="updateUserId != null and updateUserId != 0">and UPDATE_USER_ID = #{updateUserId}</if>
+            <if test="deleteUserId != null and deleteUserId != 0">and DELETE_USER_ID = #{deleteUserId}</if>
+            <if test="deleteFlag != null">and DELETE_FLAG = #{deleteFlag}</if>
+            <if test="remark != null and remark != ''">and REMARK = #{remark}</if>
         </trim>
     </sql>
 
@@ -87,14 +87,14 @@
             #{item.applicationNameEnglish},
             #{item.applicationNameChinese},
             #{item.applicationIp},
-            #{item.sAddTime},
-            #{item.sUpdateTime},
-            #{item.sDeleteTime},
-            #{item.sAddUserId},
-            #{item.sUpdateUserId},
-            #{item.sDeleteUserId},
-            #{item.sDeleteFlag},
-            #{item.sRemark}
+            #{item.addTime},
+            #{item.updateTime},
+            #{item.deleteTime},
+            #{item.addUserId},
+            #{item.updateUserId},
+            #{item.deleteUserId},
+            #{item.deleteFlag},
+            #{item.remark}
             )
         </foreach>
     </insert>
@@ -127,14 +127,14 @@
                 #{applicationNameChinese},
             </if>
             <if test="applicationIp != null and applicationIp != ''">APPLICATION_IP = #{applicationIp},</if>
-            <if test="sAddTime != null">S_ADD_TIME = #{sAddTime},</if>
-            <if test="sUpdateTime != null">S_UPDATE_TIME = #{sUpdateTime},</if>
-            <if test="sDeleteTime != null">S_DELETE_TIME = #{sDeleteTime},</if>
-            <if test="sAddUserId != null and sAddUserId != 0">S_ADD_USER_ID = #{sAddUserId},</if>
-            <if test="sUpdateUserId != null and sUpdateUserId != 0">S_UPDATE_USER_ID = #{sUpdateUserId},</if>
-            <if test="sDeleteUserId != null and sDeleteUserId != 0">S_DELETE_USER_ID = #{sDeleteUserId},</if>
-            <if test="sDeleteFlag != null">S_DELETE_FLAG = #{sDeleteFlag},</if>
-            <if test="sRemark != null and sRemark != ''">S_REMARK = #{sRemark},</if>
+            <if test="addTime != null">and ADD_TIME = #{addTime},</if>
+            <if test="updateTime != null">and UPDATE_TIME = #{updateTime},</if>
+            <if test="deleteTime != null">and DELETE_TIME = #{deleteTime},</if>
+            <if test="addUserId != null and addUserId != 0">ADD_USER_ID = #{addUserId},</if>
+            <if test="updateUserId != null and updateUserId != 0">UPDATE_USER_ID = #{updateUserId},</if>
+            <if test="deleteUserId != null and deleteUserId != 0">DELETE_USER_ID = #{deleteUserId},</if>
+            <if test="deleteFlag != null">and DELETE_FLAG = #{deleteFlag},</if>
+            <if test="remark != null and remark != ''">REMARK = #{remark},</if>
         </trim>
         <where>id = #{id}</where>
     </update>
@@ -154,21 +154,21 @@
                 <if test="item.applicationIp != null and item.applicationIp != ''">APPLICATION_IP = #
                     {item.applicationIp},
                 </if>
-                <if test="item.sAddTime != null">S_ADD_TIME = #{item.sAddTime},</if>
-                <if test="item.sUpdateTime != null">S_UPDATE_TIME = #{item.sUpdateTime},</if>
-                <if test="item.sDeleteTime != null">S_DELETE_TIME = #{item.sDeleteTime},</if>
-                <if test="item.sAddUserId != null and item.sAddUserId != 0">S_ADD_USER_ID = #
-                    {item.sAddUserId},
+                <if test="item.addTime != null">ADD_TIME = #{item.addTime},</if>
+                <if test="item.updateTime != null">UPDATE_TIME = #{item.updateTime},</if>
+                <if test="item.deleteTime != null">DELETE_TIME = #{item.deleteTime},</if>
+                <if test="item.addUserId != null and item.addUserId != 0">ADD_USER_ID = #
+                    {item.addUserId},
                 </if>
-                <if test="item.sUpdateUserId != null and item.sUpdateUserId != 0">S_UPDATE_USER_ID = #
-                    {item.sUpdateUserId},
+                <if test="item.updateUserId != null and item.updateUserId != 0">UPDATE_USER_ID = #
+                    {item.updateUserId},
                 </if>
-                <if test="item.sDeleteUserId != null and item.sDeleteUserId != 0">S_DELETE_USER_ID = #
-                    {item.sDeleteUserId},
+                <if test="item.deleteUserId != null and item.deleteUserId != 0">DELETE_USER_ID = #
+                    {item.deleteUserId},
                 </if>
-                <if test="item.sDeleteFlag != null">S_DELETE_FLAG = #{item.sDeleteFlag},</if>
-                <if test="item.sRemark != null and item.sRemark != ''">S_REMARK = #
-                    {item.sRemark},
+                <if test="item.deleteFlag != null">DELETE_FLAG = #{item.deleteFlag},</if>
+                <if test="item.remark != null and item.remark != ''">REMARK = #
+                    {item.remark},
                 </if>
             </trim>
             <where>id = #{item.id}</where>

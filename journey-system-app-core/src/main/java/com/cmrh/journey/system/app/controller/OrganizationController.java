@@ -46,8 +46,8 @@ public class OrganizationController extends WebContoller {
      */
     @PostMapping("add")
     public JourneySystemAppResult add(@RequestBody Organization organization) {
-        organization.setSAddTime(organization.currentTime());
-        organization.setSAddUserId(123456L);
+        organization.setAddTime(organization.currentTime());
+        organization.setAddUserId(123456L);
         organizationService.insert(organization);
         return JourneySystemAppResult.ok();
     }
@@ -57,8 +57,8 @@ public class OrganizationController extends WebContoller {
      */
     @PostMapping("updata")
     public JourneySystemAppResult updata(@RequestBody Organization organization) {
-        organization.setSUpdateTime(organization.currentTime());
-        organization.setSUpdateUserId(123456L);
+        organization.setUpdateTime(organization.currentTime());
+        organization.setUpdateUserId(123456L);
         organizationService.update(organization);
         return JourneySystemAppResult.ok();
     }

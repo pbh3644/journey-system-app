@@ -2,6 +2,7 @@ package com.cmrh.journey.system.app.controller;
 
 import com.cmrh.journey.system.app.controller.web.WebContoller;
 import com.cmrh.journey.system.app.service.ApplicationService;
+import com.cmrh.journey.system.common.base.pojo.BaseEntity;
 import com.cmrh.journey.system.common.base.pojo.Page;
 import com.cmrh.journey.system.common.result.JourneySystemAppResult;
 import com.cmrh.journey.system.pojo.domain.Application;
@@ -37,8 +38,11 @@ public class ApplicationController extends WebContoller {
         application.setSRemark("测试数据444....");*/
         Application application = applicationService.get(1);
         Page<Application> page = applicationService.findPage(application);
-        page.getRows().add(application);
-        return JourneySystemAppResult.ok(application);
+        for (Application application1 : page.getRows()) {
+            BaseEntity baseEntity = application1;
+            System.out.println(baseEntity.toString() + "==============");
+        }
+        return JourneySystemAppResult.ok(page);
     }
 
     /**
@@ -55,8 +59,8 @@ public class ApplicationController extends WebContoller {
      */
     @PostMapping("add")
     public JourneySystemAppResult add(@RequestBody Application application) {
-        application.setSAddTime(application.currentTime());
-        application.setSAddUserId(123456L);
+        application.setAddTime(application.currentTime());
+        application.setAddUserId(123456L);
         applicationService.insert(application);
         return JourneySystemAppResult.ok();
     }
@@ -66,8 +70,8 @@ public class ApplicationController extends WebContoller {
      */
     @PostMapping("updata")
     public JourneySystemAppResult updata(@RequestBody Application application) {
-        application.setSUpdateTime(application.currentTime());
-        application.setSUpdateUserId(123456L);
+        application.setUpdateTime(application.currentTime());
+        application.setUpdateUserId(123456L);
         applicationService.update(application);
         return JourneySystemAppResult.ok();
     }
