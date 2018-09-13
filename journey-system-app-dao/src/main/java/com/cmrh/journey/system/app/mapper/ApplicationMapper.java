@@ -14,4 +14,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ApplicationMapper extends BaseMapper<Application> {
 
+    /**
+     * 根据微服务的名字精准查询是否有相同的微服务
+     *
+     * @param applicationNameChinese 微服务的英文名字
+     * @return Application 微服务对象
+     */
+    Application uniquenessApplicationName(String applicationNameChinese);
 }

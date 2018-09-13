@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 public class ApplicationController extends WebContoller {
 
     @Resource
-    ApplicationService applicationService;
+    private ApplicationService applicationService;
 
 
     /**

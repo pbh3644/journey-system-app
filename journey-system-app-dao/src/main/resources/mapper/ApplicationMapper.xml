@@ -203,4 +203,12 @@
     </select>
 
     <!-- 其他自定义SQL -->
+
+    <!-- 判断微服务的名字唯一性 -->
+    <select id="uniquenessApplicationName" resultMap="applicationResultMap" parameterType="java.lang.String">
+        select
+        <include refid="table_columns"/>
+        from application
+        where application_name_chinese = #{value}
+    </select>
 </mapper>

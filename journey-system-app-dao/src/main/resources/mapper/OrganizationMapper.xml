@@ -189,4 +189,12 @@
     </select>
 
     <!-- 其他自定义SQL -->
+
+    <!-- 判断微服务下的表名唯一性 -->
+    <select id="uniquenessOrganizationName" resultMap="organizationResultMap" parameterType="com.cmrh.journey.system.pojo.domain.Organization">
+        select
+        <include refid="table_columns"/>
+        from organization
+        where application_id = #{applicationId} and organization_data_name = #{organizationDataName}
+    </select>
 </mapper>

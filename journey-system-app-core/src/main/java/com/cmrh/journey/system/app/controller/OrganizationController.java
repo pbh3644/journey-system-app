@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 public class OrganizationController extends WebContoller {
 
     @Resource
-    OrganizationService organizationService;
+    private OrganizationService organizationService;
 
     /**
      * 查询分页列表测试
