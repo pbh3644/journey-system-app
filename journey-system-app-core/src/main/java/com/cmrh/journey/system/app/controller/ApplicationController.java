@@ -2,7 +2,6 @@ package com.cmrh.journey.system.app.controller;
 
 import com.cmrh.journey.system.app.controller.web.WebContoller;
 import com.cmrh.journey.system.app.service.ApplicationService;
-import com.cmrh.journey.system.common.base.pojo.BaseEntity;
 import com.cmrh.journey.system.common.base.pojo.Page;
 import com.cmrh.journey.system.common.result.JourneySystemAppResult;
 import com.cmrh.journey.system.pojo.domain.Application;
@@ -38,17 +37,13 @@ public class ApplicationController extends WebContoller {
         application.setSRemark("测试数据444....");*/
         Application application = applicationService.get(1);
         Page<Application> page = applicationService.findPage(application);
-        for (Application application1 : page.getRows()) {
-            BaseEntity baseEntity = application1;
-            System.out.println(baseEntity.toString() + "==============");
-        }
         return JourneySystemAppResult.ok(page);
     }
 
     /**
      * 根据查询条件分页列表
      */
-    @PostMapping("findPage")
+    @PostMapping("find_Page")
     public JourneySystemAppResult findPage(@RequestBody Application application) {
         Page<Application> page = applicationService.findPage(application);
         return JourneySystemAppResult.ok(page);
@@ -57,7 +52,7 @@ public class ApplicationController extends WebContoller {
     /**
      * 增加微服务信息
      */
-    @PostMapping("add")
+    @PutMapping("add")
     public JourneySystemAppResult add(@RequestBody Application application) {
         application.setAddTime(application.currentTime());
         application.setAddUserId(123456L);
@@ -68,7 +63,7 @@ public class ApplicationController extends WebContoller {
     /**
      * 修改微服务信息
      */
-    @PostMapping("updata")
+    @PutMapping("updata")
     public JourneySystemAppResult updata(@RequestBody Application application) {
         application.setUpdateTime(application.currentTime());
         application.setUpdateUserId(123456L);

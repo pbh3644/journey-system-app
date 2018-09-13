@@ -1,5 +1,6 @@
 package com.cmrh.journey.system.common.utils.util;
 
+import com.cmrh.journey.system.common.utils.constant.CommonConstants;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -46,6 +47,12 @@ public class RedisUtils {
      * 雪花算法获取数字ID
      */
     public static Long nextId(Class cla) {
+        String simpleName = cla.getSimpleName();
+        //如果是Application或者是ORGANIZATION_BAEN_NAME直接返回NULL这两个表用自增长ID
+        if (CommonConstants.APPLICATION_CLASS_NAME.equals(simpleName) || CommonConstants.ORGANIZATION_CLASS_NAME.equals(simpleName)) {
+            return null;
+        }
+
         Map<String, Object> map = operations.get(applicationName);
         if (map == null) {
             log.error("获取nextId的时候redis缓存失效，请查看问题排查");
@@ -55,7 +62,6 @@ public class RedisUtils {
             return new SnowflakeIdWorker(applicationId, tableId).nextId();
         } else {
             applicationId = applicationId != 0 ? applicationId : Integer.parseInt(map.get("applicationId").toString());
-            String simpleName = cla.getSimpleName();
             int organizationId = Integer.parseInt(map.get(simpleName).toString());
             tableId = tableId < organizationId ? organizationId : tableId;
             return new SnowflakeIdWorker(applicationId, organizationId).nextId();

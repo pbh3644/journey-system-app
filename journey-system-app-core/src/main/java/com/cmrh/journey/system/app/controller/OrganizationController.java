@@ -35,7 +35,7 @@ public class OrganizationController extends WebContoller {
     /**
      * 根据查询条件分页列表
      */
-    @PostMapping("findPage")
+    @PostMapping("find_page")
     public JourneySystemAppResult findPage(@RequestBody Organization organization) {
         Page<Organization> page = organizationService.findPage(organization);
         return JourneySystemAppResult.ok(page);
@@ -44,7 +44,7 @@ public class OrganizationController extends WebContoller {
     /**
      * 增加数据库表信息
      */
-    @PostMapping("add")
+    @PutMapping("add")
     public JourneySystemAppResult add(@RequestBody Organization organization) {
         organization.setAddTime(organization.currentTime());
         organization.setAddUserId(123456L);
@@ -55,7 +55,7 @@ public class OrganizationController extends WebContoller {
     /**
      * 修改数据库表信息
      */
-    @PostMapping("updata")
+    @PutMapping("updata")
     public JourneySystemAppResult updata(@RequestBody Organization organization) {
         organization.setUpdateTime(organization.currentTime());
         organization.setUpdateUserId(123456L);

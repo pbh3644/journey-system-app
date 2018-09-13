@@ -17,4 +17,12 @@ public class CommonConstants {
     public static final Integer EX_CLIENT_INVALID_CODE = 40301;
     public static final Integer EX_CLIENT_FORBIDDEN_CODE = 40331;
     public static final Integer EX_OTHER_CODE = 500;
+
+
+    /**
+     * Application和Organizations类ID自增长
+     * 不需要雪花ID生成，方便后期查看
+     */
+    public static final String APPLICATION_CLASS_NAME = "Application";
+    public static final String ORGANIZATION_CLASS_NAME = "Organizations";
 }
