@@ -43,6 +43,7 @@
         <commons-io.version>1.3.2</commons-io.version>
         <fastjson.version>1.2.49</fastjson.version>
         <admin.version>2.0.2</admin.version>
+        <swagger2.version>2.9.2</swagger2.version>
     </properties>
 
     <dependencyManagement>
@@ -193,6 +194,19 @@
                 <artifactId>spring-boot-admin-starter-client</artifactId>
                 <version>${admin.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger2.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

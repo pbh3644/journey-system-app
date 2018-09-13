@@ -10,7 +10,7 @@
 
         <!-- 公共MyMapper基类 -->
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="com.cmrh.journey.system.generator.MyMapper"/>
+            <property name="mappers" value="com.pbh.journey.system.generator.MyMapper"/>
         </plugin>
 
         <!-- 数据源配置 -->
@@ -21,13 +21,13 @@
         </jdbcConnection>
 
         <!-- 对于生成的pojo所在包 -->
-        <javaModelGenerator targetPackage="com.cmrh.journey.system.pojo" targetProject="src/main/java"/>
+        <javaModelGenerator targetPackage="com.pbh.journey.system.pojo" targetProject="src/main/java"/>
 
         <!-- 对于生成的mapper所在目录 -->
         <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
 
         <!-- 配置mapper对应的java映射 -->
-        <javaClientGenerator targetPackage="com.cmrh.journey.system.app.mapper" targetProject="src/main/java"
+        <javaClientGenerator targetPackage="com.pbh.journey.system.app.mapper" targetProject="src/main/java"
                              type="XMLMAPPER"/>
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cmrh.journey.system.app.mapper.OrganizationMapper">
-    <resultMap type="com.cmrh.journey.system.pojo.domain.Organization" id="organizationResultMap">
+<mapper namespace="com.pbh.journey.system.app.mapper.OrganizationMapper">
+    <resultMap type="com.pbh.journey.system.pojo.domain.Organization" id="organizationResultMap">
         <result property="id" column="ID"/>
         <result property="applicationId" column="APPLICATION_ID"/>
         <result property="organizationDataName" column="ORGANIZATION_DATA_NAME"/>
@@ -61,7 +61,7 @@
         </trim>
     </sql>
 
-    <insert id="insert" parameterType="com.cmrh.journey.system.pojo.domain.Organization">
+    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.Organization">
         insert into organization(
         <include refid="table_columns"/>
         )
@@ -110,7 +110,7 @@
         where id = #{id}
     </update>
 
-    <update id="update" parameterType="com.cmrh.journey.system.pojo.domain.Organization">
+    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.Organization">
         update organization
         <trim prefix="set" suffixOverrides=",">
             <if test="applicationId != null and applicationId != 0">APPLICATION_ID = #{applicationId},</if>
@@ -191,7 +191,7 @@
     <!-- 其他自定义SQL -->
 
     <!-- 判断微服务下的表名唯一性 -->
-    <select id="uniquenessOrganizationName" resultMap="organizationResultMap" parameterType="com.cmrh.journey.system.pojo.domain.Organization">
+    <select id="uniquenessOrganizationName" resultMap="organizationResultMap" parameterType="com.pbh.journey.system.pojo.domain.Organization">
         select
         <include refid="table_columns"/>
         from organization

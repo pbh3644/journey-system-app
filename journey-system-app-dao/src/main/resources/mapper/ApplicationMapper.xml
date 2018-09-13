@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cmrh.journey.system.app.mapper.ApplicationMapper">
-    <resultMap type="com.cmrh.journey.system.pojo.domain.Application" id="applicationResultMap">
+<mapper namespace="com.pbh.journey.system.app.mapper.ApplicationMapper">
+    <resultMap type="com.pbh.journey.system.pojo.domain.Application" id="applicationResultMap">
         <result property="id" column="ID"/>
         <result property="applicationNameEnglish" column="APPLICATION_NAME_ENGLISH"/>
         <result property="applicationNameChinese" column="APPLICATION_NAME_CHINESE"/>
@@ -67,7 +67,7 @@
         </trim>
     </sql>
 
-    <insert id="insert" parameterType="com.cmrh.journey.system.pojo.domain.Application">
+    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.Application">
         insert into application(
         <include refid="table_columns"/>
         )
@@ -117,7 +117,7 @@
         where id = #{id}
     </update>
 
-    <update id="update" parameterType="com.cmrh.journey.system.pojo.domain.Application">
+    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.Application">
         update application
         <trim prefix="set" suffixOverrides=",">
             <if test="applicationNameEnglish != null and applicationNameEnglish != ''">APPLICATION_NAME_ENGLISH =
