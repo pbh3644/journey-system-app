@@ -4,8 +4,7 @@ package com.pbh.journey.system.app.config.redis;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +25,8 @@ import redis.clients.jedis.JedisPoolConfig;
  **/
 @Configuration
 @EnableCaching
+@Slf4j
 public class RedisConfig {
-
-    private final static Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 
     @Bean
     @ConfigurationProperties(prefix = "spring.redis.pool")
@@ -44,7 +42,7 @@ public class RedisConfig {
         JedisPoolConfig redisConfig = getRedisConfig();
         JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().usePooling().poolConfig(redisConfig).build();
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
-        logger.info("JedisConnectionFactory bean init success.");
+        log.info("JedisConnectionFactory bean init success.");
         return jedisConnectionFactory;
     }
 
