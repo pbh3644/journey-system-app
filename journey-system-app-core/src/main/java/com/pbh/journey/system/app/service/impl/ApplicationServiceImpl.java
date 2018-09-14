@@ -2,7 +2,7 @@ package com.pbh.journey.system.app.service.impl;
 
 import com.pbh.journey.system.app.mapper.ApplicationMapper;
 import com.pbh.journey.system.app.service.ApplicationService;
-import com.pbh.journey.system.common.base.service.serviceimpl.BaseServiceImpl;
+import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
 import com.pbh.journey.system.pojo.domain.Application;
 import lombok.extern.slf4j.Slf4j;

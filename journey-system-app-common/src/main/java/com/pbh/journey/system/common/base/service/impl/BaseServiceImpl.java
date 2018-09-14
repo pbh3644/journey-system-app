@@ -1,4 +1,4 @@
-package com.pbh.journey.system.common.base.service.serviceimpl;
+package com.pbh.journey.system.common.base.service.impl;
 
 import com.pbh.journey.system.common.base.mapper.BaseMapper;
 import com.pbh.journey.system.common.base.pojo.BaseEntity;

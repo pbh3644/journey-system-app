@@ -8,14 +8,14 @@ import java.util.Date;
 
 /**
  * @author pangbohuan
- * @description Token工具类
+ * @description JWT工具类
  * @date 2018-09-05 09:36
  **/
 public class JwtTokenUtils {
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    private static final String SECRET = "jwtsecretdemo";
+    private static final String SECRET = "jwtSecret";
     private static final String ISS = "echisan";
 
     /**
@@ -45,7 +45,7 @@ public class JwtTokenUtils {
     /**
      * 从token中获取用户名
      */
-    public static String getUsername(String token) {
+    public static String getUserName(String token) {
         return getTokenBody(token).getSubject();
     }
 
