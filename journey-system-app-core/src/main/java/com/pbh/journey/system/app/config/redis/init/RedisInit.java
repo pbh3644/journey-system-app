@@ -57,11 +57,6 @@ public class RedisInit implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         ValueOperations<String, Map<String, Object>> operations = redisTemplate.opsForValue();
         initApplication(operations);
-
-        //并把redisTemplate注入到RedisUtils中目的为了微服务共享
-        RedisUtils.applicationName = applicationName;
-        RedisUtils.operations = operations;
-        RedisUtils.redisTemplate = redisTemplate;
         log.info("初始化成功RedisUtils中的组件成功");
     }
 
@@ -116,5 +111,9 @@ public class RedisInit implements ApplicationRunner {
             operations.set(applicationNameEnglish, applicationInfo);
             log.info(applicationNameEnglish + ":微服务相关信息加入redis成功:" + applicationInfo.toString());
         }
+        //并把redisTemplate注入到RedisUtils中目的为了微服务共享
+        RedisUtils.applicationName = applicationName;
+        RedisUtils.operations = operations;
+        RedisUtils.redisTemplate = redisTemplate;
     }
 }
