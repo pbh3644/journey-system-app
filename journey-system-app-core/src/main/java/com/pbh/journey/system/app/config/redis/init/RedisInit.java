@@ -25,7 +25,6 @@ import java.util.Map;
  * @Date：2018-09-09 11:16
  * @Description：初始化redis缓存
  */
-@Order(1)
 @Configuration
 @Slf4j
 public class RedisInit implements ApplicationRunner {
