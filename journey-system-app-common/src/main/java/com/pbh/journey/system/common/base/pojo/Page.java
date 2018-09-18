@@ -1,7 +1,7 @@
 package com.pbh.journey.system.common.base.pojo;
 
-import com.pbh.journey.system.common.utils.util.StringUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pbh.journey.system.common.utils.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.List;

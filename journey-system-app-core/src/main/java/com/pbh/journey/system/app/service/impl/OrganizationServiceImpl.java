@@ -31,7 +31,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
         String organizationDataName = organization.getOrganizationDataName();
         if (organizationMapper.uniquenessOrganizationName(organization) != null) {
             log.error("增加表失败！这个微服务已存在相同的表名,OrganizationServiceImpl.33行。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-            new BussinessException("增加表失败！这个微服务已存在相同的表名,不允许增加.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+            throw new BussinessException("增加表失败！这个微服务已存在相同的表名,不允许增加.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
         }
         super.insert(organization);
         log.info("增加表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
@@ -44,7 +44,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
                 Long applicationId = organization.getApplicationId();
                 String organizationDataName = organization.getOrganizationDataName();
                 log.error("批量增加表失败！这个微服务下已经存在有这个表名字。OrganizationServiceImpl.46行。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-                new BussinessException("批量增加表失败！这个微服务下已经存在有这个表名字，不允许批量增加。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+                throw new BussinessException("批量增加表失败！这个微服务下已经存在有这个表名字，不允许批量增加。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
             }
         }
         super.insertBatch(list);
@@ -57,7 +57,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
         String organizationDataName = organization.getOrganizationDataName();
         if (organizationMapper.uniquenessOrganizationName(organization) != null) {
             log.error("修改表失败！这个微服务已存在相同的表名,OrganizationServiceImpl.59行。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-            new BussinessException("修改表失败！这个微服务已存在相同的表名,不允许修改.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+            throw new BussinessException("修改表失败！这个微服务已存在相同的表名,不允许修改.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
         }
         super.update(organization);
         log.info("修改表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
@@ -70,7 +70,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
                 Long applicationId = organization.getApplicationId();
                 String organizationDataName = organization.getOrganizationDataName();
                 log.error("批量修改表失败！这个微服务下已经存在有这个表名字。OrganizationServiceImpl.72行。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-                new BussinessException("批量修改表失败！这个微服务下已经存在有这个表名字，不允许批量修改。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+                throw new BussinessException("批量修改表失败！这个微服务下已经存在有这个表名字，不允许批量修改。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
             }
         }
         super.updateBatch(list);

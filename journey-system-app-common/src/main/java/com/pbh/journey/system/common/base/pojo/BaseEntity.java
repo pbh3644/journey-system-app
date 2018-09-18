@@ -1,9 +1,10 @@
 package com.pbh.journey.system.common.base.pojo;
 
-import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.RedisUtils;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
@@ -206,6 +207,9 @@ public abstract class BaseEntity<T> implements Serializable {
      * 保存数据库前预更新
      */
     public void preUpdate() {
+        if (this.id == null) {
+            throw new BussinessException("修改失败！！！修改ID不允许为空");
+        }
     }
 
     /**

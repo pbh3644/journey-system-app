@@ -8,6 +8,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+/**
+ * @author pangbohuan
+ * @description
+ * @date 2018-09-17 15:36
+ **/
 
 /**
  * @author pangbohuan
@@ -28,23 +33,21 @@ public class LogServiceTakeTime {
     @Around("performance()")
     public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        //记录起始时间
+        /**记录起始时间**/
         long begin = System.currentTimeMillis();
         Object result = "";
+
         /** 执行目标方法 */
-        try {
-            result = joinPoint.proceed();
-        } catch (Exception e) {
-            log.error("日志记录发生错误, errorMessage: {}", e.getMessage());
-        } finally {
-            /** 记录操作时间 */
-            long endTime = System.currentTimeMillis() - begin;
-            if (endTime > LONGEST) {
-                log.error("性能低下Service执行时间为: {}毫秒", endTime);
-            } else {
-                log.info("Service执行时间为: {}毫秒", endTime);
-            }
+        result = joinPoint.proceed();
+
+        /** 记录操作时间 */
+        long endTime = System.currentTimeMillis() - begin;
+        if (endTime > LONGEST) {
+            log.error("性能低下Service执行时间为: {}毫秒", endTime);
+        } else {
+            log.info("Service执行时间为: {}毫秒", endTime);
         }
+
         return result;
     }
 

@@ -14,6 +14,8 @@
         <module>journey-system-app-core</module>
         <module>journey-system-app-dao</module>
         <module>journey-system-app-job</module>
+        <module>journey-system-app-aop</module>
+        <module>journey-system-app-security</module>
     </modules>
 
 
@@ -48,6 +50,18 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>pbh</groupId>
+                <artifactId>journey-system-app-aop</artifactId>
+                <version>0.0.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>pbh</groupId>
+                <artifactId>journey-system-app-security</artifactId>
+                <version>0.0.1</version>
+            </dependency>
 
             <dependency>
                 <groupId>pbh</groupId>
