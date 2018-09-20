@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Author：pbh
@@ -76,20 +77,34 @@ public class ApplicationController extends WebContoller {
      */
     @PutMapping("add")
     public JourneySystemAppResult add(@RequestBody Application application) {
-        application.setAddTime(application.currentTime());
-        application.setAddUserId(123456L);
         applicationService.insert(application);
+        return JourneySystemAppResult.ok();
+    }
+
+    /**
+     * 批量增加微服务信息
+     */
+    @PutMapping("add_batch")
+    public JourneySystemAppResult addBatch(@RequestBody List<Application> list) {
+        applicationService.insertBatch(list);
         return JourneySystemAppResult.ok();
     }
 
     /**
      * 修改微服务信息
      */
-    @PutMapping("updata")
-    public JourneySystemAppResult updata(@RequestBody Application application) {
-        application.setUpdateTime(application.currentTime());
-        application.setUpdateUserId(123456L);
+    @PutMapping("change")
+    public JourneySystemAppResult change(@RequestBody Application application) {
         applicationService.update(application);
+        return JourneySystemAppResult.ok();
+    }
+
+    /**
+     * 批量修改微服务信息
+     */
+    @PutMapping("change_batch")
+    public JourneySystemAppResult changeBatch(@RequestBody List<Application> list) {
+        applicationService.updateBatch(list);
         return JourneySystemAppResult.ok();
     }
 
@@ -111,5 +126,4 @@ public class ApplicationController extends WebContoller {
         Application application = applicationService.get(applicationId);
         return JourneySystemAppResult.ok(application);
     }
-
 }

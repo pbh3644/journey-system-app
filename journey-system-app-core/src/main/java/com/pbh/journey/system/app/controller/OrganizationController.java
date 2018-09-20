@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Author：pbh
@@ -30,7 +31,6 @@ public class OrganizationController extends WebContoller {
     @GetMapping("listTest")
     public JourneySystemAppResult listTest() {
         Organization organization = new Organization();
-        organization.setPage(new Page<>());
         Page<Organization> page = organizationService.findPage(organization);
         return JourneySystemAppResult.ok(page);
     }
@@ -49,22 +49,37 @@ public class OrganizationController extends WebContoller {
      */
     @PutMapping("add")
     public JourneySystemAppResult add(@RequestBody Organization organization) {
-        organization.setAddTime(organization.currentTime());
-        organization.setAddUserId(123456L);
         organizationService.insert(organization);
+        return JourneySystemAppResult.ok();
+    }
+
+    /**
+     * 批量增加数据库表信息
+     */
+    @PutMapping("add_batch")
+    public JourneySystemAppResult addBatch(@RequestBody List<Organization> list) {
+        organizationService.insertBatch(list);
         return JourneySystemAppResult.ok();
     }
 
     /**
      * 修改数据库表信息
      */
-    @PutMapping("updata")
-    public JourneySystemAppResult updata(@RequestBody Organization organization) {
-        organization.setUpdateTime(organization.currentTime());
-        organization.setUpdateUserId(123456L);
+    @PutMapping("change")
+    public JourneySystemAppResult change(@RequestBody Organization organization) {
         organizationService.update(organization);
         return JourneySystemAppResult.ok();
     }
+
+    /**
+     * 批量修改数据库表信息
+     */
+    @PutMapping("change_batch")
+    public JourneySystemAppResult changeBatch(@RequestBody List<Organization> list) {
+        organizationService.updateBatch(list);
+        return JourneySystemAppResult.ok();
+    }
+
 
     /**
      * 删除数据库表信息
