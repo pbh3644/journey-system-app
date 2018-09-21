@@ -107,7 +107,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     @Override
     public void save(T entity) {
         int result = 0;
-        if (((BaseEntity) entity).isNewRecord()) {
+        if (((BaseEntity) entity).newIsRecord()) {
             ((BaseEntity) entity).preInsert();
             result = dao.insert(entity);
         } else {

@@ -4,11 +4,11 @@ import com.pbh.journey.system.app.controller.web.WebContoller;
 import com.pbh.journey.system.app.service.ApplicationService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.result.JourneySystemAppResult;
+import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.pbh.journey.system.pojo.domain.Application;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,9 +28,6 @@ public class ApplicationController extends WebContoller {
     @Resource
     private ApplicationService applicationService;
 
-    @Resource
-    private RedisTemplate redisTemplate;
-
     /**
      * 查询分页列表测试
      */
@@ -44,22 +41,17 @@ public class ApplicationController extends WebContoller {
         application.setApplicationNameEnglish("test44444");
         application.setApplicationIp(IpUtils.getRealIP(request));
         application.setSRemark("测试数据444....");*/
-        /*Page<Application> page = null;
-        redisTemplate.opsForValue();
-        ValueOperations<String, Page> valueOperations = redisTemplate.opsForValue();
-        Boolean key = redisTemplate.hasKey("key1");
-        if (key) {
-            page = valueOperations.get("key1");
+        Page<Application> page;
+
+        if (RedisUtils.hasKey("key10")) {
+            page = (Page<Application>) RedisUtils.get("key10");
             log.info("=======redis==========");
         } else {
             Application application = applicationService.get(1);
             page = applicationService.findPage(application);
-            valueOperations.set("key1", page);
+            RedisUtils.set("key10", page);
             log.info("=======mysql==========");
-        }*/
-
-        Application application = applicationService.get(1);
-        Page<Application> page = applicationService.findPage(application);
+        }
         return JourneySystemAppResult.ok(page);
     }
 

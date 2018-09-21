@@ -26,16 +26,6 @@ public class OrganizationController extends WebContoller {
     private OrganizationService organizationService;
 
     /**
-     * 查询分页列表测试
-     */
-    @GetMapping("listTest")
-    public JourneySystemAppResult listTest() {
-        Organization organization = new Organization();
-        Page<Organization> page = organizationService.findPage(organization);
-        return JourneySystemAppResult.ok(page);
-    }
-
-    /**
      * 根据查询条件分页列表
      */
     @PostMapping("find_page")

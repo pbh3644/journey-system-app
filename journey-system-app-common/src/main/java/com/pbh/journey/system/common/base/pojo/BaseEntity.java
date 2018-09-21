@@ -153,8 +153,8 @@ public abstract class BaseEntity<T> implements Serializable {
      * @return
      */
     @JsonIgnore
-    public boolean isNewRecord() {
-        return newRecord || isIdBlank();
+    public boolean newIsRecord() {
+        return newRecord || idIsBlank();
     }
 
     /**
@@ -162,7 +162,7 @@ public abstract class BaseEntity<T> implements Serializable {
      *
      * @return
      */
-    private boolean isIdBlank() {
+    private boolean idIsBlank() {
         return id == 0 || StringUtils.isBlank(id + "");
     }
 
