@@ -26,6 +26,14 @@ public class OrganizationController extends WebContoller {
     private OrganizationService organizationService;
 
     /**
+     * 查询所有列表忽视是否被逻辑删除
+     */
+    @GetMapping("find_all")
+    public JourneySystemAppResult findAll() {
+        return JourneySystemAppResult.ok(organizationService.findAll());
+    }
+
+    /**
      * 根据查询条件分页列表
      */
     @PostMapping("find_page")
@@ -72,21 +80,40 @@ public class OrganizationController extends WebContoller {
 
 
     /**
-     * 删除数据库表信息
+     * 物理删除数据库表信息
      */
     @DeleteMapping("delete")
-    public JourneySystemAppResult delete(long organizationId) {
-        organizationService.delete(organizationId);
+    public JourneySystemAppResult delete(long id) {
+        organizationService.delete(id);
         return JourneySystemAppResult.ok();
     }
+
+    /**
+     * 逻辑删除数据库表信息
+     */
+    @DeleteMapping("delete_logic")
+    public JourneySystemAppResult deleteLogic(long id) {
+        organizationService.deleteLogic(id);
+        return JourneySystemAppResult.ok();
+    }
+
+    /**
+     * 逻辑删除数据库表信息
+     */
+    @DeleteMapping("delete_batch")
+    public JourneySystemAppResult deleteBatch(long[] ids) {
+        organizationService.deleteBatch(ids);
+        return JourneySystemAppResult.ok();
+    }
+
 
     /**
      * 根据数据库表ID获取数据库表信息
      */
     @ApiOperation(value = "根据organizationId查询表信息", notes = "查询数据库中某个表的信息")
     @GetMapping("get")
-    public JourneySystemAppResult get(long organizationId) {
-        Organization organization = organizationService.get(organizationId);
+    public JourneySystemAppResult get(long id) {
+        Organization organization = organizationService.get(id);
         return JourneySystemAppResult.ok(organization);
     }
 }

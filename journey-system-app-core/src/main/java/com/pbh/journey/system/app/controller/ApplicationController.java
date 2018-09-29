@@ -2,9 +2,7 @@ package com.pbh.journey.system.app.controller;
 
 import com.pbh.journey.system.app.controller.web.WebContoller;
 import com.pbh.journey.system.app.service.ApplicationService;
-import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.result.JourneySystemAppResult;
-import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.pbh.journey.system.pojo.domain.Application;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,30 +27,11 @@ public class ApplicationController extends WebContoller {
     private ApplicationService applicationService;
 
     /**
-     * 查询分页列表测试
+     * 查询所有列表忽视是否被逻辑删除
      */
-    @GetMapping("listTest")
-    public JourneySystemAppResult listTest() {
-       /* Application application = new Application();
-        application.setId(3L);
-        application.setSAddTime(application.currentTime());
-        application.setSAddUserId(123456L);
-        application.setApplicationNameChinese("测试数据444");
-        application.setApplicationNameEnglish("test44444");
-        application.setApplicationIp(IpUtils.getRealIP(request));
-        application.setSRemark("测试数据444....");*/
-        Page<Application> page;
-
-        if (RedisUtils.hasKey("key10")) {
-            page = (Page<Application>) RedisUtils.get("key10");
-            log.info("=======redis==========");
-        } else {
-            Application application = applicationService.get(1);
-            page = applicationService.findPage(application);
-            RedisUtils.set("key10", page);
-            log.info("=======mysql==========");
-        }
-        return JourneySystemAppResult.ok(page);
+    @GetMapping("find_all")
+    public JourneySystemAppResult findAll() {
+        return JourneySystemAppResult.ok(applicationService.findAll());
     }
 
     /**
@@ -60,8 +39,7 @@ public class ApplicationController extends WebContoller {
      */
     @PostMapping("find_Page")
     public JourneySystemAppResult findPage(@RequestBody Application application) {
-        Page<Application> page = applicationService.findPage(application);
-        return JourneySystemAppResult.ok(page);
+        return JourneySystemAppResult.ok(applicationService.findPage(application));
     }
 
     /**
@@ -70,7 +48,7 @@ public class ApplicationController extends WebContoller {
     @PutMapping("add")
     public JourneySystemAppResult add(@RequestBody Application application) {
         applicationService.insert(application);
-        return JourneySystemAppResult.ok();
+        return JourneySystemAppResult.ok(application);
     }
 
     /**
@@ -85,37 +63,55 @@ public class ApplicationController extends WebContoller {
     /**
      * 修改微服务信息
      */
-    @PutMapping("change")
+    @PostMapping("change")
     public JourneySystemAppResult change(@RequestBody Application application) {
         applicationService.update(application);
-        return JourneySystemAppResult.ok();
+        return JourneySystemAppResult.ok(application);
     }
 
     /**
      * 批量修改微服务信息
      */
-    @PutMapping("change_batch")
+    @PostMapping("change_batch")
     public JourneySystemAppResult changeBatch(@RequestBody List<Application> list) {
         applicationService.updateBatch(list);
         return JourneySystemAppResult.ok();
     }
 
     /**
-     * 删除服务信息
+     * 物理删除服务信息
      */
     @DeleteMapping("delete")
-    public JourneySystemAppResult delete(long applicationId) {
-        applicationService.delete(applicationId);
+    public JourneySystemAppResult delete(long id) {
+        applicationService.delete(id);
+        return JourneySystemAppResult.ok();
+    }
+
+    /**
+     * 逻辑删除服务信息
+     */
+    @DeleteMapping("delete_logic")
+    public JourneySystemAppResult deleteLogic(long id) {
+        applicationService.deleteLogic(id);
+        return JourneySystemAppResult.ok();
+    }
+
+    /**
+     * 逻辑删除服务信息
+     */
+    @DeleteMapping("delete_batch")
+    public JourneySystemAppResult deleteBatch(long[] ids) {
+        applicationService.deleteBatch(ids);
         return JourneySystemAppResult.ok();
     }
 
     /**
      * 根据服务ID获取服务信息
      */
-    @ApiOperation(value = "根据applicationId查询微服务信息", notes = "查询数据库中某个微服务的信息")
     @GetMapping("get")
-    public JourneySystemAppResult get(long applicationId) {
-        Application application = applicationService.get(applicationId);
+    @ApiOperation(value = "根据applicationId查询微服务信息", notes = "查询数据库中某个微服务的信息")
+    public JourneySystemAppResult get(long id) {
+        Application application = applicationService.get(id);
         return JourneySystemAppResult.ok(application);
     }
 }

@@ -23,7 +23,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(value = BussinessException.class)
     public JourneySystemAppResult businessExceptionDispose(BussinessException ex) {
         String errMessage = ex.getMessage();
-        log.warn(errMessage, ex);
-        return JourneySystemAppResult.errorException(errMessage);
+        log.error(errMessage, ex);
+        return JourneySystemAppResult.errorMsg(errMessage);
     }
 }

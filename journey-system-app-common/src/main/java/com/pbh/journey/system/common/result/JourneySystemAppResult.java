@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * @date 2018-07-25 17:40
  **/
 @Data
-public class JourneySystemAppResult {
+public class JourneySystemAppResult implements Serializable {
 
     /**
      * 定义jackson对象
@@ -52,19 +53,19 @@ public class JourneySystemAppResult {
     }
 
     public static JourneySystemAppResult errorMsg(String msg) {
-        return new JourneySystemAppResult(500, msg, null);
+        return new JourneySystemAppResult(ResponseStatusCode.BUSINESS_EXCEPTIONS, msg, null);
     }
 
     public static JourneySystemAppResult errorMap(String msg, Object data) {
-        return new JourneySystemAppResult(501, msg, data);
+        return new JourneySystemAppResult(ResponseStatusCode.BUSINESS_EXCEPTIONS, msg, data);
     }
 
     public static JourneySystemAppResult errorTokenMsg(String msg) {
-        return new JourneySystemAppResult(502, msg, null);
+        return new JourneySystemAppResult(ResponseStatusCode.TOKEN_EXCEPTION, msg, null);
     }
 
     public static JourneySystemAppResult errorException(String msg) {
-        return new JourneySystemAppResult(555, msg, null);
+        return new JourneySystemAppResult(ResponseStatusCode.SYSTEM_EXCEPTION, msg, null);
     }
 
 
@@ -76,7 +77,7 @@ public class JourneySystemAppResult {
     }
 
     public JourneySystemAppResult(Object data) {
-        this.status = 200;
+        this.status = ResponseStatusCode.SUCCEED;
         this.msg = "OK";
         this.data = data;
         this.code = "Y";
