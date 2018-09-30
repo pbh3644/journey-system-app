@@ -120,6 +120,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @CacheEvict(value = "OrganizationServiceImpl", key = "#id")
     public void delete(long id) {
         super.delete(id);
+        log.info("物理删除表成功：这个表的id为：" + id);
     }
 
     /**
@@ -129,6 +130,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @CacheEvict(value = "OrganizationServiceImpl", key = "#id")
     public void deleteLogic(long id) {
         super.deleteLogic(id);
+        log.info("逻辑删除表成功：这个表的id为：" + id);
     }
 
     /**
@@ -138,6 +140,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @CacheEvict(value = "OrganizationServiceImpl", allEntries = true)
     public void deleteBatch(long[] ids) {
         super.deleteBatch(ids);
+        log.info("批量逻辑删除表成功：这批表的id为：" + ids);
     }
 
 

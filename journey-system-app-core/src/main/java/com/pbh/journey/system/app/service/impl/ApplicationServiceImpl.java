@@ -128,6 +128,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @CacheEvict(value = "ApplicationServiceImpl", key = "#id")
     public void delete(long id) {
         super.delete(id);
+        log.info("物理删除微服务成功：微服务的id为：" + id);
     }
 
     /**
@@ -137,6 +138,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @CacheEvict(value = "ApplicationServiceImpl", key = "#id")
     public void deleteLogic(long id) {
         super.deleteLogic(id);
+        log.info("逻辑删除微服务成功：微服务的id为：" + id);
     }
 
     /**
@@ -146,6 +148,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @CacheEvict(value = "ApplicationServiceImpl", allEntries = true)
     public void deleteBatch(long[] ids) {
         super.deleteBatch(ids);
+        log.info("批量逻辑删除微服务成功：这批微服务的id为：" + ids);
     }
 
 
