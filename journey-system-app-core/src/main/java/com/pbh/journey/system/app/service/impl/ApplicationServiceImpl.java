@@ -25,7 +25,6 @@ import java.util.List;
  */
 @Service("applicationService")
 @Slf4j
-@EnableCaching
 public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, Application> implements ApplicationService {
 
     @Resource

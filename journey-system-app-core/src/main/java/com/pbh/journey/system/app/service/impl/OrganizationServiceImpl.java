@@ -25,7 +25,6 @@ import java.util.List;
  */
 @Service("organizationService")
 @Slf4j
-@EnableCaching
 public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper, Organization> implements OrganizationService {
 
     @Resource

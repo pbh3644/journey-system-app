@@ -23,9 +23,14 @@
             <artifactId>journey-system-app-job</artifactId>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>pbh</groupId>
             <artifactId>journey-system-app-dao</artifactId>
+        </dependency>-->
+
+        <dependency>
+            <groupId>pbh</groupId>
+            <artifactId>journey-system-app-security</artifactId>
         </dependency>
 
         <dependency>
