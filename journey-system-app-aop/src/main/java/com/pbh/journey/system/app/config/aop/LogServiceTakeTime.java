@@ -37,7 +37,7 @@ public class LogServiceTakeTime {
         long begin = System.currentTimeMillis();
         Object result = "";
 
-        /** 执行目标方法 */
+        /** 执行目标方法*/
         result = joinPoint.proceed();
 
         /** 记录操作时间 */
