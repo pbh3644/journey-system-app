@@ -12,7 +12,7 @@
     <artifactId>journey-system-app-security</artifactId>
 
     <dependencies>
-        
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>

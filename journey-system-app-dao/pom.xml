@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>pbh</groupId>
-            <artifactId>journey-system-app-common</artifactId>
+            <artifactId>journey-system-app-aop</artifactId>
         </dependency>
     </dependencies>
 </project>
