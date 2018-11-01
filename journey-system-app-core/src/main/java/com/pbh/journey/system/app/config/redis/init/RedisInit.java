@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
@@ -23,7 +22,7 @@ import java.util.Map;
 /**
  * @Author：pbh
  * @Date：2018-09-09 11:16
- * @Description：初始化redis缓存
+ * @Description：初始化redis缓存-加载数据
  */
 @Configuration
 @Slf4j

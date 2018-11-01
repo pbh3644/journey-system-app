@@ -26,7 +26,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @EnableCaching
 /**
  * @author pangbohuan
- * @description 后台管理系统
+ * @description 旅行后台管理系统
  */
 
 @EnableAutoConfiguration(exclude = {

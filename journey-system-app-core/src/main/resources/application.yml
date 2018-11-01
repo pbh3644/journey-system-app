@@ -1,7 +1,7 @@
 ##-----------服务基本信息配置-------------------##
 spring:
   profiles:
-    include: redis,datasource,admin,mybatis
+    include: admin,datasource,log,mybatis,redis
   application:
     #服务的名字
     name: journey-system-app
@@ -11,7 +11,7 @@ server:
   tomcat.uri-encoding: UTF-8
   port: 8090
   servlet:
-    context-path: /
+    context-path: /journey-system-app
 ##-----------关闭安全验证-------------------##
 management:
   endpoints:

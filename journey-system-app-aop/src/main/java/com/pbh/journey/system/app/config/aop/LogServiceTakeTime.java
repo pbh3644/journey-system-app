@@ -8,6 +8,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 /**
  * @author pangbohuan
  * @description
@@ -25,6 +28,9 @@ import org.springframework.stereotype.Component;
 public class LogServiceTakeTime {
 
     private static final long LONGEST = 1000 * 1;
+
+    @Resource
+    private HttpServletRequest request;
 
     @Pointcut("execution(* com.pbh.journey.system.app.controller..*.*(..))")
     public void performance() {
@@ -54,6 +60,8 @@ public class LogServiceTakeTime {
     @Before("performance()")
     public void doBefore(JoinPoint joinPoint) {
         // 接收到请求，记录请求内容
-        log.info("接受到请求，doBefore......");
+        String servletPath = request.getServletPath();
+
+        log.info("接受到请求，doBefore......!!!请求映射路径为:{}", servletPath);
     }
 }

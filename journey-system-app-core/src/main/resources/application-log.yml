@@ -1,0 +1,6 @@
+logging:
+  file: log\journeySystemApp.log
+  level:
+    root:  LEVEL
+    org.springframework:  LEVEL
+    com.pbh.journey.system.app:  LEVEL
