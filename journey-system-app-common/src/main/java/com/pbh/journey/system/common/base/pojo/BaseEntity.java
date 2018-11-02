@@ -3,7 +3,9 @@ package com.pbh.journey.system.common.base.pojo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CurrentUserUtils;
 import com.pbh.journey.system.common.utils.util.RedisUtils;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -198,9 +200,12 @@ public abstract class BaseEntity<T> implements Serializable {
 
     /**
      * 保存数据库前预处理
+     * 设置当前时间和当前操作人
      */
     public void preInsert() {
         this.id = id == null || StringUtils.isBlank(id + "") ? snowflakeId() : this.id;
+        this.setAddTime(currentTime());
+        this.setAddUserId(CurrentUserUtils.getCurrentUserId());
     }
 
     /**
@@ -210,6 +215,20 @@ public abstract class BaseEntity<T> implements Serializable {
         if (this.id == null) {
             throw new BussinessException("修改失败！！！修改ID不允许为空");
         }
+        this.setUpdateTime(currentTime());
+        this.setUpdateUserId(CurrentUserUtils.getCurrentUserId());
+    }
+
+    /**
+     * 删除数据库前预删除
+     */
+    public void preDelete() {
+        if (this.id == null) {
+            throw new BussinessException("删除失败！！！删除ID不允许为空");
+        }
+        this.setDeleteFlag(CommonConstants.DELETE_FLAG_FREAK);
+        this.setDeleteTime(currentTime());
+        this.setDeleteUserId(CurrentUserUtils.getCurrentUserId());
     }
 
     /**
@@ -331,7 +350,6 @@ public abstract class BaseEntity<T> implements Serializable {
     public Date currentTime() {
         return new Date();
     }
-
 
     @Override
     public String toString() {

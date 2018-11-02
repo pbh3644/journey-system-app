@@ -26,7 +26,7 @@ public class OrganizationController extends WebContoller {
     private OrganizationService organizationService;
 
     /**
-     * 查询所有列表忽视是否被逻辑删除
+     * 查询所有数据库表信息列表忽视是否被逻辑删除
      */
     @GetMapping("find_all")
     public JourneySystemAppResult findAll() {
@@ -34,7 +34,7 @@ public class OrganizationController extends WebContoller {
     }
 
     /**
-     * 根据查询条件分页列表
+     * 根据数据库表查询条件分页列表
      */
     @PostMapping("find_page")
     public JourneySystemAppResult findPage(@RequestBody Organization organization) {

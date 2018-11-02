@@ -1,5 +1,8 @@
 package com.pbh.journey.system.common.utils.util;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -19,10 +22,10 @@ public class IpUtils {
     /**
      * 获取请求的ip地址
      *
-     * @param request http请求
-     * @return ip地址
+     * @return String 真实ip地址
      */
-    public static String getRealIP(HttpServletRequest request) {
+    public static String getRealIP() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String ip = request.getHeader("x-forwarded-for");
         if (StringUtil.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pbh.journey.system.app.mapper.LoginLogMapper">
+    <resultMap type="com.pbh.journey.system.pojo.domain.LoginLog" id="loginLogResultMap">
+            <result property="id" column="ID"/>
+            <result property="userId" column="USER_ID"/>
+            <result property="userAccount" column="USER_ACCOUNT"/>
+            <result property="systemCode" column="SYSTEM_CODE"/>
+            <result property="addTime" column="ADD_TIME"/>
+            <result property="updateTime" column="UPDATE_TIME"/>
+            <result property="deleteTime" column="DELETE_TIME"/>
+            <result property="addUserId" column="ADD_USER_ID"/>
+            <result property="updateUserId" column="UPDATE_USER_ID"/>
+            <result property="deleteUserId" column="DELETE_USER_ID"/>
+            <result property="deleteFlag" column="DELETE_FLAG"/>
+            <result property="remark" column="REMARK"/>
+    </resultMap>
+
+    <sql id="table_columns">
+            ID,
+            USER_ID,
+            USER_ACCOUNT,
+            SYSTEM_CODE,
+            ADD_TIME,
+            UPDATE_TIME,
+            DELETE_TIME,
+            ADD_USER_ID,
+            UPDATE_USER_ID,
+            DELETE_USER_ID,
+            DELETE_FLAG,
+            REMARK
+    </sql>
+    <sql id="entity_properties">
+            #{id},
+            #{userId},
+            #{userAccount},
+            #{systemCode},
+            #{addTime},
+            #{updateTime},
+            #{deleteTime},
+            #{addUserId},
+            #{updateUserId},
+            #{deleteUserId},
+            #{deleteFlag},
+            #{remark}
+    </sql>
+
+    <!-- 使用like用法：columnName like concat('%',#{columnName},'%') -->
+    <sql id="page_where">
+        <trim prefix="where" prefixOverrides="and | or ">
+               <if test="id != null and id != 0">and ID = #{id}</if>
+               <if test="userId != null and userId != 0">and USER_ID = #{userId}</if>
+            <if test="userAccount != null and userAccount != ''">and USER_ACCOUNT = #{userAccount}</if>
+            <if test="systemCode != null and systemCode != ''">and SYSTEM_CODE = #{systemCode}</if>
+                <if test="addTime != null">and ADD_TIME = #{addTime}</if>
+                <if test="updateTime != null">and UPDATE_TIME = #{updateTime}</if>
+                <if test="deleteTime != null">and DELETE_TIME = #{deleteTime}</if>
+               <if test="addUserId != null and addUserId != 0">and ADD_USER_ID = #{addUserId}</if>
+               <if test="updateUserId != null and updateUserId != 0">and UPDATE_USER_ID = #{updateUserId}</if>
+               <if test="deleteUserId != null and deleteUserId != 0">and DELETE_USER_ID = #{deleteUserId}</if>
+                <if test="deleteFlag != null ">and DELETE_FLAG = #{deleteFlag}</if>
+            <if test="remark != null and remark != ''">and REMARK = #{remark}</if>
+        </trim>
+    </sql>
+
+    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.LoginLog">
+        insert into login_log(
+        <include refid="table_columns"/>
+        )
+        values (
+        <include refid="entity_properties"/>
+        )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into login_log(
+        <include refid="table_columns"/>
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+                    #{item.userId},
+                    #{item.userAccount},
+                    #{item.systemCode},
+                    #{item.addTime},
+                    #{item.updateTime},
+                    #{item.deleteTime},
+                    #{item.addUserId},
+                    #{item.updateUserId},
+                    #{item.deleteUserId},
+                    #{item.deleteFlag},
+                    #{item.remark}
+        )
+        </foreach>
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete from login_log
+        where id = #{id}
+    </delete>
+
+    <update id="deleteBatch">
+        update login_log set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+        #{id}
+        </foreach>
+    </update>
+
+    <update id="deleteLogic" parameterType="java.lang.Long">
+        update login_log set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        where id = #{id}
+    </update>
+
+    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.LoginLog">
+        update login_log
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userId != null and userId != 0">USER_ID = #{userId},</if>
+            <if test="userAccount != null and userAccount != ''">USER_ACCOUNT = #{userAccount},</if>
+            <if test="systemCode != null and systemCode != ''">SYSTEM_CODE = #{systemCode},</if>
+            <if test="addTime != null">and ADD_TIME = #{addTime},</if>
+            <if test="updateTime != null">and UPDATE_TIME = #{updateTime},</if>
+            <if test="deleteTime != null">and DELETE_TIME = #{deleteTime},</if>
+            <if test="addUserId != null and addUserId != 0">ADD_USER_ID = #{addUserId},</if>
+            <if test="updateUserId != null and updateUserId != 0">UPDATE_USER_ID = #{updateUserId},</if>
+            <if test="deleteUserId != null and deleteUserId != 0">DELETE_USER_ID = #{deleteUserId},</if>
+            <if test="deleteFlag != null">and DELETE_FLAG = #{deleteFlag},</if>
+            <if test="remark != null and remark != ''">REMARK = #{remark},</if>
+        </trim>
+        <where>id = #{id}</where>
+    </update>
+
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=",">
+            update login_log
+            <trim prefix="set" suffixOverrides=",">
+                        <if test="item.userId != null and item.userId != 0">USER_ID = #
+                            {item.userId},
+                        </if>
+						<if test="item.userAccount != null and item.userAccount != ''">USER_ACCOUNT = #
+                            {item.userAccount},
+                        </if>
+						<if test="item.systemCode != null and item.systemCode != ''">SYSTEM_CODE = #
+                            {item.systemCode},
+                        </if>
+                        <if test="item.addTime != null">ADD_TIME = #{item.addTime},</if>
+                        <if test="item.updateTime != null">UPDATE_TIME = #{item.updateTime},</if>
+                        <if test="item.deleteTime != null">DELETE_TIME = #{item.deleteTime},</if>
+                        <if test="item.addUserId != null and item.addUserId != 0">ADD_USER_ID = #
+                            {item.addUserId},
+                        </if>
+                        <if test="item.updateUserId != null and item.updateUserId != 0">UPDATE_USER_ID = #
+                            {item.updateUserId},
+                        </if>
+                        <if test="item.deleteUserId != null and item.deleteUserId != 0">DELETE_USER_ID = #
+                            {item.deleteUserId},
+                        </if>
+                        <if test="item.deleteFlag != null">DELETE_FLAG = #{item.deleteFlag},</if>
+						<if test="item.remark != null and item.remark != ''">REMARK = #
+                            {item.remark},
+                        </if>
+            </trim>
+            <where>id = #{item.id}</where>
+        </foreach>
+    </update>
+
+    <select id="findAll" resultMap="loginLogResultMap">
+        select
+        <include refid="table_columns"/>
+        from login_log
+        order ADD_TIME,USER_ID
+    </select>
+
+    <select id="findList" resultMap="loginLogResultMap">
+        select
+        <include refid="table_columns"/>
+        from login_log
+        <include refid="page_where"/>
+        order ADD_TIME,USER_ID
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(id) from login_log
+        <include refid="page_where"/>
+    </select>
+
+
+    <select id="get" resultMap="loginLogResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="table_columns"/>
+        from login_log
+        where id = #{id} and DELETE_FLAG = 1
+    </select>
+
+    <!-- 其他自定义SQL -->
+</mapper>

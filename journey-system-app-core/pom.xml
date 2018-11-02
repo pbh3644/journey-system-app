@@ -12,20 +12,20 @@
     <artifactId>journey-system-app-core</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>pbh</groupId>
-            <artifactId>journey-system-app-job</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>pbh</groupId>-->
+            <!--<artifactId>journey-system-app-job</artifactId>-->
+        <!--</dependency>-->
 
         <!--<dependency>
             <groupId>pbh</groupId>
             <artifactId>journey-system-app-dao</artifactId>
         </dependency>-->
 
-        <!--<dependency>
+        <dependency>
             <groupId>pbh</groupId>
             <artifactId>journey-system-app-security</artifactId>
-        </dependency>-->
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

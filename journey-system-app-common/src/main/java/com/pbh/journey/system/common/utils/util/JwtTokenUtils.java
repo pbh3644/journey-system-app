@@ -3,8 +3,13 @@ package com.pbh.journey.system.common.utils.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author pangbohuan
@@ -12,50 +17,47 @@ import java.util.Date;
  * @date 2018-09-05 09:36
  **/
 public class JwtTokenUtils {
-    public static final String TOKEN_HEADER = "Authorization";
-    public static final String TOKEN_PREFIX = "Bearer ";
 
     private static final String SECRET = "jwtSecret";
     private static final String ISS = "echisan";
 
+
+    protected static final String APPLICATION_NAME = "journey-system-app-";
+
     /**
-     * 过期时间是3600秒，既是1个小时
+     * 过期时间是2个小时
      */
-    private static final long EXPIRATION = 3600L;
+    protected static final long EXPIRATION = 1000 * 60 * 60 * 2;
 
     /**
      * 选择了记住我之后的过期时间为7天
      */
-    private static final long EXPIRATION_REMEMBER = 604800L;
+    protected static final long EXPIRATION_REMEMBER = 604800L * 1000;
 
     /**
      * 创建token
      */
-    public static String createToken(String username, boolean isRememberMe) {
+    public static String createToken(String userAccount, boolean isRememberMe) {
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .setIssuer(ISS)
-                .setSubject(username)
+                .setSubject(userAccount)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .compact();
     }
 
     /**
      * 从token中获取用户名
      */
-    public static String getUserName(String token) {
+    public static String getUserAccount(String token) {
         return getTokenBody(token).getSubject();
     }
 
     /**
-     * 是否已过期
+     * 获取token体
      */
-    public static boolean isExpiration(String token) {
-        return getTokenBody(token).getExpiration().before(new Date());
-    }
-
     private static Claims getTokenBody(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET)

@@ -81,12 +81,6 @@
                 <version>0.0.1</version>
             </dependency>
 
-           <!-- <dependency>
-                <groupId>pbh</groupId>
-                <artifactId>journey-system-app-security</artifactId>
-                <version>0.0.1</version>
-            </dependency>-->
-
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>

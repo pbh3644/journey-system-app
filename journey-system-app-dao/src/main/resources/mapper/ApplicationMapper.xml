@@ -62,7 +62,7 @@
             <if test="addUserId != null and addUserId != 0">and ADD_USER_ID = #{addUserId}</if>
             <if test="updateUserId != null and updateUserId != 0">and UPDATE_USER_ID = #{updateUserId}</if>
             <if test="deleteUserId != null and deleteUserId != 0">and DELETE_USER_ID = #{deleteUserId}</if>
-            <if test="deleteFlag != null">and DELETE_FLAG = #{deleteFlag}</if>
+            <if test="deleteFlag != null ">and DELETE_FLAG = #{deleteFlag}</if>
             <if test="remark != null and remark != ''">and REMARK = #{remark}</if>
         </trim>
     </sql>

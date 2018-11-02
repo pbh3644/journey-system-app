@@ -56,8 +56,6 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
             log.error("增加表失败！这个微服务已存在相同的表名,OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
             throw new BussinessException("增加表失败！这个微服务已存在相同的表名,不允许增加.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
         }
-        organization.setAddTime(organization.currentTime());
-        organization.setAddUserId(123456L);
         super.insert(organization);
         log.info("增加表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
     }
@@ -72,8 +70,6 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
                 log.error("批量增加表失败！这个微服务下已经存在有这个表名字。OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
                 throw new BussinessException("批量增加表失败！这个微服务下已经存在有这个表名字，不允许批量增加。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
             }
-            organization.setAddTime(organization.currentTime());
-            organization.setAddUserId(123456L);
         }
         super.insertBatch(list);
         log.info("批量增加表成功！这批表的信息为：" + list.toString());
@@ -88,8 +84,6 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
             log.error("修改表失败！这个微服务已存在相同的表名,OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
             throw new BussinessException("修改表失败！这个微服务已存在相同的表名,不允许修改.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
         }
-        organization.setUpdateTime(organization.currentTime());
-        organization.setUpdateUserId(123456L);
         super.update(organization);
         log.info("修改表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
     }
@@ -104,8 +98,6 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
                 log.error("批量修改表失败！这个微服务下已经存在有这个表名字。OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
                 throw new BussinessException("批量修改表失败！这个微服务下已经存在有这个表名字，不允许批量修改。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
             }
-            organization.setUpdateTime(organization.currentTime());
-            organization.setUpdateUserId(123456L);
         }
         super.updateBatch(list);
         log.info("批量修改表成功！这批表的信息为：" + list.toString());

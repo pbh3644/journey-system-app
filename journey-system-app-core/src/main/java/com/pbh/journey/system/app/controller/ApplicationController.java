@@ -27,7 +27,7 @@ public class ApplicationController extends WebContoller {
     private ApplicationService applicationService;
 
     /**
-     * 查询所有列表忽视是否被逻辑删除
+     * 查询所有微服务列表忽视是否被逻辑删除
      */
     @GetMapping("find_all")
     public JourneySystemAppResult findAll() {
@@ -35,7 +35,7 @@ public class ApplicationController extends WebContoller {
     }
 
     /**
-     * 根据查询条件分页列表
+     * 根据查询微服务条件分页列表
      */
     @PostMapping("find_Page")
     public JourneySystemAppResult findPage(@RequestBody Application application) {
@@ -106,7 +106,7 @@ public class ApplicationController extends WebContoller {
     }
 
     /**
-     * 根据服务ID获取服务信息
+     * 根据微服务ID获取服务信息
      */
     @GetMapping("get")
     @ApiOperation(value = "根据applicationId查询微服务信息", notes = "查询数据库中某个微服务的信息")

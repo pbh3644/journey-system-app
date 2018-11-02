@@ -25,4 +25,40 @@ public class CommonConstants {
      */
     public static final String APPLICATION_CLASS_NAME = "Application";
     public static final String ORGANIZATION_CLASS_NAME = "Organizations";
+
+
+    /**
+     * 逻辑删除状态
+     */
+    public static final byte DELETE_FLAG_NORMAL = 1;
+    public static final byte DELETE_FLAG_FREAK = 2;
+
+    /**
+     * 登录类型 1手机号,2微信小程序，3微博，4账号OOS,5系统登录
+     */
+    public static final byte LOGIN_MOBILE = 1;
+    public static final byte LOGIN_WEIXIN = 2;
+    public static final byte LOGIN_WEIBO = 3;
+    public static final byte LOGIN_OOS = 4;
+    public static final byte LOGIN_SYSTEM = 5;
+
+    /**
+     * 整数类型默认为0状态
+     */
+    public static final byte ZERO = 0;
+
+    /**
+     * 报文头 token 名字
+     */
+    public static final String TOKEN = "accountToken";
+
+    /**
+     * 身份证号码18位数
+     */
+    public static final byte ID_CARD_DIGIT = 18;
+
+    /**
+     * 默认初始密码为lx123456
+     */
+    public static final String DEFAULT_PWD = "lx123456";
 }
