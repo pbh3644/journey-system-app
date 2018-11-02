@@ -15,13 +15,13 @@ import com.pbh.journey.system.pojo.domain.LoginNo;
 import com.pbh.journey.system.pojo.dto.LoginNoDTO;
 import com.pbh.journey.system.pojo.dto.SysUserDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

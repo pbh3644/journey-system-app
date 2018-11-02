@@ -3,7 +3,8 @@ package com.pbh.journey.system.app.service;
 import com.pbh.journey.system.common.base.service.BaseService;
 import com.pbh.journey.system.pojo.domain.LoginNo;
 import com.pbh.journey.system.pojo.dto.LoginNoDTO;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Service Interface:LoginNoService

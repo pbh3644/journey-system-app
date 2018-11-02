@@ -7,7 +7,6 @@ import com.pbh.journey.system.pojo.domain.LoginNo;
 import com.pbh.journey.system.pojo.dto.LoginNoDTO;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -108,7 +107,7 @@ public class LoginNoController extends WebContoller {
      * 账号登出
      */
     @PostMapping("logout")
-    public JourneySystemAppResult logout(HttpServletRequest request) {
+    public JourneySystemAppResult logout() {
         loginNoService.logout(request);
         return JourneySystemAppResult.ok();
     }
