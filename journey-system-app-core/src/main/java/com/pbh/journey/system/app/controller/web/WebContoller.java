@@ -37,12 +37,25 @@ public class WebContoller {
         return user;
     }
 
+    /**
+     * 获取当前登录用户账号
+     */
+    protected String getUserAccount() {
+        return getUser().getUserAccount();
+    }
 
     /**
      * 获取当前登录用户ID
      */
     protected long getUserId() {
         return getUser().getId();
+    }
+
+    /**
+     * 获取用户昵称
+     */
+    protected String getUserNickName() {
+        return getUser().getNickName();
     }
 
     /**
