@@ -48,7 +48,7 @@ public class ApplicationController extends WebContoller {
     @PutMapping("add")
     public JourneySystemAppResult add(@RequestBody Application application) {
         applicationService.insert(application);
-        return JourneySystemAppResult.ok(application);
+        return JourneySystemAppResult.ok();
     }
 
     /**

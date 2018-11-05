@@ -49,13 +49,23 @@ public class ErrorInfoConstants {
     public static final String NEW_AND_AGAIN_PASSWORD_DIFFER = "新密码输入的两次不一致,请重新输入";
 
     /**
-    *  ApplicationServiceImpl 的错误信息
-    * */
+     * ApplicationServiceImpl 的错误信息
+     */
     public static final String APPLICATION_NAME_REPETITION = "微服务的名字重复，不允许填写重复的";
 
     /**
-    * OrganizationServiceImpl 的错误信息
-    * */
+     * OrganizationServiceImpl 的错误信息
+     */
     public static final String APPLICATION_AND_TABLE_NAME_REPETITION = "这个微服务已存在相同的表名,不允许填写重复的";
+
+    /**
+     * SysDeptServiceImpl 的错误信息
+     */
+    public static final String DEPT_NAME_REPETITION = "部门的名字重复，不允许填写重复的";
+
+    /**
+     * SysRoleServiceImpl 的错误信息
+     */
+    public static final String ROLE_NAME_REPETITION = "角色的名字重复，不允许填写重复的";
 
 }

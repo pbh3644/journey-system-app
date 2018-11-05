@@ -127,6 +127,7 @@ CREATE TABLE IF NOT EXISTS `sys_role` (
    remark varchar(30) DEFAULT NULL COMMENT '备注',
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统角色表';
+ALTER TABLE `sys_role` ADD UNIQUE (role_name);
 select * from sys_role;
 INSERT into sys_role(id,role_name,role_code,role_desc,system_code,add_time,add_user_id,remark)
 VALUES(123456,'顶级管理员','01','拥有系统所有权限','1',NOW(),944784114,'顶级管理员');
@@ -149,6 +150,8 @@ CREATE TABLE IF NOT EXISTS `sys_dept` (
    remark varchar(30) DEFAULT NULL COMMENT '备注',
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统部门表';
+ALTER TABLE `sys_dept` ADD UNIQUE (dept_name);
+
 select * from sys_dept;
 
 INSERT into sys_dept(id,dept_name,dept_code,dept_desc,system_code,add_time,add_user_id,remark)
@@ -289,3 +292,12 @@ select * from sys_user;
 select * from sys_dept;
 select * from sys_role;
 select * from sys_permission;
+
+
+
+
+select s.*
+from login_no l
+LEFT JOIN sys_user s on l.user_id = s.id
+WHERE l.user_account = #userAccount# and
+l.user_pwd = #user_pwd#
