@@ -5,6 +5,7 @@ import com.pbh.journey.system.app.service.SysUserService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
+import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
 import com.pbh.journey.system.common.utils.util.IpUtils;
 import com.pbh.journey.system.common.utils.util.RegexUtils;
@@ -57,33 +58,33 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
 
     /**
      * 增加系统管理员
-     * 并且增加默认登录账号 登录类型:手机号 登录账号:手机号码 密码:123456s
+     * 并且增加默认登录账号 登录类型:手机号 登录账号:手机号码 密码:lx123456
      */
     @Override
     public void insert(SysUser entity) {
         String nickName = entity.getNickName();
         if (StringUtils.isEmpty(nickName)) {
-            throw new BussinessException("请填写系统昵称");
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_SYSTEM_NICKNAME);
         }
         String realName = entity.getRealName();
         if (StringUtils.isEmpty(realName)) {
-            throw new BussinessException("请填写真实姓名");
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_REAL_NAME);
         }
         String idCard = entity.getIdCard();
         if (!RegexUtils.checkIdCard(idCard)) {
-            throw new BussinessException("请输入正确的身份证号码");
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ID_CARD);
         }
         String mailbox = entity.getMailbox();
         if (!RegexUtils.checkEmail(mailbox)) {
-            throw new BussinessException("请输入正确的邮箱号");
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_MAILBOX);
         }
         String mobile = entity.getMobile();
         if (!RegexUtils.checkMobile(mobile)) {
-            throw new BussinessException("请输入正确的手机号");
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_MOBILE);
         }
-        
+
         if (loginNoService.loginNoExist(mobile) != null) {
-            throw new BussinessException("这个号码已存在不允许填写重复的");
+            throw new BussinessException(ErrorInfoConstants.MOBILE_REPETITION);
         }
 
         //获取用户的IP地址
@@ -105,22 +106,24 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
     @Override
     public void update(SysUser entity) {
         String newMobile = entity.getMobile();
-        //当检测到管理员修改了手机号码时
+        //当检测到管理员手机号码不为空时
         if (!StringUtils.isEmpty(newMobile)) {
-            if (RegexUtils.checkMobile(newMobile)) {
-                throw new BussinessException("请输入正确的手机号");
+            if (!RegexUtils.checkMobile(newMobile)) {
+                throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_MOBILE);
             }
-            if (loginNoService.loginNoExist(newMobile) != null) {
-                throw new BussinessException("这个号码已存在不允许填写重复的");
-            }
+            //获取这个用户未修改前的所有信息
             SysUser sysUser = get(entity.getId());
-            String mobile = sysUser.getMobile();
-            //看看是否一致，不一致同时把登录账号表关联改了
-            if (!newMobile.equals(mobile)) {
+            String oldMobile = sysUser.getMobile();
+            //比较新号码与旧号码是否一致，如果不一致。同步把登录账号表的手机账号改了成新的
+            if (!newMobile.equals(oldMobile)) {
+                if (loginNoService.loginNoExist(newMobile) != null) {
+                    throw new BussinessException(ErrorInfoConstants.MOBILE_REPETITION);
+                }
+
                 LoginNoDTO loginNoDTO = new LoginNoDTO();
                 loginNoDTO.setType(CommonConstants.LOGIN_MOBILE);
                 loginNoDTO.setNewUserAccount(newMobile);
-                loginNoDTO.setUserAccount(mobile);
+                loginNoDTO.setUserAccount(oldMobile);
                 loginNoService.updateUserAccount(loginNoDTO);
             }
         }
@@ -133,14 +136,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
     @Override
     public void delete(long id) {
         super.delete(id);
-    }
-
-    /**
-     * 批量逻辑删除系统管理员
-     */
-    @Override
-    public void deleteBatch(long[] ids) {
-        super.deleteBatch(ids);
+        log.warn("物理删除系统管理员成功：这个系统管理员的id为：" + id);
     }
 
     /**
@@ -149,6 +145,16 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
     @Override
     public void deleteLogic(long id) {
         super.deleteLogic(id);
+        log.warn("逻辑删除系统管理员成功：这个系统管理员的id为：" + id);
+    }
+
+    /**
+     * 批量逻辑删除系统管理员
+     */
+    @Override
+    public void deleteBatch(long[] ids) {
+        super.deleteBatch(ids);
+        log.warn("批量逻辑系统管理员成功：这批系统管理员的id为：" + ids);
     }
 
     @Override

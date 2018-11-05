@@ -45,7 +45,7 @@ public class SysUserController extends WebContoller {
      * 增加系统管理员
      */
     @PutMapping("add")
-    public JourneySystemAppResult logout(@RequestBody SysUser sysUser) {
+    public JourneySystemAppResult add(@RequestBody SysUser sysUser) {
         sysUserService.insert(sysUser);
         return JourneySystemAppResult.ok();
     }

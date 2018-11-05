@@ -4,6 +4,7 @@ import com.pbh.journey.system.app.mapper.ApplicationMapper;
 import com.pbh.journey.system.app.service.ApplicationService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
+import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
 import com.pbh.journey.system.pojo.domain.Application;
 import lombok.extern.slf4j.Slf4j;
@@ -55,11 +56,10 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     public void insert(Application application) {
         String applicationNameEnglish = application.getApplicationNameEnglish();
         if (applicationMapper.uniquenessApplicationName(application.getApplicationNameEnglish()) != null) {
-            log.error("增加微服务失败！ApplicationServiceImpl，微服务的名字已经存在不允许重复添加，微服务的名字为：" + applicationNameEnglish);
-            throw new BussinessException("增加微服务失败！含微服务的名字重复，不允许增加。批量微服务的名字为：" + applicationNameEnglish);
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_REPETITION);
         }
         super.insert(application);
-        log.info("增加微服务成功！微服务的名字为:" + applicationNameEnglish);
+        log.warn("增加微服务成功！微服务的名字为:" + applicationNameEnglish);
     }
 
     /**
@@ -71,12 +71,11 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
         for (Application application : list) {
             String applicationNameEnglish = application.getApplicationNameEnglish();
             if (applicationMapper.uniquenessApplicationName(applicationNameEnglish) != null) {
-                log.error("批量增加微服务失败！其中包含微服务的名字重复,ApplicationServiceImpl.微服务的名字为：" + applicationNameEnglish);
-                throw new BussinessException("批量增加微服务失败！其中包含微服务的名字重复，不允许批量增加。重复的微服务的名字为:" + applicationNameEnglish);
+                throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_REPETITION);
             }
         }
         super.insertBatch(list);
-        log.info("批量增加微服务成功：这批微服务的信息为：" + list.toString());
+        log.warn("批量增加微服务成功：这批微服务的信息为：" + list.toString());
     }
 
     /**
@@ -87,11 +86,10 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     public void update(Application application) {
         String applicationNameEnglish = application.getApplicationNameEnglish();
         if (applicationMapper.uniquenessApplicationName(applicationNameEnglish) != null) {
-            log.error("修改微服务的名字已经存在不允许修改重复的微服务名字,ApplicationServiceImpl.微服务的名字为：" + applicationNameEnglish);
-            throw new BussinessException("修改微服务失败！这个微服务名字已经存在，不允许修改。重复的微服务名字为：" + applicationNameEnglish);
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_REPETITION);
         }
         super.update(application);
-        log.info("修改微服务成功：微服务的名字为:" + applicationNameEnglish);
+        log.warn("修改微服务成功：微服务的名字为:" + applicationNameEnglish);
     }
 
     /**
@@ -103,12 +101,11 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
         for (Application application : list) {
             String applicationNameEnglish = application.getApplicationNameEnglish();
             if (applicationMapper.uniquenessApplicationName(applicationNameEnglish) != null) {
-                log.error("批量修改微服务的名字已经存在不允许修改重复的微服务名字,ApplicationServiceImpl.微服务的名字为：" + applicationNameEnglish);
-                throw new BussinessException("批量修改微服务的名字失败！其中包含微服务的名字重复，不允许批量修改。重复的微服务的名字为：" + applicationNameEnglish);
+                throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_REPETITION);
             }
         }
         super.updateBatch(list);
-        log.info("修改微服务成功：这批微服务的信息为" + list.toString());
+        log.warn("修改微服务成功：这批微服务的信息为" + list.toString());
     }
 
     /**
@@ -118,7 +115,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @CacheEvict(value = "ApplicationServiceImpl", key = "#id")
     public void delete(long id) {
         super.delete(id);
-        log.info("物理删除微服务成功：微服务的id为：" + id);
+        log.warn("物理删除微服务成功：微服务的id为：" + id);
     }
 
     /**
@@ -128,7 +125,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @CacheEvict(value = "ApplicationServiceImpl", key = "#id")
     public void deleteLogic(long id) {
         super.deleteLogic(id);
-        log.info("逻辑删除微服务成功：微服务的id为：" + id);
+        log.warn("逻辑删除微服务成功：微服务的id为：" + id);
     }
 
     /**
@@ -138,7 +135,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @CacheEvict(value = "ApplicationServiceImpl", allEntries = true)
     public void deleteBatch(long[] ids) {
         super.deleteBatch(ids);
-        log.info("批量逻辑删除微服务成功：这批微服务的id为：" + ids);
+        log.warn("批量逻辑删除微服务成功：这批微服务的id为：" + ids);
     }
 
 

@@ -2,7 +2,6 @@ package com.pbh.journey.system.app.controller;
 
 import com.pbh.journey.system.app.controller.web.WebContoller;
 import com.pbh.journey.system.app.service.OrganizationService;
-import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.result.JourneySystemAppResult;
 import com.pbh.journey.system.pojo.domain.Organization;
 import io.swagger.annotations.Api;
@@ -38,8 +37,7 @@ public class OrganizationController extends WebContoller {
      */
     @PostMapping("find_page")
     public JourneySystemAppResult findPage(@RequestBody Organization organization) {
-        Page<Organization> page = organizationService.findPage(organization);
-        return JourneySystemAppResult.ok(page);
+        return JourneySystemAppResult.ok(organizationService.findPage(organization));
     }
 
     /**
@@ -113,7 +111,6 @@ public class OrganizationController extends WebContoller {
     @ApiOperation(value = "根据organizationId查询表信息", notes = "查询数据库中某个表的信息")
     @GetMapping("get")
     public JourneySystemAppResult get(long id) {
-        Organization organization = organizationService.get(id);
-        return JourneySystemAppResult.ok(organization);
+        return JourneySystemAppResult.ok(organizationService.get(id));
     }
 }

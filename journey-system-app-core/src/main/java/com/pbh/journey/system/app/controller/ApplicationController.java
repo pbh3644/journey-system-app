@@ -66,7 +66,7 @@ public class ApplicationController extends WebContoller {
     @PostMapping("change")
     public JourneySystemAppResult change(@RequestBody Application application) {
         applicationService.update(application);
-        return JourneySystemAppResult.ok(application);
+        return JourneySystemAppResult.ok();
     }
 
     /**
@@ -111,7 +111,6 @@ public class ApplicationController extends WebContoller {
     @GetMapping("get")
     @ApiOperation(value = "根据applicationId查询微服务信息", notes = "查询数据库中某个微服务的信息")
     public JourneySystemAppResult get(long id) {
-        Application application = applicationService.get(id);
-        return JourneySystemAppResult.ok(application);
+        return JourneySystemAppResult.ok(applicationService.get(id));
     }
 }

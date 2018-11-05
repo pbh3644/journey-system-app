@@ -4,6 +4,7 @@ import com.pbh.journey.system.common.base.mapper.BaseMapper;
 import com.pbh.journey.system.common.base.pojo.BaseEntity;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.BaseService;
+import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -115,7 +116,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
             result = dao.update(entity);
         }
         if (result == INT_ZERO) {
-            throw new BussinessException("No saved records");
+            throw new BussinessException(ErrorInfoConstants.SAVE_ERROR);
         }
     }
 
@@ -125,7 +126,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
         ((BaseEntity) entity).preUpdate();
         int result = dao.update(entity);
         if (result == INT_ZERO) {
-            throw new BussinessException("No updated records");
+            throw new BussinessException(ErrorInfoConstants.UPDATE_ERROR);
         }
     }
 
@@ -144,7 +145,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
             if (subList.size() == BATCH_OPERATION_COUNT) {
                 int result = dao.updateBatch(subList);
                 if (result == INT_ZERO) {
-                    throw new BussinessException("No updated records");
+                    throw new BussinessException(ErrorInfoConstants.UPDATE_ERROR);
                 }
                 subList = new ArrayList<T>();
             }
@@ -153,7 +154,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
         if (subList.size() > 0 && subList.size() < BATCH_OPERATION_COUNT) {
             int result = dao.updateBatch(subList);
             if (result == INT_ZERO) {
-                throw new BussinessException("No updated records");
+                throw new BussinessException(ErrorInfoConstants.UPDATE_ERROR);
             }
         }
     }
@@ -163,7 +164,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     public void delete(final long id) {
         int result = dao.delete(id);
         if (result == INT_ZERO) {
-            throw new BussinessException("Record not deleted, id=" + id);
+            throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + id);
         }
     }
 
@@ -172,7 +173,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     public void deleteBatch(final long[] ids) {
         int result = dao.deleteBatch(ids);
         if (result == INT_ZERO) {
-            throw new BussinessException("Records not deleted, ids=" + Arrays.toString(ids));
+            throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + Arrays.toString(ids));
         }
     }
 
@@ -181,7 +182,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     public void deleteLogic(final long id) {
         final int result = dao.deleteLogic(id);
         if (result == INT_ZERO) {
-            throw new BussinessException("Record not deleted, id=" + id);
+            throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + id);
         }
     }
 

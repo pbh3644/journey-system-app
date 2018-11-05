@@ -6,6 +6,12 @@ package com.pbh.journey.system.common.utils.constant;
  * @date 2018-08-20 12:08
  **/
 public class CommonConstants {
+
+    /**
+     * 系统环境变量
+     */
+    public static final String SYSTEM_CODE = "journey-system-app";
+
     /**
      * 用户token异常
      */
@@ -58,7 +64,7 @@ public class CommonConstants {
     public static final byte ID_CARD_DIGIT = 18;
 
     /**
-     * 默认初始密码为lx123456
+     * 默认初始登录账号是密码为lx123456
      */
     public static final String DEFAULT_PWD = "lx123456";
 }

@@ -46,7 +46,7 @@ public class LoginNoController extends WebContoller {
      * 增加登录账号
      */
     @PutMapping("add")
-    public JourneySystemAppResult logout(@RequestBody LoginNo loginNo) {
+    public JourneySystemAppResult add(@RequestBody LoginNo loginNo) {
         loginNoService.insert(loginNo);
         return JourneySystemAppResult.ok();
     }
@@ -126,11 +126,6 @@ public class LoginNoController extends WebContoller {
      */
     @GetMapping("login_no_exist")
     public JourneySystemAppResult loginNoExist(String userAccount) {
-        LoginNo loginNo = loginNoService.loginNoExist(userAccount);
-        if (loginNo != null) {
-            return JourneySystemAppResult.ok();
-        }
-        return JourneySystemAppResult.ok("该用户不存在");
+        return JourneySystemAppResult.ok(loginNoService.loginNoExist(userAccount));
     }
-
 }

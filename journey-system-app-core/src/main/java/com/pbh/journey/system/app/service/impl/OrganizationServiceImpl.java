@@ -4,6 +4,7 @@ import com.pbh.journey.system.app.mapper.OrganizationMapper;
 import com.pbh.journey.system.app.service.OrganizationService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
+import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
 import com.pbh.journey.system.pojo.domain.Organization;
 import lombok.extern.slf4j.Slf4j;
@@ -50,14 +51,10 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @Override
     @CachePut(value = "OrganizationServiceImpl", key = "#organization.id")
     public void insert(Organization organization) {
-        Long applicationId = organization.getApplicationId();
-        String organizationDataName = organization.getOrganizationDataName();
         if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-            log.error("增加表失败！这个微服务已存在相同的表名,OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-            throw new BussinessException("增加表失败！这个微服务已存在相同的表名,不允许增加.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
         }
         super.insert(organization);
-        log.info("增加表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
     }
 
     @Override
@@ -65,14 +62,10 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     public void insertBatch(List<Organization> list) {
         for (Organization organization : list) {
             if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-                Long applicationId = organization.getApplicationId();
-                String organizationDataName = organization.getOrganizationDataName();
-                log.error("批量增加表失败！这个微服务下已经存在有这个表名字。OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-                throw new BussinessException("批量增加表失败！这个微服务下已经存在有这个表名字，不允许批量增加。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+                throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
             }
         }
         super.insertBatch(list);
-        log.info("批量增加表成功！这批表的信息为：" + list.toString());
     }
 
     @Override
@@ -81,11 +74,10 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
         Long applicationId = organization.getApplicationId();
         String organizationDataName = organization.getOrganizationDataName();
         if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-            log.error("修改表失败！这个微服务已存在相同的表名,OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-            throw new BussinessException("修改表失败！这个微服务已存在相同的表名,不允许修改.微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
         }
         super.update(organization);
-        log.info("修改表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
+        log.warn("修改表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
     }
 
     @Override
@@ -93,14 +85,11 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     public void updateBatch(List<Organization> list) {
         for (Organization organization : list) {
             if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-                Long applicationId = organization.getApplicationId();
-                String organizationDataName = organization.getOrganizationDataName();
-                log.error("批量修改表失败！这个微服务下已经存在有这个表名字。OrganizationServiceImpl。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
-                throw new BussinessException("批量修改表失败！这个微服务下已经存在有这个表名字，不允许批量修改。微服务的ID为：" + applicationId + "表名为:" + organizationDataName);
+                throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
             }
         }
         super.updateBatch(list);
-        log.info("批量修改表成功！这批表的信息为：" + list.toString());
+        log.warn("批量修改表成功！这批表的信息为：" + list.toString());
     }
 
     /**
@@ -110,7 +99,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @CacheEvict(value = "OrganizationServiceImpl", key = "#id")
     public void delete(long id) {
         super.delete(id);
-        log.info("物理删除表成功：这个表的id为：" + id);
+        log.warn("物理删除表成功：这个表的id为：" + id);
     }
 
     /**
@@ -120,7 +109,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @CacheEvict(value = "OrganizationServiceImpl", key = "#id")
     public void deleteLogic(long id) {
         super.deleteLogic(id);
-        log.info("逻辑删除表成功：这个表的id为：" + id);
+        log.warn("逻辑删除表成功：这个表的id为：" + id);
     }
 
     /**
@@ -130,7 +119,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @CacheEvict(value = "OrganizationServiceImpl", allEntries = true)
     public void deleteBatch(long[] ids) {
         super.deleteBatch(ids);
-        log.info("批量逻辑删除表成功：这批表的id为：" + ids);
+        log.warn("批量逻辑删除表成功：这批表的id为：" + ids);
     }
 
 
