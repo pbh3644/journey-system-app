@@ -212,9 +212,6 @@ public abstract class BaseEntity<T> implements Serializable {
      * 保存数据库前预更新
      */
     public void preUpdate() {
-        if (this.id == null) {
-            throw new BussinessException("修改失败！！！修改ID不允许为空");
-        }
         this.setUpdateTime(currentTime());
         this.setUpdateUserId(CurrentUserUtils.getCurrentUserId());
     }
@@ -223,9 +220,6 @@ public abstract class BaseEntity<T> implements Serializable {
      * 删除数据库前预删除
      */
     public void preDelete() {
-        if (this.id == null) {
-            throw new BussinessException("删除失败！！！删除ID不允许为空");
-        }
         this.setDeleteFlag(CommonConstants.DELETE_FLAG_FREAK);
         this.setDeleteTime(currentTime());
         this.setDeleteUserId(CurrentUserUtils.getCurrentUserId());

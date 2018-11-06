@@ -17,6 +17,7 @@ import com.pbh.journey.system.pojo.dto.LoginNoDTO;
 import com.pbh.journey.system.pojo.dto.SysUserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -139,6 +140,7 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
     /**
      * 用户登录
      */
+    @CacheEvict(value = "LoginLogServiceImpl", allEntries = true)
     @Override
     public String login(LoginNo loginNo) {
         operationLoginNoPre(loginNo);
@@ -192,9 +194,8 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
         loginLog.setUserAccount(loginNo.getUserAccount());
         loginLogService.insert(loginLog);
 
-        //把登录账号和用户信息放入redis
-        String sysUserJson = JSONObject.toJSONString(sysUserDTO);
-        if (!CurrentUserUtils.saveLoginUser(loginNo.getUserAccount(), sysUserJson, false)) {
+        //把登录账号和用户信息转成JSON放入redis
+        if (!CurrentUserUtils.saveLoginUser(loginNo.getUserAccount(), JSONObject.toJSONString(sysUserDTO), false)) {
             throw new BussinessException(ErrorInfoConstants.SYSTEM_ERROR);
         }
         //根据登录账号生成token返回给用户,每次用户请求到后台通过token串获取登录账号,方可获取登录账号,通过登录账号可以从redis获取用户信息

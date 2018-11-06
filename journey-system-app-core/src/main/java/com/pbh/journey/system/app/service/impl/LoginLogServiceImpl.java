@@ -5,6 +5,7 @@ import com.pbh.journey.system.app.service.LoginLogService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.pojo.domain.LoginLog;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +28,7 @@ public class LoginLogServiceImpl extends BaseServiceImpl<LoginLogMapper, LoginLo
      * 查询全部登录日志列表
      */
     @Override
+    @Cacheable("LoginLogServiceImpl")
     public List<LoginLog> findAll() {
         return super.findAll();
     }
@@ -35,6 +37,7 @@ public class LoginLogServiceImpl extends BaseServiceImpl<LoginLogMapper, LoginLo
      * 根据查询条件查询日志列表分页
      */
     @Override
+    @Cacheable(value = "LoginLogServiceImpl", key = "#loginLog")
     public Page<LoginLog> findPage(LoginLog loginLog) {
         return super.findPage(loginLog);
     }
