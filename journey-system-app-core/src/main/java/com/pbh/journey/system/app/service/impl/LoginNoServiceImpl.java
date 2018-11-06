@@ -157,17 +157,27 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
             throw new BussinessException(ErrorInfoConstants.MOBILE_NO_REPETITION);
         }
 
-        //判断用户的登录账号是否被冻结
-        if (CommonConstants.DELETE_FLAG_NORMAL != sysUserDTO.getLoginNoDeleteFlag()) {
-            throw new BussinessException(ErrorInfoConstants.ACCOUNT_FREEZE);
-        }
-
         //比较密码是否正确
         if (!passwordEncoder.matches(importUserPwd, sysUserDTO.getUserPwd())) {
             throw new BussinessException(ErrorInfoConstants.PASSWORD_INCORRECTNESS);
         }
 
-        //验证通过后判断用户是否是登录状态
+        //判断用户是否被逻辑删除
+        if (CommonConstants.DELETE_FLAG_FREAK == sysUserDTO.getDeleteFlag()) {
+            throw new BussinessException(ErrorInfoConstants.USER_FREEZE_DEL);
+        }
+
+        //判断用户状态是否被冻结
+        if (CommonConstants.DELETE_FLAG_FREAK == sysUserDTO.getState()) {
+            throw new BussinessException(ErrorInfoConstants.USER_FREEZE);
+        }
+
+        //判断用户的登录账号是否被逻辑删除
+        if (CommonConstants.DELETE_FLAG_FREAK == sysUserDTO.getLoginNoDeleteFlag()) {
+            throw new BussinessException(ErrorInfoConstants.ACCOUNT_FREEZE_DEL);
+        }
+
+        //验证通过后判断该用户是否是登录状态
         if (CurrentUserUtils.isExpiration(loginNo.getUserAccount())) {
             throw new BussinessException(ErrorInfoConstants.LOGIN_CONFLICT);
         }
@@ -257,7 +267,7 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
         LoginNo loginNo = get(id);
         byte deleteFlag = loginNo.getDeleteFlag();
         if (CommonConstants.DELETE_FLAG_FREAK == deleteFlag) {
-            throw new BussinessException(ErrorInfoConstants.ACCOUNT_FREEZE);
+            throw new BussinessException(ErrorInfoConstants.ACCOUNT_FREEZE_DEL);
         }
 
         //校验通过后给密码加密存入数据库

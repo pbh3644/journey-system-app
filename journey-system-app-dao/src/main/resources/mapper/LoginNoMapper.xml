@@ -266,8 +266,7 @@
         <include refid="user_table_columns"/>
         from login_no l
         LEFT JOIN sys_user s on l.user_id = s.id
-        WHERE s.DELETE_FLAG != #{deleteFlag} and s.state != #{deleteFlag}
-        and l.type = #{type}
+        WHERE  l.type = #{type}
         and l.user_account = #{userAccount}
     </select>
 

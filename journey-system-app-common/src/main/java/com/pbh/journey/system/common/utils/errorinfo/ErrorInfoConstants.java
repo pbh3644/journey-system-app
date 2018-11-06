@@ -36,7 +36,9 @@ public class ErrorInfoConstants {
     public static final String PLEASE_ENTER_PASSWORD = "请输入登录密码";
     public static final String PLEASE_RELEVANCE_USER_ID = "请先关联用户ID";
     public static final String MOBILE_NO_REPETITION = "输入的账号不存在";
-    public static final String ACCOUNT_FREEZE = "这个账号已经被冻结,如需解冻请联系管理员";
+    public static final String ACCOUNT_FREEZE_DEL = "账号已经被系统删除,如需还原请联系管理员";
+    public static final String USER_FREEZE_DEL = "用户已经被系统删除,如需还原请联系管理员";
+    public static final String USER_FREEZE = "用户已经被冻结，如需解冻请联系管理员";
     public static final String PASSWORD_INCORRECTNESS = "输入的密码错误";
     public static final String LOGIN_CONFLICT = "这个账号正在登录,不允许再重复登录";
     public static final String NO_TOKEN = "用户token不能为空";
