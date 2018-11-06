@@ -1,5 +1,6 @@
 package com.pbh.journey.system.common.utils.util;
 
+import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,7 +24,7 @@ public class CurrentUserUtils extends JwtTokenUtils {
      */
     public static boolean saveLoginUser(String userAccount, String jsonSysUser, boolean isRememberMe) {
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
-        return RedisUtils.set(APPLICATION_NAME + userAccount, jsonSysUser, expiration);
+        return RedisUtils.set(CommonConstants.SYSTEM_CODE + userAccount, jsonSysUser, expiration);
     }
 
     /**
@@ -33,7 +34,7 @@ public class CurrentUserUtils extends JwtTokenUtils {
      * @return 是否
      */
     public static boolean isExpiration(String userAccount) {
-        return RedisUtils.hasKey(APPLICATION_NAME + userAccount);
+        return RedisUtils.hasKey(CommonConstants.SYSTEM_CODE + userAccount);
     }
 
     /**
@@ -47,7 +48,7 @@ public class CurrentUserUtils extends JwtTokenUtils {
      * 根据登录账号-从redis删除缓存
      */
     public static void delUserAccount(String userAccount) {
-        RedisUtils.del(APPLICATION_NAME + userAccount);
+        RedisUtils.del(CommonConstants.SYSTEM_CODE + userAccount);
     }
 
     /**
@@ -67,7 +68,7 @@ public class CurrentUserUtils extends JwtTokenUtils {
      */
     public static String getCurrentUserJson() {
         String userAccount = getUserAccount();
-        return RedisUtils.get(APPLICATION_NAME + userAccount).toString();
+        return RedisUtils.get(CommonConstants.SYSTEM_CODE + userAccount).toString();
     }
 
     /**
@@ -88,7 +89,7 @@ public class CurrentUserUtils extends JwtTokenUtils {
      */
     public static Map<String, String> getCurrentUserMap(String userAccount) {
         if (isExpiration(userAccount)) {
-            return (Map<String, String>) RedisUtils.get(APPLICATION_NAME + userAccount);
+            return (Map<String, String>) RedisUtils.get(CommonConstants.SYSTEM_CODE + userAccount);
         }
         return null;
     }

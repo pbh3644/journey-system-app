@@ -3,13 +3,8 @@ package com.pbh.journey.system.common.utils.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @author pangbohuan
@@ -21,8 +16,6 @@ public class JwtTokenUtils {
     private static final String SECRET = "jwtSecret";
     private static final String ISS = "echisan";
 
-
-    protected static final String APPLICATION_NAME = "journey-system-app-";
 
     /**
      * 过期时间是2个小时
