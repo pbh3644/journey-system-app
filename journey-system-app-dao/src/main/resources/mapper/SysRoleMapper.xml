@@ -215,4 +215,9 @@
         <include refid="table_columns"/>
         from sys_role r where r.role_name = #{roleName}
     </select>
+
+    <!--禁用启用角色状态-->
+    <update id="switchRole" parameterType="com.pbh.journey.system.pojo.domain.SysRole">
+        update sys_role r set r.role_state = #{roleState} where r.id = #{id}
+    </update>
 </mapper>

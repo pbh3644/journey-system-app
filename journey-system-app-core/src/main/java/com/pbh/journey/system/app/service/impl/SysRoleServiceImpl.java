@@ -4,17 +4,22 @@ import com.pbh.journey.system.app.mapper.SysRoleMapper;
 import com.pbh.journey.system.app.service.SysRoleService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
+import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.pbh.journey.system.pojo.domain.SysRole;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ServiceImpl:SysRoleServiceImpl
@@ -54,9 +59,19 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     @CachePut(value = "SysRoleServiceImpl", key = "#sysRole.id")
     public void insert(SysRole sysRole) {
-        if (nameGetRole(sysRole.getRoleName()) != null) {
+        //判断角色的名字是否输入
+        String roleName = sysRole.getRoleName();
+        if (StringUtils.isEmpty(roleName)) {
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ROLE_NAME);
+        }
+        //判断角色的名字是否已存在
+        if (nameGetRole(roleName) != null) {
             throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
         }
+        //通过redis递增数字+1获取唯一roleCode
+        String roleCode = CommonConstants.ROLE_LOG + RedisUtils.incr(CommonConstants.ROLE_LOG, CommonConstants.ROLE_CODE_PROGRESSIVE);
+        sysRole.setRoleCode(roleCode);
+        sysRole.setSystemCode(CommonConstants.SYSTEM_CODE);
         super.insert(sysRole);
     }
 
@@ -66,10 +81,21 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     @CacheEvict(value = "SysRoleServiceImpl", allEntries = true)
     public void insertBatch(List<SysRole> list) {
+        roleNameWeight(list);
         for (SysRole sysRole : list) {
-            if (nameGetRole(sysRole.getRoleName()) != null) {
+            //判断角色的名字是否输入
+            String roleName = sysRole.getRoleName();
+            if (StringUtils.isEmpty(roleName)) {
+                throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ROLE_NAME);
+            }
+            //判断角色的名字是否已存在
+            if (nameGetRole(roleName) != null) {
                 throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
             }
+            //通过redis递增数字+1获取唯一roleCode
+            String roleCode = CommonConstants.ROLE_LOG + RedisUtils.incr(CommonConstants.ROLE_LOG, CommonConstants.ROLE_CODE_PROGRESSIVE);
+            sysRole.setRoleCode(roleCode);
+            sysRole.setSystemCode(CommonConstants.SYSTEM_CODE);
         }
         super.insertBatch(list);
     }
@@ -80,7 +106,9 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     @CachePut(value = "SysRoleServiceImpl", key = "#SysRole.id")
     public void update(SysRole sysRole) {
+        //看看这个角色名是否存在，数据库唯一性索引
         SysRole role = nameGetRole(sysRole.getRoleName());
+        //如果存在的情况下判断两个角色ID是否一致，如果不一致证明角色名重复
         if (role != null && !role.getId().equals(sysRole.getId())) {
             throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
         }
@@ -93,8 +121,11 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     @CacheEvict(value = "SysRoleServiceImpl", allEntries = true)
     public void updateBatch(List<SysRole> list) {
+        roleNameWeight(list);
         for (SysRole sysRole : list) {
+            //看看这个角色名是否存在，数据库唯一性索引
             SysRole role = nameGetRole(sysRole.getRoleName());
+            //如果存在的情况下判断两个角色ID是否一致，如果不一致证明角色名重复
             if (role != null && !role.getId().equals(sysRole.getId())) {
                 throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
             }
@@ -142,8 +173,30 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
         return super.get(id);
     }
 
+    /**
+     * 根据角色名字获取部门
+     */
     @Override
     public SysRole nameGetRole(String roleName) {
         return sysRoleMapper.nameGetRole(roleName);
+    }
+
+    @Override
+    public void switchRole(SysRole sysRole) {
+        sysRoleMapper.switchRole(sysRole);
+    }
+
+    /**
+     * 批量判断list中是否包含相同的角色名
+     */
+    private void roleNameWeight(List<SysRole> list) {
+        //判断批量list当中知否含有重复的部门名字
+        Set<String> set = new HashSet<>(list.size());
+        for (SysRole sysRole : list) {
+            set.add(sysRole.getRoleName());
+        }
+        if (set.size() != list.size()) {
+            throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
+        }
     }
 }

@@ -215,4 +215,9 @@
         <include refid="table_columns"/>
         from sys_dept d where d.dept_name = #{deptName}
     </select>
+
+    <!--禁用启用部门状态-->
+    <update id="switchDept" parameterType="com.pbh.journey.system.pojo.domain.SysDept">
+        update sys_dept d set d.dept_state = #{deptState} where d.id = #{id}
+    </update>
 </mapper>

@@ -168,7 +168,7 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
         }
 
         //判断用户状态是否被冻结
-        if (CommonConstants.DELETE_FLAG_FREAK == sysUserDTO.getState()) {
+        if (CommonConstants.USER_FREEZE == sysUserDTO.getState()) {
             throw new BussinessException(ErrorInfoConstants.USER_FREEZE);
         }
 

@@ -106,8 +106,17 @@ public class SysRoleController {
      * 根据角色ID获取角色信息
      */
     @GetMapping("get")
-    @ApiOperation(value = "根据applicationId查询微服务信息", notes = "查询数据库中某个微服务的信息")
+    @ApiOperation(value = "根据id查询角色信息", notes = "查询数据库中某个角色的信息")
     public JourneySystemAppResult get(long id) {
         return JourneySystemAppResult.ok(sysRoleService.get(id));
+    }
+
+    /**
+     * 修改角色禁启用状态
+     */
+    @PostMapping("use")
+    public JourneySystemAppResult roleUse(@RequestBody SysRole sysRole) {
+        sysRoleService.switchRole(sysRole);
+        return JourneySystemAppResult.ok();
     }
 }

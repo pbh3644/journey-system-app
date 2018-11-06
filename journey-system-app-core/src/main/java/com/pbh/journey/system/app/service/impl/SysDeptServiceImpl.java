@@ -4,17 +4,22 @@ import com.pbh.journey.system.app.mapper.SysDeptMapper;
 import com.pbh.journey.system.app.service.SysDeptService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
+import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.pbh.journey.system.pojo.domain.SysDept;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ServiceImpl:SysDeptServiceImpl
@@ -54,9 +59,19 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
     @Override
     @CachePut(value = "SysDeptServiceImpl", key = "#sysDept.id")
     public void insert(SysDept sysDept) {
-        if (nameGetDept(sysDept.getDeptName()) != null) {
+        //判断是否输入部门名字
+        String deptName = sysDept.getDeptName();
+        if (StringUtils.isEmpty(deptName)) {
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_DEPT_NAME);
+        }
+        //判断部门名字是否重复
+        if (nameGetDept(deptName) != null) {
             throw new BussinessException(ErrorInfoConstants.DEPT_NAME_REPETITION);
         }
+        //通过redis递增数字+1获取唯一deptCode
+        String deptCode = CommonConstants.DEPT_LOG + RedisUtils.incr(CommonConstants.DEPT_LOG, CommonConstants.DEPT_CODE_PROGRESSIVE);
+        sysDept.setDeptCode(deptCode);
+        sysDept.setSystemCode(CommonConstants.SYSTEM_CODE);
         super.insert(sysDept);
     }
 
@@ -66,10 +81,21 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
     @Override
     @CacheEvict(value = "SysDeptServiceImpl", allEntries = true)
     public void insertBatch(List<SysDept> list) {
+        deptNameWeight(list);
         for (SysDept sysDept : list) {
-            if (nameGetDept(sysDept.getDeptName()) != null) {
+            //判断是否输入部门名字
+            String deptName = sysDept.getDeptName();
+            if (StringUtils.isEmpty(deptName)) {
+                throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_DEPT_NAME);
+            }
+            //判断部门名字是否重复
+            if (nameGetDept(deptName) != null) {
                 throw new BussinessException(ErrorInfoConstants.DEPT_NAME_REPETITION);
             }
+            //通过redis递增数字+1获取唯一deptCode
+            String deptCode = CommonConstants.DEPT_LOG + RedisUtils.incr(CommonConstants.DEPT_LOG, CommonConstants.DEPT_CODE_PROGRESSIVE);
+            sysDept.setDeptCode(deptCode);
+            sysDept.setSystemCode(CommonConstants.SYSTEM_CODE);
         }
         super.insertBatch(list);
     }
@@ -80,7 +106,9 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
     @Override
     @CachePut(value = "SysDeptServiceImpl", key = "#sysDept.id")
     public void update(SysDept sysDept) {
+        //看看这个部门名是否存在，数据库唯一索性
         SysDept dept = nameGetDept(sysDept.getDeptName());
+        //如果存在的情况下判断两个部门ID是否一致，如果不一致证明部门名重复
         if (dept != null && !dept.getId().equals(sysDept.getId())) {
             throw new BussinessException(ErrorInfoConstants.DEPT_NAME_REPETITION);
         }
@@ -93,8 +121,11 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
     @Override
     @CacheEvict(value = "SysDeptServiceImpl", allEntries = true)
     public void updateBatch(List<SysDept> list) {
+        deptNameWeight(list);
         for (SysDept sysDept : list) {
+            //看看这个部门名是否存在，数据库唯一索性
             SysDept dept = nameGetDept(sysDept.getDeptName());
+            //如果存在的情况下判断两个部门ID是否一致，如果不一致证明部门名重复
             if (dept != null && !dept.getId().equals(sysDept.getId())) {
                 throw new BussinessException(ErrorInfoConstants.DEPT_NAME_REPETITION);
             }
@@ -142,8 +173,30 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
         return super.get(id);
     }
 
+    /**
+     * 根据部门名字获取部门
+     */
     @Override
     public SysDept nameGetDept(String deptName) {
         return sysDeptMapper.nameGetDept(deptName);
+    }
+
+    @Override
+    public void switchDept(SysDept sysDept) {
+        sysDeptMapper.switchDept(sysDept);
+    }
+
+    /**
+     * 批量判断list中是否包含相同的部门名
+     */
+    private void deptNameWeight(List<SysDept> list) {
+        //判断批量list当中知否含有重复的部门名字
+        Set<String> set = new HashSet<>(list.size());
+        for (SysDept sysDept : list) {
+            set.add(sysDept.getDeptName());
+        }
+        if (set.size() != list.size()) {
+            throw new BussinessException(ErrorInfoConstants.DEPT_NAME_REPETITION);
+        }
     }
 }

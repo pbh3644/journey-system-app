@@ -20,4 +20,11 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
      * @return SysDept 角色对象
      */
     SysRole nameGetRole(String roleName);
+
+    /**
+     * 启用禁用角色
+     *
+     * @param sysRole 角色ID,启用禁用状态
+     */
+    void switchRole(SysRole sysRole);
 }

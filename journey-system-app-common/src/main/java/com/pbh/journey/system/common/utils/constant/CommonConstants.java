@@ -40,6 +40,13 @@ public class CommonConstants {
     public static final byte DELETE_FLAG_FREAK = 2;
 
     /**
+     * 用户冻结、正常状态
+     */
+    public static final byte USER_NORMAL = 1;
+    public static final byte USER_FREEZE = 2;
+
+
+    /**
      * 登录类型 1手机号,2微信小程序，3微博，4账号OOS,5系统登录
      */
     public static final byte LOGIN_MOBILE = 1;
@@ -59,12 +66,19 @@ public class CommonConstants {
     public static final String TOKEN = "accountToken";
 
     /**
-     * 身份证号码18位数
-     */
-    public static final byte ID_CARD_DIGIT = 18;
-
-    /**
      * 默认初始登录账号是密码为lx123456
      */
     public static final String DEFAULT_PWD = "lx123456";
+
+    /**
+     * 部门code递增数字
+     */
+    public static final String DEPT_LOG = "DEPT-";
+    public static final byte DEPT_CODE_PROGRESSIVE = 1;
+
+    /**
+     * 角色code递增数字
+     */
+    public static final String ROLE_LOG = "ROLE-";
+    public static final byte ROLE_CODE_PROGRESSIVE = 1;
 }

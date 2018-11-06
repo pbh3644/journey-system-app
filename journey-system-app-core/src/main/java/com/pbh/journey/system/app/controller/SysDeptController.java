@@ -105,11 +105,20 @@ public class SysDeptController {
     }
 
     /**
-     * 根据角色ID获取部门信息
+     * 根据部门ID获取部门信息
      */
     @GetMapping("get")
-    @ApiOperation(value = "根据applicationId查询微服务信息", notes = "查询数据库中某个微服务的信息")
+    @ApiOperation(value = "根据Id查询部门信息", notes = "查询数据库中某个部门的信息")
     public JourneySystemAppResult get(long id) {
         return JourneySystemAppResult.ok(sysDeptService.get(id));
+    }
+
+    /**
+     * 修改部门禁启用状态
+     */
+    @PostMapping("use")
+    public JourneySystemAppResult deptUse(@RequestBody SysDept sysDept) {
+        sysDeptService.switchDept(sysDept);
+        return JourneySystemAppResult.ok();
     }
 }

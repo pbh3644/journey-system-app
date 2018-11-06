@@ -20,4 +20,12 @@ public interface SysDeptMapper extends BaseMapper<SysDept> {
      * @return SysDept 部门对象
      */
     SysDept nameGetDept(String deptName);
+
+    /**
+     * 启用禁用部门
+     *
+     * @param sysDept 部门ID,启用禁用状态
+     */
+    void switchDept(SysDept sysDept);
+
 }

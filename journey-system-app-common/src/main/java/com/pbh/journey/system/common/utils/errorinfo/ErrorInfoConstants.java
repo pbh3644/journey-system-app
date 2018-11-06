@@ -63,11 +63,13 @@ public class ErrorInfoConstants {
     /**
      * SysDeptServiceImpl 的错误信息
      */
+    public static final String PLEASE_ENTER_DEPT_NAME = "请输入部门的名字";
     public static final String DEPT_NAME_REPETITION = "部门的名字重复，不允许填写重复的";
 
     /**
      * SysRoleServiceImpl 的错误信息
      */
+    public static final String PLEASE_ENTER_ROLE_NAME = "请输入角色的名字";
     public static final String ROLE_NAME_REPETITION = "角色的名字重复，不允许填写重复的";
 
 }
