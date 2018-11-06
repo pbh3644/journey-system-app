@@ -14,7 +14,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ServiceImpl:OrganizationServiceImpl
@@ -60,6 +62,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @Override
     @CacheEvict(value = "OrganizationServiceImpl", allEntries = true)
     public void insertBatch(List<Organization> list) {
+        organizationNameWeight(list);
         for (Organization organization : list) {
             if (organizationMapper.uniquenessOrganizationName(organization) != null) {
                 throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
@@ -83,6 +86,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @Override
     @CacheEvict(value = "OrganizationServiceImpl", allEntries = true)
     public void updateBatch(List<Organization> list) {
+        organizationNameWeight(list);
         for (Organization organization : list) {
             if (organizationMapper.uniquenessOrganizationName(organization) != null) {
                 throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
@@ -130,5 +134,20 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     @Cacheable(value = "OrganizationServiceImpl", key = "#id")
     public Organization get(long id) {
         return super.get(id);
+    }
+
+
+    /**
+     * 批量判断list中微服务下是否包含相同的数据库名
+     */
+    private void organizationNameWeight(List<Organization> list) {
+        //判断批量list当中知否含有重复的部门名字
+        Set<String> set = new HashSet<>(list.size());
+        for (Organization organization : list) {
+            set.add(organization.getApplicationId() + organization.getOrganizationDataName());
+        }
+        if (set.size() != list.size()) {
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
+        }
     }
 }

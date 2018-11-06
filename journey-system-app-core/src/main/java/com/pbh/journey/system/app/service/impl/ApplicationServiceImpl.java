@@ -14,7 +14,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ServiceImpl:ApplicationServiceImpl
@@ -68,6 +70,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @Override
     @CacheEvict(value = "ApplicationServiceImpl", allEntries = true)
     public void insertBatch(List<Application> list) {
+        applicationNameWeight(list);
         for (Application application : list) {
             String applicationNameEnglish = application.getApplicationNameEnglish();
             if (applicationMapper.uniquenessApplicationName(applicationNameEnglish) != null) {
@@ -98,6 +101,7 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @Override
     @CacheEvict(value = "ApplicationServiceImpl", allEntries = true)
     public void updateBatch(List<Application> list) {
+        applicationNameWeight(list);
         for (Application application : list) {
             String applicationNameEnglish = application.getApplicationNameEnglish();
             if (applicationMapper.uniquenessApplicationName(applicationNameEnglish) != null) {
@@ -146,5 +150,19 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
     @Cacheable(value = "ApplicationServiceImpl", key = "#id")
     public Application get(long id) {
         return super.get(id);
+    }
+
+    /**
+     * 批量判断list中是否包含相同的微服务名
+     */
+    private void applicationNameWeight(List<Application> list) {
+        //判断批量list当中知否含有重复的部门名字
+        Set<String> set = new HashSet<>(list.size());
+        for (Application application : list) {
+            set.add(application.getApplicationNameEnglish());
+        }
+        if (set.size() != list.size()) {
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_REPETITION);
+        }
     }
 }
