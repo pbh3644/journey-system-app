@@ -113,4 +113,21 @@ public class ApplicationController extends WebContoller {
     public JourneySystemAppResult get(long id) {
         return JourneySystemAppResult.ok(applicationService.get(id));
     }
+
+    /**
+     * 根据微服务的中文名字精准查询微服务
+     */
+    @GetMapping("get_app_name_chinese")
+    public JourneySystemAppResult uniquenessApplicationNameChinese(String applicationNameChinese) {
+        return JourneySystemAppResult.ok(applicationService.uniquenessApplicationNameChinese(applicationNameChinese));
+    }
+
+    /**
+     * 根据微服务的英文名字精准查询微服务
+     */
+    @GetMapping("get_app_name_english")
+    public JourneySystemAppResult uniquenessApplicationNameEnglish(String applicationNameEnglish) {
+        return JourneySystemAppResult.ok(applicationService.uniquenessApplicationNameEnglish(applicationNameEnglish));
+    }
+
 }

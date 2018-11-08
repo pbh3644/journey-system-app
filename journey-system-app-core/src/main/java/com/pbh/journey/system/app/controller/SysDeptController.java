@@ -114,6 +114,15 @@ public class SysDeptController {
     }
 
     /**
+     * 根据部门名获取部门信息
+     */
+    @GetMapping("get_dept_name")
+    @ApiOperation(value = "根据部门名查询部门信息", notes = "查询数据库中某个部门的信息")
+    public JourneySystemAppResult nameGetDept(String deptName) {
+        return JourneySystemAppResult.ok(sysDeptService.nameGetDept(deptName));
+    }
+
+    /**
      * 修改部门禁启用状态
      */
     @PostMapping("use")

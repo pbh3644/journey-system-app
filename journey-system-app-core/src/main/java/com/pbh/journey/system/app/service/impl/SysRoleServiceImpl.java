@@ -59,19 +59,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     @CachePut(value = "SysRoleServiceImpl", key = "#sysRole.id")
     public void insert(SysRole sysRole) {
-        //判断角色的名字是否输入
-        String roleName = sysRole.getRoleName();
-        if (StringUtils.isEmpty(roleName)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ROLE_NAME);
-        }
-        //判断角色的名字是否已存在
-        if (nameGetRole(roleName) != null) {
-            throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
-        }
-        //通过redis递增数字+1获取唯一roleCode
-        String roleCode = CommonConstants.ROLE_LOG + RedisUtils.incr(CommonConstants.ROLE_LOG, CommonConstants.ROLE_CODE_PROGRESSIVE);
-        sysRole.setRoleCode(roleCode);
-        sysRole.setSystemCode(CommonConstants.SYSTEM_CODE);
+        addSysRoleCheckout(sysRole);
         super.insert(sysRole);
     }
 
@@ -83,19 +71,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     public void insertBatch(List<SysRole> list) {
         roleNameWeight(list);
         for (SysRole sysRole : list) {
-            //判断角色的名字是否输入
-            String roleName = sysRole.getRoleName();
-            if (StringUtils.isEmpty(roleName)) {
-                throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ROLE_NAME);
-            }
-            //判断角色的名字是否已存在
-            if (nameGetRole(roleName) != null) {
-                throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
-            }
-            //通过redis递增数字+1获取唯一roleCode
-            String roleCode = CommonConstants.ROLE_LOG + RedisUtils.incr(CommonConstants.ROLE_LOG, CommonConstants.ROLE_CODE_PROGRESSIVE);
-            sysRole.setRoleCode(roleCode);
-            sysRole.setSystemCode(CommonConstants.SYSTEM_CODE);
+            addSysRoleCheckout(sysRole);
         }
         super.insertBatch(list);
     }
@@ -106,12 +82,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     @CachePut(value = "SysRoleServiceImpl", key = "#SysRole.id")
     public void update(SysRole sysRole) {
-        //看看这个角色名是否存在，数据库唯一性索引
-        SysRole role = nameGetRole(sysRole.getRoleName());
-        //如果存在的情况下判断两个角色ID是否一致，如果不一致证明角色名重复
-        if (role != null && !role.getId().equals(sysRole.getId())) {
-            throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
-        }
+        updateSysRoleCheckout(sysRole);
         super.update(sysRole);
     }
 
@@ -123,12 +94,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     public void updateBatch(List<SysRole> list) {
         roleNameWeight(list);
         for (SysRole sysRole : list) {
-            //看看这个角色名是否存在，数据库唯一性索引
-            SysRole role = nameGetRole(sysRole.getRoleName());
-            //如果存在的情况下判断两个角色ID是否一致，如果不一致证明角色名重复
-            if (role != null && !role.getId().equals(sysRole.getId())) {
-                throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
-            }
+            updateSysRoleCheckout(sysRole);
         }
         super.updateBatch(list);
     }
@@ -178,12 +144,25 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
      */
     @Override
     public SysRole nameGetRole(String roleName) {
+        roleNameNotNull(roleName);
         return sysRoleMapper.nameGetRole(roleName);
     }
 
+    /**
+     * 启用禁用角色
+     */
     @Override
     public void switchRole(SysRole sysRole) {
         sysRoleMapper.switchRole(sysRole);
+    }
+
+    /**
+     * 角色名不能为空
+     */
+    private void roleNameNotNull(String roleName) {
+        if (StringUtils.isEmpty(roleName)) {
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ROLE_NAME);
+        }
     }
 
     /**
@@ -197,6 +176,35 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
         }
         if (set.size() != list.size()) {
             throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
+        }
+    }
+
+    /**
+     * 增加角色时对象的判断
+     */
+    private void addSysRoleCheckout(SysRole sysRole) {
+        //判断角色的名字是否已存在
+        if (nameGetRole(sysRole.getRoleName()) != null) {
+            throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
+        }
+        //通过redis递增数字+1获取唯一roleCode
+        String roleCode = CommonConstants.ROLE_LOG + RedisUtils.incr(CommonConstants.ROLE_LOG, CommonConstants.ROLE_CODE_PROGRESSIVE);
+        sysRole.setRoleCode(roleCode);
+        sysRole.setSystemCode(CommonConstants.SYSTEM_CODE);
+    }
+
+    /**
+     * 修改角色时对象的判断
+     */
+    private void updateSysRoleCheckout(SysRole sysRole) {
+        String roleName = sysRole.getRoleName();
+        if (!StringUtils.isEmpty(roleName)) {
+            //看看这个角色名是否存在，数据库唯一性索引
+            SysRole role = nameGetRole(roleName);
+            //如果存在的情况下判断两个角色ID是否一致，如果不一致证明角色名重复
+            if (role != null && !role.getId().equals(sysRole.getId())) {
+                throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
+            }
         }
     }
 }

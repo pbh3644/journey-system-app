@@ -204,11 +204,19 @@
 
     <!-- 其他自定义SQL -->
 
-    <!-- 判断微服务的名字唯一性 -->
-    <select id="uniquenessApplicationName" resultMap="applicationResultMap" parameterType="java.lang.String">
+    <!-- 判断微服务的中文名字唯一性 -->
+    <select id="uniquenessApplicationNameChinese" resultMap="applicationResultMap" parameterType="java.lang.String">
         select
         <include refid="table_columns"/>
-        from application
-        where application_name_chinese = #{value}
+        from application a
+        where a.application_name_chinese = #{applicationNameChinese}
+    </select>
+
+    <!-- 判断微服务的英文名字唯一性 -->
+    <select id="uniquenessApplicationNameEnglish" resultMap="applicationResultMap" parameterType="java.lang.String">
+        select
+        <include refid="table_columns"/>
+        from application a
+        where a.application_name_english = #{applicationNameEnglish}
     </select>
 </mapper>

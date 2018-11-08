@@ -15,10 +15,18 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ApplicationMapper extends BaseMapper<Application> {
 
     /**
-     * 根据微服务的名字精准查询是否有相同的微服务
+     * 根据微服务的中文名字精准查询是否有相同的微服务
      *
-     * @param applicationNameChinese 微服务的英文名字
+     * @param applicationNameChinese 微服务的中文名字
      * @return Application 微服务对象
      */
-    Application uniquenessApplicationName(String applicationNameChinese);
+    Application uniquenessApplicationNameChinese(String applicationNameChinese);
+
+    /**
+     * 根据微服务的英文名字精准查询是否有相同的微服务
+     *
+     * @param applicationNameEnglish 微服务的英文名字
+     * @return Application 微服务对象
+     */
+    Application uniquenessApplicationNameEnglish(String applicationNameEnglish);
 }

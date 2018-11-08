@@ -35,12 +35,12 @@ public interface LoginNoService extends BaseService<LoginNo> {
     void logout(HttpServletRequest request);
 
     /**
-     * 查询账号是否存在
+     * 根据登录账号和登录类型查询账号是否存在
      *
-     * @param userAccount 账号
+     * @param loginNo LoginNo
      * @return LoginNo 登录账号表对象
      */
-    LoginNo loginNoExist(String userAccount);
+    LoginNo loginNoExist(LoginNo loginNo);
 
     /**
      * 修改密码

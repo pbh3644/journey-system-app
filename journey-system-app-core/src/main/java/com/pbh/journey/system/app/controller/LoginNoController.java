@@ -122,10 +122,10 @@ public class LoginNoController extends WebContoller {
     }
 
     /**
-     * 查询输入的账号是否存在
+     * 根据账号和登录类型查询输入的账号是否存在
      */
     @GetMapping("login_no_exist")
-    public JourneySystemAppResult loginNoExist(String userAccount) {
-        return JourneySystemAppResult.ok(loginNoService.loginNoExist(userAccount));
+    public JourneySystemAppResult loginNoExist(@RequestBody LoginNo loginNo) {
+        return JourneySystemAppResult.ok(loginNoService.loginNoExist(loginNo));
     }
 }

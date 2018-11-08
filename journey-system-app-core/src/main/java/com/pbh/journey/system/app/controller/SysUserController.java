@@ -87,11 +87,34 @@ public class SysUserController extends WebContoller {
     }
 
     /**
-     * 获取系统管理员信息
+     * 根据ID获取系统管理员信息
      */
     @GetMapping("get")
     public JourneySystemAppResult get(long id) {
         return JourneySystemAppResult.ok(sysUserService.get(id));
     }
 
+    /**
+     * 根据手机号码获取系统管理员信息
+     */
+    @GetMapping("get_mobile")
+    public JourneySystemAppResult mobileGetSysUser(String mobile) {
+        return JourneySystemAppResult.ok(sysUserService.mobileGetSysUser(mobile));
+    }
+
+    /**
+     * 根据身份证号码获取系统管理员信息
+     */
+    @GetMapping("get_idCard")
+    public JourneySystemAppResult idCardGetSysUser(String idCard) {
+        return JourneySystemAppResult.ok(sysUserService.idCardGetSysUser(idCard));
+    }
+
+    /**
+     * 根据邮箱号码获取系统管理员信息
+     */
+    @GetMapping("get_mailbox")
+    public JourneySystemAppResult mailboxGetSysUser(String mailbox) {
+        return JourneySystemAppResult.ok(sysUserService.mailboxGetSysUser(mailbox));
+    }
 }

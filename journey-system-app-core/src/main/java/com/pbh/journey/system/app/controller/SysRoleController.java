@@ -112,6 +112,15 @@ public class SysRoleController {
     }
 
     /**
+     * 根据角色名获取角色信息
+     */
+    @GetMapping("get_role_name")
+    @ApiOperation(value = "根据角色名查询部门信息", notes = "查询数据库中某个角色的信息")
+    public JourneySystemAppResult nameGetDept(String roleName) {
+        return JourneySystemAppResult.ok(sysRoleService.nameGetRole(roleName));
+    }
+
+    /**
      * 修改角色禁启用状态
      */
     @PostMapping("use")

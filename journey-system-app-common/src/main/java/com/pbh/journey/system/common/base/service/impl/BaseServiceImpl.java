@@ -4,6 +4,7 @@ import com.pbh.journey.system.common.base.mapper.BaseMapper;
 import com.pbh.journey.system.common.base.pojo.BaseEntity;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.BaseService;
+import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
 
     @Override
     public T get(long id) {
+        if (CommonConstants.ZERO == id) {
+            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
+        }
         return dao.get(id);
     }
 
@@ -162,6 +166,9 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     @Transactional(rollbackFor = BussinessException.class)
     @Override
     public void delete(final long id) {
+        if (CommonConstants.ZERO == id) {
+            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
+        }
         int result = dao.delete(id);
         if (result == INT_ZERO) {
             throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + id);
@@ -171,6 +178,11 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     @Transactional(rollbackFor = BussinessException.class)
     @Override
     public void deleteBatch(final long[] ids) {
+        for (long id : ids) {
+            if (CommonConstants.ZERO == id) {
+                throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
+            }
+        }
         int result = dao.deleteBatch(ids);
         if (result == INT_ZERO) {
             throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + Arrays.toString(ids));
@@ -180,6 +192,9 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     @Transactional(rollbackFor = BussinessException.class)
     @Override
     public void deleteLogic(final long id) {
+        if (CommonConstants.ZERO == id) {
+            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
+        }
         final int result = dao.deleteLogic(id);
         if (result == INT_ZERO) {
             throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + id);

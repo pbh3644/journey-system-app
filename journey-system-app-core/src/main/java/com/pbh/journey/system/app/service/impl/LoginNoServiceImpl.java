@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.pbh.journey.system.app.mapper.LoginNoMapper;
 import com.pbh.journey.system.app.service.LoginLogService;
 import com.pbh.journey.system.app.service.LoginNoService;
+import com.pbh.journey.system.app.service.SysUserService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
@@ -13,6 +14,7 @@ import com.pbh.journey.system.common.utils.util.CurrentUserUtils;
 import com.pbh.journey.system.common.utils.util.JwtTokenUtils;
 import com.pbh.journey.system.pojo.domain.LoginLog;
 import com.pbh.journey.system.pojo.domain.LoginNo;
+import com.pbh.journey.system.pojo.domain.SysUser;
 import com.pbh.journey.system.pojo.dto.LoginNoDTO;
 import com.pbh.journey.system.pojo.dto.SysUserDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,9 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
     @Resource
     private LoginLogService loginLogService;
 
+    @Resource
+    private SysUserService sysUserService;
+
     /**
      * 查询全部登录账号列表
      */
@@ -74,24 +79,8 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
      */
     @Override
     public void insert(LoginNo entity) {
-        operationLoginNoPre(entity);
-
-        LoginNo loginNo = loginNoExist(entity.getUserAccount());
-        if (loginNo != null) {
-            throw new BussinessException(ErrorInfoConstants.MOBILE_REPETITION);
-        }
-
-        String userPwd = entity.getUserPwd();
-        if (StringUtils.isEmpty(userPwd)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_PASSWORD);
-        }
-
-        if (CommonConstants.ZERO == entity.getUserId()) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_RELEVANCE_USER_ID);
-        }
-
-        //校验通过后给密码加密存入数据库
-        entity.setUserPwd(passwordEncoder.encode(entity.getUserPwd()));
+        //增加前校验
+        addCheckout(entity);
         super.insert(entity);
         log.warn("新用户注册成功:登录{账号为:" + entity.getUserAccount() + "类型为:" + entity.getType() + "}");
     }
@@ -101,6 +90,10 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
      */
     @Override
     public void update(LoginNo entity) {
+        LoginNo loginNo = loginNoExist(entity);
+        if (loginNo != null && !loginNo.getId().equals(entity.getId())) {
+            throw new BussinessException(ErrorInfoConstants.USER_ACCOUNT_REPETITION);
+        }
         super.update(entity);
         log.warn("用户修改登录账号信息成功:登录{账号为:" + entity.getUserAccount() + "类型为:" + entity.getType() + "}");
     }
@@ -143,16 +136,130 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
     @CacheEvict(value = "LoginLogServiceImpl", allEntries = true)
     @Override
     public String login(LoginNo loginNo) {
-        operationLoginNoPre(loginNo);
+        loginNoAndTypeNotNull(loginNo);
 
+        //校验登录合法性-返回该登录账号隶属用户
+        SysUserDTO sysUserDTO = loginNoCheckout(loginNo);
+
+        //把登录账号(key)和用户信息(val)转成JSON串放入redis作缓存
+        String userAccount = loginNo.getUserAccount();
+        if (!CurrentUserUtils.saveLoginUser(userAccount, JSONObject.toJSONString(sysUserDTO), false)) {
+            throw new BussinessException(ErrorInfoConstants.SYSTEM_ERROR);
+        }
+
+        //根据登录账号生成token返回给用户,每次用户请求到后台通过token串获取登录账号,方可获取登录账号,通过登录账号可以从redis获取用户信息
+        String token = JwtTokenUtils.createToken(userAccount, false);
+
+        //登录成功加入日志
+        log.warn("用户登录成功:登录{账号为:" + userAccount + "类型为:" + loginNo.getType() + "}");
+        loginSucceed(sysUserDTO.getId(), userAccount);
+        return token;
+    }
+
+    /**
+     * 用户登出
+     */
+    @Override
+    public void logout(HttpServletRequest request) {
+        String accountToken = request.getHeader(CommonConstants.TOKEN);
+        if (StringUtils.isEmpty(accountToken)) {
+            throw new BussinessException(ErrorInfoConstants.NO_TOKEN);
+        }
+        //根据token获取登录账号
+        String userAccount = JwtTokenUtils.getUserAccount(accountToken);
+        if (CurrentUserUtils.isExpiration(userAccount)) {
+            throw new BussinessException(ErrorInfoConstants.NO_LOGIN);
+        }
+        //从redis中删除登录账号
+        CurrentUserUtils.delUserAccount(userAccount);
+        log.warn("用户退出登录成功:登录{账号为:" + userAccount + "}");
+    }
+
+    /**
+     * 根据登录账号的类型获取登录账号信息
+     */
+    @Override
+    public LoginNo loginNoExist(LoginNo loginNo) {
+        loginNoAndTypeNotNull(loginNo);
+        return loginNoMapper.loginNoExist(loginNo);
+    }
+
+    /**
+     * 修改密码
+     */
+    @Override
+    public void updatePwd(LoginNoDTO loginNoDTO) {
+        LoginNo loginNo = updatePwdCheckout(loginNoDTO);
+        loginNoMapper.updatePwd(loginNoDTO);
+
+        //更新系统管理员最近修改密码时间
+        SysUser sysUser = new SysUser();
+        sysUser.setId(loginNo.getUserId());
+        sysUser.setLastPwdmodTime(sysUser.currentTime());
+        sysUserService.update(sysUser);
+
+        log.warn("用户修改密码成功:用户ID为" + loginNo.getUserId() + ",登录账号为" + loginNo.getUserAccount());
+    }
+
+    /**
+     * 通过登录账号修改登录账号
+     * 目前只有修改系统管理员的手机号码时才会调用这个方法同步把登录账号的手机号码更改掉
+     */
+    @Override
+    public void updateUserAccount(LoginNoDTO loginNoDTO) {
+        loginNoAndTypeNotNull(loginNoDTO);
+        loginNoMapper.updateUserAccount(loginNoDTO);
+        log.warn("用户修改登录账号成功:登录{账号为:" + loginNoDTO.getUserAccount() + "}");
+    }
+
+    /**
+     * 登录账号和登录类型不能为空
+     */
+    private void loginNoAndTypeNotNull(LoginNo entity) {
+        if (StringUtils.isEmpty(entity.getUserAccount())) {
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_USER_ACCOUNT);
+        }
+        if (CommonConstants.ZERO == entity.getType()) {
+            throw new BussinessException(ErrorInfoConstants.PLEASE_SELECT_LOGIN_TYPE);
+        }
+    }
+
+    /**
+     * 新增登录账号判断
+     */
+    private void addCheckout(LoginNo entity) {
+        //判断登录账号是否已存在
+        LoginNo loginNo = loginNoExist(entity);
+        if (loginNo != null) {
+            throw new BussinessException(ErrorInfoConstants.USER_ACCOUNT_REPETITION);
+        }
+
+        //必须输入登录密码
+        String userPwd = entity.getUserPwd();
+        if (StringUtils.isEmpty(userPwd)) {
+            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_PASSWORD);
+        }
+
+        //增加登录账号时如果没有关联用户ID给登录账号关联当前用户ID
+        if (CommonConstants.ZERO == entity.getUserId()) {
+            entity.setUserId(CurrentUserUtils.getCurrentUserId());
+        }
+
+        //校验通过后给密码加密
+        entity.setUserPwd(passwordEncoder.encode(userPwd));
+    }
+
+    /**
+     * 用户登录前需要的判断
+     */
+    private SysUserDTO loginNoCheckout(LoginNo loginNo) {
         //用户输入的密码
         String importUserPwd = loginNo.getUserPwd();
         if (StringUtils.isEmpty(importUserPwd)) {
             throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_PASSWORD);
         }
 
-        //根据账号和登录类型查询是否存在该用户是否被逻辑删除
-        loginNo.setDeleteFlag(CommonConstants.DELETE_FLAG_NORMAL);
+        //根据账号和登录类型查询该用户
         SysUserDTO sysUserDTO = loginNoMapper.login(loginNo);
 
         if (sysUserDTO == null) {
@@ -183,66 +290,37 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
         if (CurrentUserUtils.isExpiration(loginNo.getUserAccount())) {
             throw new BussinessException(ErrorInfoConstants.LOGIN_CONFLICT);
         }
-
         //登录校验成功后为了安全把用户密码置空
         sysUserDTO.setUserPwd("");
+        return sysUserDTO;
+    }
 
+    /**
+     * 登录成功后往数据库加入日志
+     */
+    private void loginSucceed(long userId, String userAccount) {
         //登录成功增加登录日志
         LoginLog loginLog = new LoginLog();
-        loginLog.setUserId(sysUserDTO.getId());
+        loginLog.setUserId(userId);
         loginLog.setSystemCode(CommonConstants.SYSTEM_CODE);
-        loginLog.setUserAccount(loginNo.getUserAccount());
+        loginLog.setUserAccount(userAccount);
         loginLogService.insert(loginLog);
-
-        //把登录账号和用户信息转成JSON放入redis
-        if (!CurrentUserUtils.saveLoginUser(loginNo.getUserAccount(), JSONObject.toJSONString(sysUserDTO), false)) {
-            throw new BussinessException(ErrorInfoConstants.SYSTEM_ERROR);
-        }
-        //根据登录账号生成token返回给用户,每次用户请求到后台通过token串获取登录账号,方可获取登录账号,通过登录账号可以从redis获取用户信息
-        String token = JwtTokenUtils.createToken(loginNo.getUserAccount(), false);
-        log.warn("用户登录成功:登录{账号为:" + loginNo.getUserAccount() + "类型为:" + loginNo.getType() + "}");
-        return token;
     }
 
     /**
-     * 用户登出
+     * 修改密码时候需要的判断
      */
-    @Override
-    public void logout(HttpServletRequest request) {
-        String accountToken = request.getHeader(CommonConstants.TOKEN);
-        if (StringUtils.isEmpty(accountToken)) {
-            throw new BussinessException(ErrorInfoConstants.NO_TOKEN);
-        }
-        //根据token获取登录账号
-        String userAccount = JwtTokenUtils.getUserAccount(accountToken);
-        if (CurrentUserUtils.isExpiration(userAccount)) {
-            throw new BussinessException(ErrorInfoConstants.NO_LOGIN);
-        }
-        //从redis中删除登录账号
-        CurrentUserUtils.delUserAccount(userAccount);
-        log.warn("用户退出登录成功:登录{账号为:" + userAccount + "}");
-    }
-
-    /**
-     * 判断登录账号是否存在
-     */
-    @Override
-    public LoginNo loginNoExist(String loginNo) {
-        if (StringUtils.isEmpty(loginNo)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_USER_ACCOUNT);
-        }
-        return loginNoMapper.loginNoExist(loginNo);
-    }
-
-    /**
-     * 修改密码
-     */
-    @Override
-    public void updatePwd(LoginNoDTO loginNoDTO) {
+    private LoginNo updatePwdCheckout(LoginNoDTO loginNoDTO) {
         //原密码
         String userPwd = loginNoDTO.getUserPwd();
         if (StringUtils.isEmpty(userPwd)) {
             throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ORIGINAL_PASSWORD);
+        }
+
+        LoginNo loginNo = get(loginNoDTO.getId());
+        //比较输入的旧密码是否正确
+        if (!passwordEncoder.matches(userPwd, loginNo.getUserPwd())) {
+            throw new BussinessException(ErrorInfoConstants.PASSWORD_INCORRECTNESS);
         }
 
         //新密码
@@ -257,42 +335,20 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
             throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_AGAIN_NEW_PASSWORD);
         }
 
+        //输入的两次新密码是否一致
         if (!newAffirmUserPwd.equals(newUserPwd)) {
             throw new BussinessException(ErrorInfoConstants.NEW_AND_AGAIN_PASSWORD_DIFFER);
         }
-        long id = loginNoDTO.getId();
-        if (CommonConstants.ZERO == id) {
-            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
-        }
 
-        LoginNo loginNo = get(id);
+        //校验这个账号是否被逻辑删除
         byte deleteFlag = loginNo.getDeleteFlag();
         if (CommonConstants.DELETE_FLAG_FREAK == deleteFlag) {
             throw new BussinessException(ErrorInfoConstants.ACCOUNT_FREEZE_DEL);
         }
 
-        //校验通过后给密码加密存入数据库
+        //校验通过后给密码加密
         loginNoDTO.setNewUserPwd(passwordEncoder.encode(newUserPwd));
-        loginNoMapper.updatePwd(loginNoDTO);
-        log.warn("用户修改密码成功:用户ID为" + loginNo.getUserId() + ",登录账号为" + loginNo.getUserAccount());
+        return loginNo;
     }
 
-    @Override
-    public void updateUserAccount(LoginNoDTO loginNoDTO) {
-        loginNoMapper.updateUserAccount(loginNoDTO);
-        log.warn("用户修改登录成功:登录{账号为:" + loginNoDTO.getUserAccount() + "}");
-    }
-
-    /**
-     * 登录账号通用的判断(预处理)
-     */
-    private void operationLoginNoPre(LoginNo entity) {
-        if (StringUtils.isEmpty(entity.getUserAccount())) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_USER_ACCOUNT);
-        }
-
-        if (CommonConstants.ZERO == entity.getType()) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_SELECT_LOGIN_TYPE);
-        }
-    }
 }

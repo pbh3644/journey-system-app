@@ -22,18 +22,19 @@ public interface LoginNoMapper extends BaseMapper<LoginNo> {
      * 登录账号是否被删除
      *
      * @param loginNo
-     * @return String token
+     * @return SysUserDTO 用户对象
      */
     SysUserDTO login(LoginNo loginNo);
 
 
     /**
-     * 查询账号是否存在
+     * 根据登录账号和登录类型查询账号是否存在
      *
-     * @param userAccount 账号
+     * @param loginNo LoginNo
      * @return LoginNo 登录账号表对象
      */
-    LoginNo loginNoExist(String userAccount);
+    LoginNo loginNoExist(LoginNo loginNo);
+
 
     /**
      * 修改密码

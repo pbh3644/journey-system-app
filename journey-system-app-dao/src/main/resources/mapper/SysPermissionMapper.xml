@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pbh.journey.system.app.mapper.SysUserMapper">
-    <resultMap type="com.pbh.journey.system.pojo.domain.SysUser" id="sysUserResultMap">
+<mapper namespace="com.pbh.journey.system.app.mapper.SysPermissionMapper">
+    <resultMap type="com.pbh.journey.system.pojo.domain.SysPermission" id="sysPermissionResultMap">
         <result property="id" column="ID"/>
-        <result property="nickName" column="NICK_NAME"/>
-        <result property="realName" column="REAL_NAME"/>
-        <result property="idCard" column="ID_CARD"/>
-        <result property="mailbox" column="MAILBOX"/>
-        <result property="mobile" column="MOBILE"/>
-        <result property="state" column="STATE"/>
-        <result property="lastPwdmodTime" column="LAST_PWDMOD_TIME"/>
-        <result property="deviceId" column="DEVICE_ID"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="isMenu" column="IS_MENU"/>
+        <result property="level" column="LEVEL"/>
+        <result property="permissionUrl" column="PERMISSION_URL"/>
+        <result property="permissionDesc" column="PERMISSION_DESC"/>
+        <result property="systemCode" column="SYSTEM_CODE"/>
+        <result property="needCsrf" column="NEED_CSRF"/>
+        <result property="order" column="ORDER"/>
+        <result property="permissionType" column="PERMISSION_TYPE"/>
         <result property="addTime" column="ADD_TIME"/>
         <result property="updateTime" column="UPDATE_TIME"/>
         <result property="deleteTime" column="DELETE_TIME"/>
@@ -23,14 +24,15 @@
 
     <sql id="table_columns">
             ID,
-            NICK_NAME,
-            REAL_NAME,
-            ID_CARD,
-            MAILBOX,
-            MOBILE,
-            STATE,
-            LAST_PWDMOD_TIME,
-            DEVICE_ID,
+            PARENT_ID,
+            IS_MENU,
+            LEVEL,
+            PERMISSION_URL,
+            PERMISSION_DESC,
+            SYSTEM_CODE,
+            NEED_CSRF,
+            ORDER,
+            PERMISSION_TYPE,
             ADD_TIME,
             UPDATE_TIME,
             DELETE_TIME,
@@ -42,14 +44,15 @@
     </sql>
     <sql id="entity_properties">
             #{id},
-            #{nickName},
-            #{realName},
-            #{idCard},
-            #{mailbox},
-            #{mobile},
-            #{state},
-            #{lastPwdmodTime},
-            #{deviceId},
+            #{parentId},
+            #{isMenu},
+            #{level},
+            #{permissionUrl},
+            #{permissionDesc},
+            #{systemCode},
+            #{needCsrf},
+            #{order},
+            #{permissionType},
             #{addTime},
             #{updateTime},
             #{deleteTime},
@@ -64,14 +67,15 @@
     <sql id="page_where">
         <trim prefix="where" prefixOverrides="and | or ">
             <if test="id != null and id != 0">and ID = #{id}</if>
-            <if test="nickName != null and nickName != ''">and NICK_NAME = #{nickName}</if>
-            <if test="realName != null and realName != ''">and REAL_NAME = #{realName}</if>
-            <if test="idCard != null and idCard != ''">and ID_CARD = #{idCard}</if>
-            <if test="mailbox != null and mailbox != ''">and MAILBOX = #{mailbox}</if>
-            <if test="mobile != null and mobile != ''">and MOBILE = #{mobile}</if>
-            <if test="state != null">and STATE = #{state}</if>
-            <if test="lastPwdmodTime != null">and LAST_PWDMOD_TIME = #{lastPwdmodTime}</if>
-            <if test="deviceId != null and deviceId != ''">and DEVICE_ID = #{deviceId}</if>
+            <if test="parentId != null and parentId != 0">and PARENT_ID = #{parentId}</if>
+            <if test="isMenu != null">and IS_MENU = #{isMenu}</if>
+            <if test="level != null">and LEVEL = #{level}</if>
+            <if test="permissionUrl != null and permissionUrl != ''">and PERMISSION_URL = #{permissionUrl}</if>
+            <if test="permissionDesc != null and permissionDesc != ''">and PERMISSION_DESC = #{permissionDesc}</if>
+            <if test="systemCode != null and systemCode != ''">and SYSTEM_CODE = #{systemCode}</if>
+            <if test="needCsrf != null">and NEED_CSRF = #{needCsrf}</if>
+            <if test="order != null">and ORDER = #{order}</if>
+            <if test="permissionType != null and permissionType != ''">and PERMISSION_TYPE = #{permissionType}</if>
             <if test="addTime != null">and ADD_TIME = #{addTime}</if>
             <if test="updateTime != null">and UPDATE_TIME = #{updateTime}</if>
             <if test="deleteTime != null">and DELETE_TIME = #{deleteTime}</if>
@@ -83,8 +87,8 @@
         </trim>
     </sql>
 
-    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.SysUser">
-        insert into sys_user(
+    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.SysPermission">
+        insert into sys_permission(
         <include refid="table_columns"/>
         )
         values (
@@ -93,21 +97,22 @@
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
-        insert into sys_user(
+        insert into sys_permission(
         <include refid="table_columns"/>
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.id},
-            #{item.nickName},
-            #{item.realName},
-            #{item.idCard},
-            #{item.mailbox},
-            #{item.mobile},
-            #{item.state},
-            #{item.lastPwdmodTime},
-            #{item.deviceId},
+            #{item.parentId},
+            #{item.isMenu},
+            #{item.level},
+            #{item.permissionUrl},
+            #{item.permissionDesc},
+            #{item.systemCode},
+            #{item.needCsrf},
+            #{item.order},
+            #{item.permissionType},
             #{item.addTime},
             #{item.updateTime},
             #{item.deleteTime},
@@ -121,12 +126,12 @@
     </insert>
 
     <delete id="delete" parameterType="java.lang.Long">
-        delete from sys_user
+        delete from sys_permission
         where id = #{id}
     </delete>
 
     <update id="deleteBatch">
-        update sys_user set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        update sys_permission set DELETE_FLAG = 2,DELETE_TIME = NOW()
         where id in
         <foreach collection="array" item="id" open="(" separator="," close=")">
             #{id}
@@ -134,21 +139,22 @@
     </update>
 
     <update id="deleteLogic" parameterType="java.lang.Long">
-        update sys_user set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        update sys_permission set DELETE_FLAG = 2,DELETE_TIME = NOW()
         where id = #{id}
     </update>
 
-    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.SysUser">
-        update sys_user
+    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.SysPermission">
+        update sys_permission
         <trim prefix="set" suffixOverrides=",">
-            <if test="nickName != null and nickName != ''">NICK_NAME = #{nickName},</if>
-            <if test="realName != null and realName != ''">REAL_NAME = #{realName},</if>
-            <if test="idCard != null and idCard != ''">ID_CARD = #{idCard},</if>
-            <if test="mailbox != null and mailbox != ''">MAILBOX = #{mailbox},</if>
-            <if test="mobile != null and mobile != ''">MOBILE = #{mobile},</if>
-            <if test="state != null">and STATE = #{state},</if>
-            <if test="lastPwdmodTime != null">and LAST_PWDMOD_TIME = #{lastPwdmodTime},</if>
-            <if test="deviceId != null and deviceId != ''">DEVICE_ID = #{deviceId},</if>
+            <if test="parentId != null and parentId != 0">PARENT_ID = #{parentId},</if>
+            <if test="isMenu != null">and IS_MENU = #{isMenu},</if>
+            <if test="level != null">and LEVEL = #{level},</if>
+            <if test="permissionUrl != null and permissionUrl != ''">PERMISSION_URL = #{permissionUrl},</if>
+            <if test="permissionDesc != null and permissionDesc != ''">PERMISSION_DESC = #{permissionDesc},</if>
+            <if test="systemCode != null and systemCode != ''">SYSTEM_CODE = #{systemCode},</if>
+            <if test="needCsrf != null">and NEED_CSRF = #{needCsrf},</if>
+            <if test="order != null">and ORDER = #{order},</if>
+            <if test="permissionType != null and permissionType != ''">PERMISSION_TYPE = #{permissionType},</if>
             <if test="addTime != null">and ADD_TIME = #{addTime},</if>
             <if test="updateTime != null">and UPDATE_TIME = #{updateTime},</if>
             <if test="deleteTime != null">and DELETE_TIME = #{deleteTime},</if>
@@ -163,27 +169,26 @@
 
     <update id="updateBatch" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" separator=",">
-            update sys_user
+            update sys_permission
             <trim prefix="set" suffixOverrides=",">
-                <if test="item.nickName != null and item.nickName != ''">NICK_NAME = #
-                    {item.nickName},
+                <if test="item.parentId != null and item.parentId != 0">PARENT_ID = #
+                    {item.parentId},
                 </if>
-                <if test="item.realName != null and item.realName != ''">REAL_NAME = #
-                    {item.realName},
+                <if test="item.isMenu != null">IS_MENU = #{item.isMenu},</if>
+                <if test="item.level != null">LEVEL = #{item.level},</if>
+                <if test="item.permissionUrl != null and item.permissionUrl != ''">PERMISSION_URL = #
+                    {item.permissionUrl},
                 </if>
-                <if test="item.idCard != null and item.idCard != ''">ID_CARD = #
-                    {item.idCard},
+                <if test="item.permissionDesc != null and item.permissionDesc != ''">PERMISSION_DESC = #
+                    {item.permissionDesc},
                 </if>
-                <if test="item.mailbox != null and item.mailbox != ''">MAILBOX = #
-                    {item.mailbox},
+                <if test="item.systemCode != null and item.systemCode != ''">SYSTEM_CODE = #
+                    {item.systemCode},
                 </if>
-                <if test="item.mobile != null and item.mobile != ''">MOBILE = #
-                    {item.mobile},
-                </if>
-                <if test="item.state != null">STATE = #{item.state},</if>
-                <if test="item.lastPwdmodTime != null">LAST_PWDMOD_TIME = #{item.lastPwdmodTime},</if>
-                <if test="item.deviceId != null and item.deviceId != ''">DEVICE_ID = #
-                    {item.deviceId},
+                <if test="item.needCsrf != null">NEED_CSRF = #{item.needCsrf},</if>
+                <if test="item.order != null">ORDER = #{item.order},</if>
+                <if test="item.permissionType != null and item.permissionType != ''">PERMISSION_TYPE = #
+                    {item.permissionType},
                 </if>
                 <if test="item.addTime != null">ADD_TIME = #{item.addTime},</if>
                 <if test="item.updateTime != null">UPDATE_TIME = #{item.updateTime},</if>
@@ -206,55 +211,37 @@
         </foreach>
     </update>
 
-    <select id="findAll" resultMap="sysUserResultMap">
+    <select id="findAll" resultMap="sysPermissionResultMap">
         select
         <include refid="table_columns"/>
-        from sys_user
+        from sys_permission
     </select>
 
-    <select id="findList" resultMap="sysUserResultMap">
+    <select id="findList" resultMap="sysPermissionResultMap">
         select
         <include refid="table_columns"/>
-        from sys_user
+        from sys_permission
         <include refid="page_where"/>
     </select>
 
     <select id="getCount" resultType="int">
-        select count(id) from sys_user
+        select count(id) from sys_permission
         <include refid="page_where"/>
     </select>
 
 
-    <select id="get" resultMap="sysUserResultMap" parameterType="java.lang.Long">
+    <select id="get" resultMap="sysPermissionResultMap" parameterType="java.lang.Long">
         select
         <include refid="table_columns"/>
-        from sys_user
+        from sys_permission
         where id = #{id} and DELETE_FLAG = 1
     </select>
 
     <!-- 其他自定义SQL -->
-
-    <!--通过手机号码查询用户-->
-    <select id="mobileGetSysUser" resultMap="sysUserResultMap" parameterType="java.lang.String">
+    <select id="urlGetPermission" resultMap="sysPermissionResultMap" parameterType="java.lang.String">
         select
         <include refid="table_columns"/>
-        from sys_user u
-        where u.mobile = #{mobile}
-    </select>
-
-    <!--通过身份证号码查询用户-->
-    <select id="idCardGetSysUser" resultMap="sysUserResultMap" parameterType="java.lang.String">
-        select
-        <include refid="table_columns"/>
-        from sys_user u
-        where u.id_card = #{idCard}
-    </select>
-
-    <!--通过身份证号码查询用户-->
-    <select id="mailboxGetSysUser" resultMap="sysUserResultMap" parameterType="java.lang.String">
-        select
-        <include refid="table_columns"/>
-        from sys_user u
-        where u.mailbox = #{mailbox}
+        from sys_permission p
+        where p.permission_url = #{url}
     </select>
 </mapper>

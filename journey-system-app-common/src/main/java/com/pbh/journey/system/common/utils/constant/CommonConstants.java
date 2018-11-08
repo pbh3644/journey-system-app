@@ -81,4 +81,10 @@ public class CommonConstants {
      */
     public static final String ROLE_LOG = "ROLE-";
     public static final byte ROLE_CODE_PROGRESSIVE = 1;
+
+    /**
+     * 权限资源level同级order递增数字
+     */
+    public static final String PERMISSION_LOG = "PERMISSION-LEVEL-";
+    public static final byte PERMISSION_LEVEL_ORDER_PROGRESSIVE = 1;
 }

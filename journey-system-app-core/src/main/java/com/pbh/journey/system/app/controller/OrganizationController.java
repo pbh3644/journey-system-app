@@ -113,4 +113,12 @@ public class OrganizationController extends WebContoller {
     public JourneySystemAppResult get(long id) {
         return JourneySystemAppResult.ok(organizationService.get(id));
     }
+
+    /**
+     * 根据数据中心的表名和微服务的ID精准查询是否有相同的表名字
+     */
+    @PostMapping("repetition")
+    public JourneySystemAppResult uniquenessApplicationName(@RequestBody Organization organization) {
+        return JourneySystemAppResult.ok(organizationService.uniquenessOrganizationName(organization));
+    }
 }

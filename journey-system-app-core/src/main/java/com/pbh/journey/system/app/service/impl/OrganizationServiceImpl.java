@@ -4,10 +4,12 @@ import com.pbh.journey.system.app.mapper.OrganizationMapper;
 import com.pbh.journey.system.app.service.OrganizationService;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
+import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
 import com.pbh.journey.system.pojo.domain.Organization;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,7 +35,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     private OrganizationMapper organizationMapper;
 
     /**
-     * 查询全部微服务列表
+     * 查询全部数据库表列表
      */
     @Override
     @Cacheable("OrganizationServiceImpl")
@@ -42,7 +44,7 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
     }
 
     /**
-     * 根据查询条件查询微服务列表分页
+     * 根据查询条件查询数据库表列表分页
      */
     @Override
     @Cacheable(value = "OrganizationServiceImpl", key = "#organization")
@@ -50,47 +52,49 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
         return super.findPage(organization);
     }
 
+    /**
+     * 增加数据库表
+     */
     @Override
     @CachePut(value = "OrganizationServiceImpl", key = "#organization.id")
     public void insert(Organization organization) {
-        if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
-        }
+        addOrganizationCheckout(organization);
         super.insert(organization);
     }
 
+    /**
+     * 批量增加数据库表
+     */
     @Override
     @CacheEvict(value = "OrganizationServiceImpl", allEntries = true)
     public void insertBatch(List<Organization> list) {
         organizationNameWeight(list);
         for (Organization organization : list) {
-            if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-                throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
-            }
+            addOrganizationCheckout(organization);
         }
         super.insertBatch(list);
     }
 
+    /**
+     * 修改数据库表
+     */
     @Override
     @CachePut(value = "OrganizationServiceImpl", key = "#organization.id")
     public void update(Organization organization) {
-        Long applicationId = organization.getApplicationId();
-        String organizationDataName = organization.getOrganizationDataName();
-        if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
-        }
+        updateOrganizationCheckout(organization);
         super.update(organization);
-        log.warn("修改表成功！微服务的ID为" + applicationId + "表名为:" + organizationDataName);
+        log.warn("修改表成功！微服务的ID为" + organization.getApplicationId() + "表名为:" + organization.getOrganizationDataName());
     }
 
+    /**
+     * 批量修改数据库表
+     */
     @Override
     @CacheEvict(value = "OrganizationServiceImpl", allEntries = true)
     public void updateBatch(List<Organization> list) {
         organizationNameWeight(list);
         for (Organization organization : list) {
-            if (organizationMapper.uniquenessOrganizationName(organization) != null) {
-                throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
-            }
+            updateOrganizationCheckout(organization);
         }
         super.updateBatch(list);
         log.warn("批量修改表成功！这批表的信息为：" + list.toString());
@@ -136,6 +140,26 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
         return super.get(id);
     }
 
+    /**
+     * 判断数据库表和微服务ID是否合法
+     */
+    private void appIdAndTableNameCheckout(Organization organization) {
+        if (CommonConstants.ZERO == organization.getApplicationId()) {
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_ID_NULL);
+        }
+        if (StringUtils.isEmpty(organization.getOrganizationDataName())) {
+            throw new BussinessException(ErrorInfoConstants.ORGANIZATION_DATA_NAME_NULL);
+        }
+    }
+
+    /**
+     * 根据数据中心的表名和微服务的ID精准查询是否有相同的表名字
+     */
+    @Override
+    public Organization uniquenessOrganizationName(Organization organization) {
+        appIdAndTableNameCheckout(organization);
+        return organizationMapper.uniquenessOrganizationName(organization);
+    }
 
     /**
      * 批量判断list中微服务下是否包含相同的数据库名
@@ -148,6 +172,29 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
         }
         if (set.size() != list.size()) {
             throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
+        }
+    }
+
+    /**
+     * 增加数据库表对象的判断
+     */
+    private void addOrganizationCheckout(Organization organization) {
+        if (uniquenessOrganizationName(organization) != null) {
+            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
+        }
+    }
+
+    /**
+     * 修改数据库表对象的判断
+     */
+    private void updateOrganizationCheckout(Organization organization) {
+        String organizationDataName = organization.getOrganizationDataName();
+        //当检测到数据库表名字不为空的时候
+        if (StringUtils.isEmpty(organizationDataName)) {
+            Organization table = uniquenessOrganizationName(organization);
+            if (table != null && !table.getId().equals(organization.getId())) {
+                throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
+            }
         }
     }
 }

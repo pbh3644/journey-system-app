@@ -266,16 +266,15 @@
         <include refid="user_table_columns"/>
         from login_no l
         LEFT JOIN sys_user s on l.user_id = s.id
-        WHERE  l.type = #{type}
-        and l.user_account = #{userAccount}
+        WHERE l.user_account = #{userAccount} and l.type = #{type}
     </select>
 
     <!--用户登录账号查询-->
-    <select id="loginNoExist" parameterType="java.lang.String" resultMap="sysUserDtoResultMap">
+    <select id="loginNoExist" parameterType="com.pbh.journey.system.pojo.domain.LoginNo" resultMap="loginNoResultMap">
         select
-        <include refid="user_table_columns"/>
+        <include refid="table_columns"/>
         from login_no l
-        WHERE l.user_account = #{userAccount}
+        WHERE l.user_account = #{userAccount} and l.type=#{type}
     </select>
 
     <!--修改密码-->
