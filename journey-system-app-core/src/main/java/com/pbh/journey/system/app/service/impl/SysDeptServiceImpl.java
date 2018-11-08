@@ -7,6 +7,7 @@ import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.pbh.journey.system.pojo.domain.SysDept;
 import lombok.extern.slf4j.Slf4j;
@@ -143,9 +144,7 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
      * 判断部门名字不能为空
      */
     private void deptNameCheckout(String deptName) {
-        if (StringUtils.isEmpty(deptName)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_DEPT_NAME);
-        }
+        CompareSceneException.customStringIsNull(deptName, ErrorInfoConstants.PLEASE_ENTER_DEPT_NAME);
     }
 
     /**
@@ -162,12 +161,10 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
      */
     @Override
     public void switchDept(SysDept sysDept) {
-        if (CommonConstants.ZERO == sysDept.getId()) {
-            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
-        }
-        if (CommonConstants.ZERO == sysDept.getDeptState()) {
-            throw new BussinessException(ErrorInfoConstants.DEPT_STATE_REPETITION);
-        }
+        //部门ID不能为空
+        CompareSceneException.customNumericalEquality(CommonConstants.ZERO, sysDept.getId(), ErrorInfoConstants.ID_NOT_NULL);
+        //部门状态不能为空
+        CompareSceneException.customNumericalEquality(CommonConstants.ZERO, sysDept.getDeptState(), ErrorInfoConstants.DEPT_STATE_REPETITION);
         sysDeptMapper.switchDept(sysDept);
     }
 
@@ -176,13 +173,12 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
      */
     private void deptNameWeight(List<SysDept> list) {
         //判断批量list当中知否含有重复的部门名字
-        Set<String> set = new HashSet<>(list.size());
+        int listSize = list.size();
+        Set<String> set = new HashSet<>(listSize);
         for (SysDept sysDept : list) {
             set.add(sysDept.getDeptName());
         }
-        if (set.size() != list.size()) {
-            throw new BussinessException(ErrorInfoConstants.DEPT_NAME_REPETITION);
-        }
+        CompareSceneException.customNumericalNotEquality(set.size(), listSize, ErrorInfoConstants.DEPT_NAME_REPETITION);
     }
 
     /**
@@ -190,9 +186,7 @@ public class SysDeptServiceImpl extends BaseServiceImpl<SysDeptMapper, SysDept> 
      */
     private void addSysDeptCheckout(SysDept sysDept) {
         //判断部门名字是否重复
-        if (nameGetDept(sysDept.getDeptName()) != null) {
-            throw new BussinessException(ErrorInfoConstants.DEPT_NAME_REPETITION);
-        }
+        CompareSceneException.customObjectIsNotNull(nameGetDept(sysDept.getDeptName()), ErrorInfoConstants.DEPT_NAME_REPETITION);
         //通过redis递增数字+1获取唯一deptCode
         String deptCode = CommonConstants.DEPT_LOG + RedisUtils.incr(CommonConstants.DEPT_LOG, CommonConstants.DEPT_CODE_PROGRESSIVE);
         sysDept.setDeptCode(deptCode);

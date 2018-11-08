@@ -6,6 +6,7 @@ import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import com.pbh.journey.system.pojo.domain.Application;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -163,41 +164,30 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
      * 判断微服务的中文名字是否合法
      */
     private void applicationNameChineseCheckout(String applicationNameChinese) {
-        if (StringUtils.isEmpty(applicationNameChinese)) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_CHINESE_NULL);
-        }
+        CompareSceneException.customStringIsNull(applicationNameChinese, ErrorInfoConstants.APPLICATION_NAME_CHINESE_NULL);
     }
 
     /**
      * 判断微服务的英文名字是否合法
      */
     private void applicationNameChineseEnglish(String applicationNameEnglish) {
-        if (StringUtils.isEmpty(applicationNameEnglish)) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_ENGLISH_NULL);
-        }
+        CompareSceneException.customStringIsNull(applicationNameEnglish, ErrorInfoConstants.APPLICATION_NAME_ENGLISH_NULL);
     }
 
     /**
      * 批量判断list中是否包含相同的微服务名
      */
     private void applicationNameWeight(List<Application> list) {
+        int listSize = list.size();
         //判断批量list当中知否含有重复的微服务名字
-        Set<String> setChinese = new HashSet<>(list.size());
-        Set<String> setEnglish = new HashSet<>(list.size());
+        Set<String> setChinese = new HashSet<>(listSize);
+        Set<String> setEnglish = new HashSet<>(listSize);
         for (Application application : list) {
             setChinese.add(application.getApplicationNameChinese());
             setEnglish.add(application.getApplicationNameEnglish());
         }
-
-        //判断中文名字是否重复
-        if (setChinese.size() != list.size()) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_CHINESE_REPETITION);
-        }
-
-        //判断英文名字是否重复
-        if (setEnglish.size() != list.size()) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_ENGLISH_REPETITION);
-        }
+        CompareSceneException.customNumericalNotEquality(setChinese.size(), listSize, ErrorInfoConstants.APPLICATION_NAME_CHINESE_REPETITION);
+        CompareSceneException.customNumericalNotEquality(setEnglish.size(), listSize, ErrorInfoConstants.APPLICATION_NAME_ENGLISH_REPETITION);
     }
 
     /**
@@ -205,20 +195,26 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
      */
     private void addApplicationCheckout(Application application) {
         //判断微服务的中文名字是否重复
-        if (uniquenessApplicationNameChinese(application.getApplicationNameChinese()) != null) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_CHINESE_REPETITION);
-        }
-
+        Application applicationChinese = uniquenessApplicationNameChinese(application.getApplicationNameChinese());
+        CompareSceneException.customObjectIsNotNull(applicationChinese, ErrorInfoConstants.APPLICATION_NAME_CHINESE_REPETITION);
         //判断微服务的英文名字是否重复
-        if (uniquenessApplicationNameEnglish(application.getApplicationNameEnglish()) != null) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_ENGLISH_REPETITION);
-        }
+        Application applicationEnglish = uniquenessApplicationNameEnglish(application.getApplicationNameEnglish());
+        CompareSceneException.customObjectIsNotNull(applicationEnglish, ErrorInfoConstants.APPLICATION_NAME_ENGLISH_REPETITION);
+
     }
 
     /**
      * 修改微服务时对象的判断
      */
     private void updateApplicationCheckout(Application application) {
+        updateApplicationChineseCheckout(application);
+        updateApplicationEnglishCheckout(application);
+    }
+
+    /**
+     * 修改微服务时检测微服务的中文名字
+     */
+    private void updateApplicationChineseCheckout(Application application) {
         String applicationNameChinese = application.getApplicationNameChinese();
         //当检测到微服务的中文名字不为空时
         if (!StringUtils.isEmpty(applicationNameChinese)) {
@@ -229,7 +225,12 @@ public class ApplicationServiceImpl extends BaseServiceImpl<ApplicationMapper, A
                 throw new BussinessException(ErrorInfoConstants.APPLICATION_NAME_CHINESE_REPETITION);
             }
         }
+    }
 
+    /**
+     * 修改微服务时检测微服务的英文名字
+     */
+    private void updateApplicationEnglishCheckout(Application application) {
         String applicationNameEnglish = application.getApplicationNameEnglish();
         //当检测到微服务的英文名字不为空时
         if (!StringUtils.isEmpty(applicationNameEnglish)) {

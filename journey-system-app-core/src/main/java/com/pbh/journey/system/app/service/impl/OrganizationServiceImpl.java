@@ -7,6 +7,7 @@ import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import com.pbh.journey.system.pojo.domain.Organization;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -144,12 +145,10 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
      * 判断数据库表和微服务ID是否合法
      */
     private void appIdAndTableNameCheckout(Organization organization) {
-        if (CommonConstants.ZERO == organization.getApplicationId()) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_ID_NULL);
-        }
-        if (StringUtils.isEmpty(organization.getOrganizationDataName())) {
-            throw new BussinessException(ErrorInfoConstants.ORGANIZATION_DATA_NAME_NULL);
-        }
+        //ApplicationId必须填写
+        CompareSceneException.customNumericalEquality(CommonConstants.ZERO, organization.getApplicationId(), ErrorInfoConstants.APPLICATION_ID_NULL);
+        //数据库表的名字必须填写
+        CompareSceneException.customStringIsNull(organization.getOrganizationDataName(), ErrorInfoConstants.ORGANIZATION_DATA_NAME_NULL);
     }
 
     /**
@@ -166,22 +165,19 @@ public class OrganizationServiceImpl extends BaseServiceImpl<OrganizationMapper,
      */
     private void organizationNameWeight(List<Organization> list) {
         //判断批量list当中知否含有重复的部门名字
-        Set<String> set = new HashSet<>(list.size());
+        int listSize = list.size();
+        Set<String> set = new HashSet<>(listSize);
         for (Organization organization : list) {
             set.add(organization.getApplicationId() + organization.getOrganizationDataName());
         }
-        if (set.size() != list.size()) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
-        }
+        CompareSceneException.customNumericalNotEquality(set.size(), listSize, ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
     }
 
     /**
      * 增加数据库表对象的判断
      */
     private void addOrganizationCheckout(Organization organization) {
-        if (uniquenessOrganizationName(organization) != null) {
-            throw new BussinessException(ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
-        }
+        CompareSceneException.customObjectIsNotNull(uniquenessOrganizationName(organization), ErrorInfoConstants.APPLICATION_AND_TABLE_NAME_REPETITION);
     }
 
     /**

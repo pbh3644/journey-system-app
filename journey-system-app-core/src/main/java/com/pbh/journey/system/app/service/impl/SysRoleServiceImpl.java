@@ -7,6 +7,7 @@ import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.pbh.journey.system.pojo.domain.SysRole;
 import lombok.extern.slf4j.Slf4j;
@@ -160,9 +161,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
      * 角色名不能为空
      */
     private void roleNameNotNull(String roleName) {
-        if (StringUtils.isEmpty(roleName)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ROLE_NAME);
-        }
+        CompareSceneException.customStringIsNull(roleName, ErrorInfoConstants.PLEASE_ENTER_ROLE_NAME);
     }
 
     /**
@@ -170,13 +169,12 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
      */
     private void roleNameWeight(List<SysRole> list) {
         //判断批量list当中知否含有重复的部门名字
-        Set<String> set = new HashSet<>(list.size());
+        int listSize = list.size();
+        Set<String> set = new HashSet<>(listSize);
         for (SysRole sysRole : list) {
             set.add(sysRole.getRoleName());
         }
-        if (set.size() != list.size()) {
-            throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
-        }
+        CompareSceneException.customNumericalNotEquality(set.size(), listSize, ErrorInfoConstants.ROLE_NAME_REPETITION);
     }
 
     /**
@@ -184,9 +182,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
      */
     private void addSysRoleCheckout(SysRole sysRole) {
         //判断角色的名字是否已存在
-        if (nameGetRole(sysRole.getRoleName()) != null) {
-            throw new BussinessException(ErrorInfoConstants.ROLE_NAME_REPETITION);
-        }
+        CompareSceneException.customObjectIsNotNull(nameGetRole(sysRole.getRoleName()), ErrorInfoConstants.ROLE_NAME_REPETITION);
         //通过redis递增数字+1获取唯一roleCode
         String roleCode = CommonConstants.ROLE_LOG + RedisUtils.incr(CommonConstants.ROLE_LOG, CommonConstants.ROLE_CODE_PROGRESSIVE);
         sysRole.setRoleCode(roleCode);

@@ -10,6 +10,7 @@ import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import com.pbh.journey.system.common.utils.util.CurrentUserUtils;
 import com.pbh.journey.system.common.utils.util.JwtTokenUtils;
 import com.pbh.journey.system.pojo.domain.LoginLog;
@@ -18,7 +19,6 @@ import com.pbh.journey.system.pojo.domain.SysUser;
 import com.pbh.journey.system.pojo.dto.LoginNoDTO;
 import com.pbh.journey.system.pojo.dto.SysUserDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -162,14 +162,12 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
     @Override
     public void logout(HttpServletRequest request) {
         String accountToken = request.getHeader(CommonConstants.TOKEN);
-        if (StringUtils.isEmpty(accountToken)) {
-            throw new BussinessException(ErrorInfoConstants.NO_TOKEN);
-        }
+        CompareSceneException.customStringIsNull(accountToken, ErrorInfoConstants.NO_TOKEN);
+
         //根据token获取登录账号
         String userAccount = JwtTokenUtils.getUserAccount(accountToken);
-        if (CurrentUserUtils.isExpiration(userAccount)) {
-            throw new BussinessException(ErrorInfoConstants.NO_LOGIN);
-        }
+        CompareSceneException.customStringIsNull(userAccount, ErrorInfoConstants.NO_LOGIN);
+
         //从redis中删除登录账号
         CurrentUserUtils.delUserAccount(userAccount);
         log.warn("用户退出登录成功:登录{账号为:" + userAccount + "}");
@@ -216,12 +214,8 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
      * 登录账号和登录类型不能为空
      */
     private void loginNoAndTypeNotNull(LoginNo entity) {
-        if (StringUtils.isEmpty(entity.getUserAccount())) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_USER_ACCOUNT);
-        }
-        if (CommonConstants.ZERO == entity.getType()) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_SELECT_LOGIN_TYPE);
-        }
+        CompareSceneException.customStringIsNull(entity.getUserAccount(), ErrorInfoConstants.PLEASE_ENTER_USER_ACCOUNT);
+        CompareSceneException.customNumericalEquality(CommonConstants.ZERO, entity.getType(), ErrorInfoConstants.PLEASE_SELECT_LOGIN_TYPE);
     }
 
     /**
@@ -229,22 +223,15 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
      */
     private void addCheckout(LoginNo entity) {
         //判断登录账号是否已存在
-        LoginNo loginNo = loginNoExist(entity);
-        if (loginNo != null) {
-            throw new BussinessException(ErrorInfoConstants.USER_ACCOUNT_REPETITION);
-        }
-
+        CompareSceneException.customObjectIsNotNull(loginNoExist(entity), ErrorInfoConstants.USER_ACCOUNT_REPETITION);
         //必须输入登录密码
         String userPwd = entity.getUserPwd();
-        if (StringUtils.isEmpty(userPwd)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_PASSWORD);
-        }
+        CompareSceneException.customStringIsNull(userPwd, ErrorInfoConstants.PLEASE_ENTER_PASSWORD);
 
         //增加登录账号时如果没有关联用户ID给登录账号关联当前用户ID
         if (CommonConstants.ZERO == entity.getUserId()) {
             entity.setUserId(CurrentUserUtils.getCurrentUserId());
         }
-
         //校验通过后给密码加密
         entity.setUserPwd(passwordEncoder.encode(userPwd));
     }
@@ -255,44 +242,47 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
     private SysUserDTO loginNoCheckout(LoginNo loginNo) {
         //用户输入的密码
         String importUserPwd = loginNo.getUserPwd();
-        if (StringUtils.isEmpty(importUserPwd)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_PASSWORD);
-        }
+        CompareSceneException.customStringIsNull(importUserPwd, ErrorInfoConstants.PLEASE_ENTER_PASSWORD);
 
         //根据账号和登录类型查询该用户
         SysUserDTO sysUserDTO = loginNoMapper.login(loginNo);
-
-        if (sysUserDTO == null) {
-            throw new BussinessException(ErrorInfoConstants.MOBILE_NO_REPETITION);
-        }
-
-        //比较密码是否正确
-        if (!passwordEncoder.matches(importUserPwd, sysUserDTO.getUserPwd())) {
-            throw new BussinessException(ErrorInfoConstants.PASSWORD_INCORRECTNESS);
-        }
+        CompareSceneException.customObjectIsNull(sysUserDTO, ErrorInfoConstants.ACCOUNT_NO_REPETITION);
+        //判断输入的用户密码是否正确
+        importLoginUserPwdCorrect(importUserPwd, sysUserDTO.getUserPwd());
 
         //判断用户是否被逻辑删除
-        if (CommonConstants.DELETE_FLAG_FREAK == sysUserDTO.getDeleteFlag()) {
-            throw new BussinessException(ErrorInfoConstants.USER_FREEZE_DEL);
-        }
+        CompareSceneException.customNumericalEquality(CommonConstants.DELETE_FLAG_FREAK, sysUserDTO.getDeleteFlag(), ErrorInfoConstants.USER_FREEZE_DEL);
 
         //判断用户状态是否被冻结
-        if (CommonConstants.USER_FREEZE == sysUserDTO.getState()) {
-            throw new BussinessException(ErrorInfoConstants.USER_FREEZE);
-        }
+        CompareSceneException.customNumericalEquality(CommonConstants.USER_FREEZE, sysUserDTO.getState(), ErrorInfoConstants.USER_FREEZE);
 
         //判断用户的登录账号是否被逻辑删除
-        if (CommonConstants.DELETE_FLAG_FREAK == sysUserDTO.getLoginNoDeleteFlag()) {
-            throw new BussinessException(ErrorInfoConstants.ACCOUNT_FREEZE_DEL);
-        }
+        CompareSceneException.customNumericalEquality(CommonConstants.DELETE_FLAG_FREAK, sysUserDTO.getLoginNoDeleteFlag(), ErrorInfoConstants.ACCOUNT_FREEZE_DEL);
 
         //验证通过后判断该用户是否是登录状态
-        if (CurrentUserUtils.isExpiration(loginNo.getUserAccount())) {
-            throw new BussinessException(ErrorInfoConstants.LOGIN_CONFLICT);
-        }
+        userAccountIsNotLogin(loginNo.getUserAccount());
+
         //登录校验成功后为了安全把用户密码置空
         sysUserDTO.setUserPwd("");
         return sysUserDTO;
+    }
+
+    /**
+     * 校验输入的登录密码是否输入正确
+     */
+    private void importLoginUserPwdCorrect(String importUserPwd, String userPwd) {
+        if (!passwordEncoder.matches(importUserPwd, userPwd)) {
+            throw new BussinessException(ErrorInfoConstants.PASSWORD_INCORRECTNESS);
+        }
+    }
+
+    /**
+     * 判断这个用户是否正在登录
+     */
+    private void userAccountIsNotLogin(String userAccount) {
+        if (CurrentUserUtils.isExpiration(userAccount)) {
+            throw new BussinessException(ErrorInfoConstants.LOGIN_CONFLICT);
+        }
     }
 
     /**
@@ -313,42 +303,28 @@ public class LoginNoServiceImpl extends BaseServiceImpl<LoginNoMapper, LoginNo> 
     private LoginNo updatePwdCheckout(LoginNoDTO loginNoDTO) {
         //原密码
         String userPwd = loginNoDTO.getUserPwd();
-        if (StringUtils.isEmpty(userPwd)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ORIGINAL_PASSWORD);
-        }
+        CompareSceneException.customStringIsNull(userPwd, ErrorInfoConstants.PLEASE_ENTER_ORIGINAL_PASSWORD);
 
         LoginNo loginNo = get(loginNoDTO.getId());
-        //比较输入的旧密码是否正确
-        if (!passwordEncoder.matches(userPwd, loginNo.getUserPwd())) {
-            throw new BussinessException(ErrorInfoConstants.PASSWORD_INCORRECTNESS);
-        }
+        //比较输入的登录旧密码是否正确
+        importLoginUserPwdCorrect(userPwd, loginNo.getUserPwd());
 
         //新密码
         String newUserPwd = loginNoDTO.getNewUserPwd();
-        if (StringUtils.isEmpty(newUserPwd)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_NEW_PASSWORD);
-        }
+        CompareSceneException.customStringIsNull(newUserPwd, ErrorInfoConstants.PLEASE_ENTER_NEW_PASSWORD);
 
         //再次确认新密码
         String newAffirmUserPwd = loginNoDTO.getNewAffirmUserPwd();
-        if (StringUtils.isEmpty(newAffirmUserPwd)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_AGAIN_NEW_PASSWORD);
-        }
+        CompareSceneException.customStringIsNull(newAffirmUserPwd, ErrorInfoConstants.PLEASE_ENTER_AGAIN_NEW_PASSWORD);
 
         //输入的两次新密码是否一致
-        if (!newAffirmUserPwd.equals(newUserPwd)) {
-            throw new BussinessException(ErrorInfoConstants.NEW_AND_AGAIN_PASSWORD_DIFFER);
-        }
+        CompareSceneException.customStringNotEquality(newUserPwd, newAffirmUserPwd, ErrorInfoConstants.NEW_AND_AGAIN_PASSWORD_DIFFER);
 
         //校验这个账号是否被逻辑删除
-        byte deleteFlag = loginNo.getDeleteFlag();
-        if (CommonConstants.DELETE_FLAG_FREAK == deleteFlag) {
-            throw new BussinessException(ErrorInfoConstants.ACCOUNT_FREEZE_DEL);
-        }
+        CompareSceneException.customNumericalEquality(CommonConstants.DELETE_FLAG_FREAK, loginNo.getDeleteFlag(), ErrorInfoConstants.ACCOUNT_FREEZE_DEL);
 
         //校验通过后给密码加密
         loginNoDTO.setNewUserPwd(passwordEncoder.encode(newUserPwd));
         return loginNo;
     }
-
 }

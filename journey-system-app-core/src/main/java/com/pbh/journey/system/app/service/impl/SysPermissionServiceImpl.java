@@ -7,6 +7,7 @@ import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import com.pbh.journey.system.common.utils.util.RedisUtils;
 import com.pbh.journey.system.pojo.domain.SysPermission;
 import lombok.extern.slf4j.Slf4j;
@@ -152,9 +153,7 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermissionMappe
      * url不能为空
      */
     private void urlNotNull(String url) {
-        if (StringUtils.isEmpty(url)) {
-            throw new BussinessException(ErrorInfoConstants.PERMISSION_URL_NULL);
-        }
+        CompareSceneException.customStringIsNull(url, ErrorInfoConstants.PERMISSION_URL_NULL);
     }
 
     /**
@@ -162,13 +161,12 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermissionMappe
      */
     private void permissionUrlWeight(List<SysPermission> list) {
         //判断批量list当中是否含有重复的url
-        Set<String> set = new HashSet<>(list.size());
+        int listSize = list.size();
+        Set<String> set = new HashSet<>(listSize);
         for (SysPermission sysPermission : list) {
             set.add(sysPermission.getPermissionUrl());
         }
-        if (set.size() != list.size()) {
-            throw new BussinessException(ErrorInfoConstants.PERMISSION_URL_REPETITION);
-        }
+        CompareSceneException.customNumericalNotEquality(set.size(), listSize, ErrorInfoConstants.PERMISSION_URL_REPETITION);
     }
 
     /**
@@ -176,27 +174,19 @@ public class SysPermissionServiceImpl extends BaseServiceImpl<SysPermissionMappe
      */
     private void addSysPermissionCheckout(SysPermission sysPermission) {
         //父级ID必填
-        if (CommonConstants.ZERO == sysPermission.getParentId()) {
-            throw new BussinessException(ErrorInfoConstants.PERMISSION_PARENT_ID_NULL);
-        }
+        CompareSceneException.customNumericalEquality(CommonConstants.ZERO, sysPermission.getParentId(), ErrorInfoConstants.PERMISSION_PARENT_ID_NULL);
         //是否是菜单必填
-        if (CommonConstants.ZERO == sysPermission.getIsMenu()) {
-            throw new BussinessException(ErrorInfoConstants.PERMISSION_IS_MENU_NULL);
-        }
+        CompareSceneException.customNumericalEquality(CommonConstants.ZERO, sysPermission.getIsMenu(), ErrorInfoConstants.PERMISSION_IS_MENU_NULL);
+
         //层级必填
         Integer level = sysPermission.getLevel();
-        if (CommonConstants.ZERO == level) {
-            throw new BussinessException(ErrorInfoConstants.PERMISSION_LEVEL_NULL);
-        }
+        CompareSceneException.customNumericalEquality(CommonConstants.ZERO, level, ErrorInfoConstants.PERMISSION_LEVEL_NULL);
 
         //访问URL不可重复
-        if (urlGetPermission(sysPermission.getPermissionUrl()) != null) {
-            throw new BussinessException(ErrorInfoConstants.PERMISSION_URL_REPETITION);
-        }
+        CompareSceneException.customObjectIsNotNull(urlGetPermission(sysPermission.getPermissionUrl()), ErrorInfoConstants.PERMISSION_URL_REPETITION);
+
         //权限类型必填
-        if (StringUtils.isEmpty(sysPermission.getPermissionType())) {
-            throw new BussinessException(ErrorInfoConstants.PERMISSION_TYPE_NULL);
-        }
+        CompareSceneException.customStringIsNull(sysPermission.getPermissionType(), ErrorInfoConstants.PERMISSION_TYPE_NULL);
 
         //设置优先级，同level大的在上
         int order = (int) RedisUtils.incr(CommonConstants.PERMISSION_LOG + level, CommonConstants.PERMISSION_LEVEL_ORDER_PROGRESSIVE);

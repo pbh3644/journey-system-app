@@ -7,8 +7,8 @@ import com.pbh.journey.system.common.base.service.impl.BaseServiceImpl;
 import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import com.pbh.journey.system.common.utils.util.IpUtils;
-import com.pbh.journey.system.common.utils.util.RegexUtils;
 import com.pbh.journey.system.pojo.domain.LoginNo;
 import com.pbh.journey.system.pojo.domain.SysUser;
 import com.pbh.journey.system.pojo.dto.LoginNoDTO;
@@ -144,52 +144,37 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
      * 检验手机号码的合法性
      */
     private void mobileCheckout(String mobile) {
-        if (!RegexUtils.checkMobile(mobile)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_MOBILE);
-        }
-    }
-
-    /**
-     * 检验邮箱号码的合法性
-     */
-    private void idCardCheckout(String idCard) {
-        if (!RegexUtils.checkIdCard(idCard)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_ID_CARD);
-        }
+        CompareSceneException.mobileCheckout(mobile, ErrorInfoConstants.PLEASE_ENTER_MOBILE);
     }
 
     /**
      * 检验身份证号码的合法性
      */
+    private void idCardCheckout(String idCard) {
+        CompareSceneException.idCardCheckout(idCard, ErrorInfoConstants.PLEASE_ENTER_ID_CARD);
+    }
+
+    /**
+     * 检验邮箱号码的合法性
+     */
     private void mailboxCheckout(String mailbox) {
-        if (!RegexUtils.checkEmail(mailbox)) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_MAILBOX);
-        }
+        CompareSceneException.mailboxCheckout(mailbox, ErrorInfoConstants.PLEASE_ENTER_MAILBOX);
     }
 
     /**
      * 增加系统管理员时对象的判断
      */
     private void addSysUserCheckout(SysUser sysUser) {
-        if (StringUtils.isEmpty(sysUser.getNickName())) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_SYSTEM_NICKNAME);
-        }
-
-        if (StringUtils.isEmpty(sysUser.getRealName())) {
-            throw new BussinessException(ErrorInfoConstants.PLEASE_ENTER_REAL_NAME);
-        }
-
-        if (idCardGetSysUser(sysUser.getIdCard()) != null) {
-            throw new BussinessException(ErrorInfoConstants.ID_CARD_REPETITION);
-        }
-
-        if (mailboxGetSysUser(sysUser.getMailbox()) != null) {
-            throw new BussinessException(ErrorInfoConstants.MAILBOX_REPETITION);
-        }
-
-        if (mobileGetSysUser(sysUser.getMobile()) != null) {
-            throw new BussinessException(ErrorInfoConstants.MOBILE_REPETITION);
-        }
+        //请填写系统昵称
+        CompareSceneException.customStringIsNull(sysUser.getNickName(), ErrorInfoConstants.PLEASE_ENTER_SYSTEM_NICKNAME);
+        //请填写真实姓名
+        CompareSceneException.customStringIsNull(sysUser.getRealName(), ErrorInfoConstants.PLEASE_ENTER_REAL_NAME);
+        //身份证号码唯一
+        CompareSceneException.customObjectIsNotNull(idCardGetSysUser(sysUser.getIdCard()), ErrorInfoConstants.ID_CARD_REPETITION);
+        //邮箱号码唯一
+        CompareSceneException.customObjectIsNotNull(mailboxGetSysUser(sysUser.getMailbox()), ErrorInfoConstants.MAILBOX_REPETITION);
+        //手机号码唯一
+        CompareSceneException.customObjectIsNotNull(mobileGetSysUser(sysUser.getMobile()), ErrorInfoConstants.MAILBOX_REPETITION);
 
         //获取用户的IP地址
         sysUser.setDeviceId(IpUtils.getRealIP());
@@ -258,9 +243,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         LoginNo loginNo = new LoginNo();
         loginNo.setUserAccount(newMobile);
         loginNo.setType(type);
-        if (loginNoService.loginNoExist(loginNo) != null) {
-            throw new BussinessException(ErrorInfoConstants.USER_ACCOUNT_REPETITION);
-        }
+        //登录账号唯一
+        CompareSceneException.customObjectIsNotNull(loginNoService.loginNoExist(loginNo), ErrorInfoConstants.USER_ACCOUNT_REPETITION);
         updateUserAccount(newMobile, oldMobile);
     }
 
