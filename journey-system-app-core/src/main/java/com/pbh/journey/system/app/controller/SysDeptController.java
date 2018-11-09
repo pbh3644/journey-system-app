@@ -1,5 +1,6 @@
 package com.pbh.journey.system.app.controller;
 
+import com.pbh.journey.system.app.controller.web.WebContoller;
 import com.pbh.journey.system.app.service.SysDeptService;
 import com.pbh.journey.system.common.result.JourneySystemAppResult;
 import com.pbh.journey.system.pojo.domain.SysDept;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys_dept/")
 @Api("系统部门相关的api")
-public class SysDeptController {
+public class SysDeptController extends WebContoller {
 
 
     @Resource

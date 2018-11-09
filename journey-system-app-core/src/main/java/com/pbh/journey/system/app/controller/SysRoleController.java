@@ -1,5 +1,6 @@
 package com.pbh.journey.system.app.controller;
 
+import com.pbh.journey.system.app.controller.web.WebContoller;
 import com.pbh.journey.system.app.service.SysRoleService;
 import com.pbh.journey.system.common.result.JourneySystemAppResult;
 import com.pbh.journey.system.pojo.domain.SysRole;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/sys_role/")
 @Api("系统角色相关的api")
-public class SysRoleController {
+public class SysRoleController extends WebContoller {
 
     @Resource
     private SysRoleService sysRoleService;

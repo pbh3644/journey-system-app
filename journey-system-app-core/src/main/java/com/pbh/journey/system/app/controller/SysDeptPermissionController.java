@@ -1,5 +1,6 @@
 package com.pbh.journey.system.app.controller;
 
+import com.pbh.journey.system.app.controller.web.WebContoller;
 import com.pbh.journey.system.app.service.SysDeptPermissionService;
 import com.pbh.journey.system.common.result.JourneySystemAppResult;
 import io.swagger.annotations.Api;
@@ -19,7 +20,7 @@ import javax.annotation.Resource;
 @RequestMapping("/dept_permission/")
 @Api("部门权限相关的api")
 @Slf4j
-public class SysDeptPermissionController {
+public class SysDeptPermissionController extends WebContoller {
 
     @Resource
     private SysDeptPermissionService sysDeptPermissionService;

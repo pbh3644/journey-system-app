@@ -1,5 +1,6 @@
 package com.pbh.journey.system.app.controller;
 
+import com.pbh.journey.system.app.controller.web.WebContoller;
 import com.pbh.journey.system.app.service.SysPermissionService;
 import com.pbh.journey.system.common.result.JourneySystemAppResult;
 import com.pbh.journey.system.pojo.domain.SysPermission;
@@ -16,7 +17,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/sys_permission/")
-public class SysPermissionController {
+public class SysPermissionController extends WebContoller {
 
 
     @Resource
