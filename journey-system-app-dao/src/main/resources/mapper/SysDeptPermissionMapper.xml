@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pbh.journey.system.app.mapper.LoginLogMapper">
-    <resultMap type="com.pbh.journey.system.pojo.domain.LoginLog" id="loginLogResultMap">
+<mapper namespace="com.pbh.journey.system.app.mapper.SysDeptPermissionMapper">
+    <resultMap type="com.pbh.journey.system.pojo.domain.SysDeptPermission" id="sysDeptPermissionResultMap">
         <result property="id" column="ID"/>
-        <result property="userId" column="USER_ID"/>
-        <result property="userAccount" column="USER_ACCOUNT"/>
-        <result property="systemCode" column="SYSTEM_CODE"/>
+        <result property="deptId" column="DEPT_ID"/>
+        <result property="permissionId" column="PERMISSION_ID"/>
         <result property="addTime" column="ADD_TIME"/>
         <result property="updateTime" column="UPDATE_TIME"/>
         <result property="deleteTime" column="DELETE_TIME"/>
@@ -18,9 +17,8 @@
 
     <sql id="table_columns">
             ID,
-            USER_ID,
-            USER_ACCOUNT,
-            SYSTEM_CODE,
+            DEPT_ID,
+            PERMISSION_ID,
             ADD_TIME,
             UPDATE_TIME,
             DELETE_TIME,
@@ -32,9 +30,8 @@
     </sql>
     <sql id="entity_properties">
             #{id},
-            #{userId},
-            #{userAccount},
-            #{systemCode},
+            #{deptId},
+            #{permissionId},
             #{addTime},
             #{updateTime},
             #{deleteTime},
@@ -49,22 +46,21 @@
     <sql id="page_where">
         <trim prefix="where" prefixOverrides="and | or ">
             <if test="id != null and id != 0">and ID = #{id}</if>
-            <if test="userId != null and userId != 0">and USER_ID = #{userId}</if>
-            <if test="userAccount != null and userAccount != ''">and USER_ACCOUNT = #{userAccount}</if>
-            <if test="systemCode != null and systemCode != ''">and SYSTEM_CODE = #{systemCode}</if>
+            <if test="deptId != null and deptId != 0">and DEPT_ID = #{deptId}</if>
+            <if test="permissionId != null and permissionId != 0">and PERMISSION_ID = #{permissionId}</if>
             <if test="addTime != null">and ADD_TIME = #{addTime}</if>
             <if test="updateTime != null">and UPDATE_TIME = #{updateTime}</if>
             <if test="deleteTime != null">and DELETE_TIME = #{deleteTime}</if>
             <if test="addUserId != null and addUserId != 0">and ADD_USER_ID = #{addUserId}</if>
             <if test="updateUserId != null and updateUserId != 0">and UPDATE_USER_ID = #{updateUserId}</if>
             <if test="deleteUserId != null and deleteUserId != 0">and DELETE_USER_ID = #{deleteUserId}</if>
-            <if test="deleteFlag != null ">and DELETE_FLAG = #{deleteFlag}</if>
+            <if test="deleteFlag != null">and DELETE_FLAG = #{deleteFlag}</if>
             <if test="remark != null and remark != ''">and REMARK = #{remark}</if>
         </trim>
     </sql>
 
-    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.LoginLog">
-        insert into login_log(
+    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.SysDeptPermission">
+        insert into sys_dept_permission(
         <include refid="table_columns"/>
         )
         values (
@@ -73,16 +69,15 @@
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
-        insert into login_log(
+        insert into sys_dept_permission(
         <include refid="table_columns"/>
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.id},
-            #{item.userId},
-            #{item.userAccount},
-            #{item.systemCode},
+            #{item.deptId},
+            #{item.permissionId},
             #{item.addTime},
             #{item.updateTime},
             #{item.deleteTime},
@@ -96,12 +91,12 @@
     </insert>
 
     <delete id="delete" parameterType="java.lang.Long">
-        delete from login_log
+        delete from sys_dept_permission
         where id = #{id}
     </delete>
 
     <update id="deleteBatch">
-        update login_log set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        update sys_dept_permission set DELETE_FLAG = 2,DELETE_TIME = NOW()
         where id in
         <foreach collection="array" item="id" open="(" separator="," close=")">
             #{id}
@@ -109,16 +104,15 @@
     </update>
 
     <update id="deleteLogic" parameterType="java.lang.Long">
-        update login_log set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        update sys_dept_permission set DELETE_FLAG = 2,DELETE_TIME = NOW()
         where id = #{id}
     </update>
 
-    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.LoginLog">
-        update login_log
+    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.SysDeptPermission">
+        update sys_dept_permission
         <trim prefix="set" suffixOverrides=",">
-            <if test="userId != null and userId != 0">USER_ID = #{userId},</if>
-            <if test="userAccount != null and userAccount != ''">USER_ACCOUNT = #{userAccount},</if>
-            <if test="systemCode != null and systemCode != ''">SYSTEM_CODE = #{systemCode},</if>
+            <if test="deptId != null and deptId != 0">DEPT_ID = #{deptId},</if>
+            <if test="permissionId != null and permissionId != 0">PERMISSION_ID = #{permissionId},</if>
             <if test="addTime != null">and ADD_TIME = #{addTime},</if>
             <if test="updateTime != null">and UPDATE_TIME = #{updateTime},</if>
             <if test="deleteTime != null">and DELETE_TIME = #{deleteTime},</if>
@@ -133,16 +127,13 @@
 
     <update id="updateBatch" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" separator=",">
-            update login_log
+            update sys_dept_permission
             <trim prefix="set" suffixOverrides=",">
-                <if test="item.userId != null and item.userId != 0">USER_ID = #
-                    {item.userId},
+                <if test="item.deptId != null and item.deptId != 0">DEPT_ID = #
+                    {item.deptId},
                 </if>
-                <if test="item.userAccount != null and item.userAccount != ''">USER_ACCOUNT = #
-                    {item.userAccount},
-                </if>
-                <if test="item.systemCode != null and item.systemCode != ''">SYSTEM_CODE = #
-                    {item.systemCode},
+                <if test="item.permissionId != null and item.permissionId != 0">PERMISSION_ID = #
+                    {item.permissionId},
                 </if>
                 <if test="item.addTime != null">ADD_TIME = #{item.addTime},</if>
                 <if test="item.updateTime != null">UPDATE_TIME = #{item.updateTime},</if>
@@ -165,33 +156,85 @@
         </foreach>
     </update>
 
-    <select id="findAll" resultMap="loginLogResultMap">
+    <select id="findAll" resultMap="sysDeptPermissionResultMap">
         select
         <include refid="table_columns"/>
-        from login_log
-        order ADD_TIME,USER_ID
+        from sys_dept_permission
     </select>
 
-    <select id="findList" resultMap="loginLogResultMap">
+    <select id="findList" resultMap="sysDeptPermissionResultMap">
         select
         <include refid="table_columns"/>
-        from login_log
+        from sys_dept_permission
         <include refid="page_where"/>
-        order ADD_TIME,USER_ID
     </select>
 
     <select id="getCount" resultType="int">
-        select count(id) from login_log
+        select count(id) from sys_dept_permission
         <include refid="page_where"/>
     </select>
 
 
-    <select id="get" resultMap="loginLogResultMap" parameterType="java.lang.Long">
+    <select id="get" resultMap="sysDeptPermissionResultMap" parameterType="java.lang.Long">
         select
         <include refid="table_columns"/>
-        from login_log
+        from sys_dept_permission
         where id = #{id} and DELETE_FLAG = 1
     </select>
 
     <!-- 其他自定义SQL -->
+
+    <!--权限对象映射-->
+    <resultMap type="com.pbh.journey.system.pojo.domain.SysPermission" id="sysPermissionResultMap">
+        <result property="id" column="ID"/>
+        <result property="parentId" column="PARENT_ID"/>
+        <result property="isMenu" column="IS_MENU"/>
+        <result property="level" column="LEVEL"/>
+        <result property="permissionUrl" column="PERMISSION_URL"/>
+        <result property="permissionDesc" column="PERMISSION_DESC"/>
+        <result property="systemCode" column="SYSTEM_CODE"/>
+        <result property="needCsrf" column="NEED_CSRF"/>
+        <result property="order" column="ORDER"/>
+        <result property="permissionType" column="PERMISSION_TYPE"/>
+        <result property="addTime" column="ADD_TIME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+        <result property="deleteTime" column="DELETE_TIME"/>
+        <result property="addUserId" column="ADD_USER_ID"/>
+        <result property="updateUserId" column="UPDATE_USER_ID"/>
+        <result property="deleteUserId" column="DELETE_USER_ID"/>
+        <result property="deleteFlag" column="DELETE_FLAG"/>
+        <result property="remark" column="REMARK"/>
+    </resultMap>
+
+    <!--权限表字段-->
+    <sql id="permission_table_columns">
+            P.ID,
+            P.PARENT_ID,
+            P.IS_MENU,
+            P.LEVEL,
+            P.PERMISSION_URL,
+            P.PERMISSION_DESC,
+            P.SYSTEM_CODE,
+            P.NEED_CSRF,
+            P.ORDER,
+            P.PERMISSION_TYPE,
+            P.ADD_TIME,
+            P.UPDATE_TIME,
+            P.DELETE_TIME,
+            P.ADD_USER_ID,
+            P.UPDATE_USER_ID,
+            P.DELETE_USER_ID,
+            P.DELETE_FLAG,
+            P.REMARK
+    </sql>
+
+    <!--查看部门拥有的权限-->
+    <select id="deptOfPermission" resultMap="sysPermissionResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="permission_table_columns"/>
+        FROM SYS_DEPT_PERMISSION DP
+        LEFT JOIN SYS_PERMISSION P ON DP.PERMISSION_ID = P.ID
+        WHERE DP.DEPT_ID = #{DEPTID}
+        ORDER BY P.LEVEL,P.ORDER
+    </select>
 </mapper>

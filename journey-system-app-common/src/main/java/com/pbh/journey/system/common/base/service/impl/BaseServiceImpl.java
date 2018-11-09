@@ -4,9 +4,9 @@ import com.pbh.journey.system.common.base.mapper.BaseMapper;
 import com.pbh.journey.system.common.base.pojo.BaseEntity;
 import com.pbh.journey.system.common.base.pojo.Page;
 import com.pbh.journey.system.common.base.service.BaseService;
-import com.pbh.journey.system.common.utils.constant.CommonConstants;
 import com.pbh.journey.system.common.utils.errorinfo.ErrorInfoConstants;
 import com.pbh.journey.system.common.utils.exception.BussinessException;
+import com.pbh.journey.system.common.utils.util.CompareSceneException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,9 +45,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
 
     @Override
     public T get(long id) {
-        if (CommonConstants.ZERO == id) {
-            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
-        }
+        checkoutId(id);
         return dao.get(id);
     }
 
@@ -119,9 +117,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
             ((BaseEntity) entity).preUpdate();
             result = dao.update(entity);
         }
-        if (result == INT_ZERO) {
-            throw new BussinessException(ErrorInfoConstants.SAVE_ERROR);
-        }
+        checkoutResult(result, ErrorInfoConstants.SAVE_ERROR);
     }
 
     @Transactional(rollbackFor = BussinessException.class)
@@ -129,9 +125,7 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
     public void update(T entity) {
         ((BaseEntity) entity).preUpdate();
         int result = dao.update(entity);
-        if (result == INT_ZERO) {
-            throw new BussinessException(ErrorInfoConstants.UPDATE_ERROR);
-        }
+        checkoutResult(result, ErrorInfoConstants.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = BussinessException.class)
@@ -148,57 +142,56 @@ public class BaseServiceImpl<D extends BaseMapper<T>, T extends Serializable> im
             //子列表已满,批量提交
             if (subList.size() == BATCH_OPERATION_COUNT) {
                 int result = dao.updateBatch(subList);
-                if (result == INT_ZERO) {
-                    throw new BussinessException(ErrorInfoConstants.UPDATE_ERROR);
-                }
+                checkoutResult(result, ErrorInfoConstants.UPDATE_ERROR);
                 subList = new ArrayList<T>();
             }
         }
         //子列表未满的部分,做一次批量提交
         if (subList.size() > 0 && subList.size() < BATCH_OPERATION_COUNT) {
             int result = dao.updateBatch(subList);
-            if (result == INT_ZERO) {
-                throw new BussinessException(ErrorInfoConstants.UPDATE_ERROR);
-            }
+            checkoutResult(result, ErrorInfoConstants.UPDATE_ERROR);
         }
     }
 
     @Transactional(rollbackFor = BussinessException.class)
     @Override
     public void delete(final long id) {
-        if (CommonConstants.ZERO == id) {
-            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
-        }
+        checkoutId(id);
         int result = dao.delete(id);
-        if (result == INT_ZERO) {
-            throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + id);
-        }
+        checkoutResult(result, ErrorInfoConstants.DELETE_ERROR + id);
     }
 
     @Transactional(rollbackFor = BussinessException.class)
     @Override
     public void deleteBatch(final long[] ids) {
         for (long id : ids) {
-            if (CommonConstants.ZERO == id) {
-                throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
-            }
+            checkoutId(id);
         }
         int result = dao.deleteBatch(ids);
-        if (result == INT_ZERO) {
-            throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + Arrays.toString(ids));
-        }
+        checkoutResult(result, ErrorInfoConstants.DELETE_ERROR + Arrays.toString(ids));
     }
 
     @Transactional(rollbackFor = BussinessException.class)
     @Override
     public void deleteLogic(final long id) {
-        if (CommonConstants.ZERO == id) {
-            throw new BussinessException(ErrorInfoConstants.ID_NOT_NULL);
-        }
-        final int result = dao.deleteLogic(id);
-        if (result == INT_ZERO) {
-            throw new BussinessException(ErrorInfoConstants.DELETE_ERROR + id);
-        }
+        checkoutId(id);
+        int result = dao.deleteLogic(id);
+        checkoutResult(result, ErrorInfoConstants.DELETE_ERROR + id);
     }
 
+    /**
+     * 判断ID的合法性
+     * 不合法就抛异常
+     */
+    protected void checkoutId(long id) {
+        CompareSceneException.customNumericalEquality(INT_ZERO, id, ErrorInfoConstants.ID_NOT_NULL);
+    }
+
+    /**
+     * 判断操作数据库返回的行数结果
+     * 等于0就抛异常
+     */
+    protected void checkoutResult(long result, String err) {
+        CompareSceneException.customNumericalEquality(INT_ZERO, result, err);
+    }
 }

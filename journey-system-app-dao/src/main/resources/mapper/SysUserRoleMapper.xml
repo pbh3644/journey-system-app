@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pbh.journey.system.app.mapper.LoginLogMapper">
-    <resultMap type="com.pbh.journey.system.pojo.domain.LoginLog" id="loginLogResultMap">
+<mapper namespace="com.pbh.journey.system.app.mapper.SysUserRoleMapper">
+    <resultMap type="com.pbh.journey.system.pojo.domain.SysUserRole" id="sysUserRoleResultMap">
         <result property="id" column="ID"/>
         <result property="userId" column="USER_ID"/>
-        <result property="userAccount" column="USER_ACCOUNT"/>
-        <result property="systemCode" column="SYSTEM_CODE"/>
+        <result property="roleId" column="ROLE_ID"/>
         <result property="addTime" column="ADD_TIME"/>
         <result property="updateTime" column="UPDATE_TIME"/>
         <result property="deleteTime" column="DELETE_TIME"/>
@@ -19,8 +18,7 @@
     <sql id="table_columns">
             ID,
             USER_ID,
-            USER_ACCOUNT,
-            SYSTEM_CODE,
+            ROLE_ID,
             ADD_TIME,
             UPDATE_TIME,
             DELETE_TIME,
@@ -33,8 +31,7 @@
     <sql id="entity_properties">
             #{id},
             #{userId},
-            #{userAccount},
-            #{systemCode},
+            #{roleId},
             #{addTime},
             #{updateTime},
             #{deleteTime},
@@ -50,21 +47,20 @@
         <trim prefix="where" prefixOverrides="and | or ">
             <if test="id != null and id != 0">and ID = #{id}</if>
             <if test="userId != null and userId != 0">and USER_ID = #{userId}</if>
-            <if test="userAccount != null and userAccount != ''">and USER_ACCOUNT = #{userAccount}</if>
-            <if test="systemCode != null and systemCode != ''">and SYSTEM_CODE = #{systemCode}</if>
+            <if test="roleId != null and roleId != 0">and ROLE_ID = #{roleId}</if>
             <if test="addTime != null">and ADD_TIME = #{addTime}</if>
             <if test="updateTime != null">and UPDATE_TIME = #{updateTime}</if>
             <if test="deleteTime != null">and DELETE_TIME = #{deleteTime}</if>
             <if test="addUserId != null and addUserId != 0">and ADD_USER_ID = #{addUserId}</if>
             <if test="updateUserId != null and updateUserId != 0">and UPDATE_USER_ID = #{updateUserId}</if>
             <if test="deleteUserId != null and deleteUserId != 0">and DELETE_USER_ID = #{deleteUserId}</if>
-            <if test="deleteFlag != null ">and DELETE_FLAG = #{deleteFlag}</if>
+            <if test="deleteFlag != null">and DELETE_FLAG = #{deleteFlag}</if>
             <if test="remark != null and remark != ''">and REMARK = #{remark}</if>
         </trim>
     </sql>
 
-    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.LoginLog">
-        insert into login_log(
+    <insert id="insert" parameterType="com.pbh.journey.system.pojo.domain.SysUserRole">
+        insert into sys_user_role(
         <include refid="table_columns"/>
         )
         values (
@@ -73,7 +69,7 @@
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
-        insert into login_log(
+        insert into sys_user_role(
         <include refid="table_columns"/>
         )
         values
@@ -81,8 +77,7 @@
             (
             #{item.id},
             #{item.userId},
-            #{item.userAccount},
-            #{item.systemCode},
+            #{item.roleId},
             #{item.addTime},
             #{item.updateTime},
             #{item.deleteTime},
@@ -96,12 +91,12 @@
     </insert>
 
     <delete id="delete" parameterType="java.lang.Long">
-        delete from login_log
+        delete from sys_user_role
         where id = #{id}
     </delete>
 
     <update id="deleteBatch">
-        update login_log set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        update sys_user_role set DELETE_FLAG = 2,DELETE_TIME = NOW()
         where id in
         <foreach collection="array" item="id" open="(" separator="," close=")">
             #{id}
@@ -109,16 +104,15 @@
     </update>
 
     <update id="deleteLogic" parameterType="java.lang.Long">
-        update login_log set DELETE_FLAG = 2,DELETE_TIME = NOW()
+        update sys_user_role set DELETE_FLAG = 2,DELETE_TIME = NOW()
         where id = #{id}
     </update>
 
-    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.LoginLog">
-        update login_log
+    <update id="update" parameterType="com.pbh.journey.system.pojo.domain.SysUserRole">
+        update sys_user_role
         <trim prefix="set" suffixOverrides=",">
             <if test="userId != null and userId != 0">USER_ID = #{userId},</if>
-            <if test="userAccount != null and userAccount != ''">USER_ACCOUNT = #{userAccount},</if>
-            <if test="systemCode != null and systemCode != ''">SYSTEM_CODE = #{systemCode},</if>
+            <if test="roleId != null and roleId != 0">ROLE_ID = #{roleId},</if>
             <if test="addTime != null">and ADD_TIME = #{addTime},</if>
             <if test="updateTime != null">and UPDATE_TIME = #{updateTime},</if>
             <if test="deleteTime != null">and DELETE_TIME = #{deleteTime},</if>
@@ -133,16 +127,13 @@
 
     <update id="updateBatch" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" separator=",">
-            update login_log
+            update sys_user_role
             <trim prefix="set" suffixOverrides=",">
                 <if test="item.userId != null and item.userId != 0">USER_ID = #
                     {item.userId},
                 </if>
-                <if test="item.userAccount != null and item.userAccount != ''">USER_ACCOUNT = #
-                    {item.userAccount},
-                </if>
-                <if test="item.systemCode != null and item.systemCode != ''">SYSTEM_CODE = #
-                    {item.systemCode},
+                <if test="item.roleId != null and item.roleId != 0">ROLE_ID = #
+                    {item.roleId},
                 </if>
                 <if test="item.addTime != null">ADD_TIME = #{item.addTime},</if>
                 <if test="item.updateTime != null">UPDATE_TIME = #{item.updateTime},</if>
@@ -165,31 +156,29 @@
         </foreach>
     </update>
 
-    <select id="findAll" resultMap="loginLogResultMap">
+    <select id="findAll" resultMap="sysUserRoleResultMap">
         select
         <include refid="table_columns"/>
-        from login_log
-        order ADD_TIME,USER_ID
+        from sys_user_role
     </select>
 
-    <select id="findList" resultMap="loginLogResultMap">
+    <select id="findList" resultMap="sysUserRoleResultMap">
         select
         <include refid="table_columns"/>
-        from login_log
+        from sys_user_role
         <include refid="page_where"/>
-        order ADD_TIME,USER_ID
     </select>
 
     <select id="getCount" resultType="int">
-        select count(id) from login_log
+        select count(id) from sys_user_role
         <include refid="page_where"/>
     </select>
 
 
-    <select id="get" resultMap="loginLogResultMap" parameterType="java.lang.Long">
+    <select id="get" resultMap="sysUserRoleResultMap" parameterType="java.lang.Long">
         select
         <include refid="table_columns"/>
-        from login_log
+        from sys_user_role
         where id = #{id} and DELETE_FLAG = 1
     </select>
 
